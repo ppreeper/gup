@@ -1,0 +1,41 @@
+#!/bin/sh
+REPO="https://github.com/ryanoasis/nerd-fonts"
+TAGFILTER="refs/tags"
+#Ubuntu Nerd Font
+#https://github.com/ryanoasis/nerd-fonts/releases/download/v2.1.0/Ubuntu.zip
+#UbuntuMono Nerd Font
+#https://github.com/ryanoasis/nerd-fonts/releases/download/v2.1.0/UbuntuMono.zip
+
+FONTDIR="${HOME}/.fonts"
+GLS="git ls-remote --tags ${REPO}"
+TGS="grep ${TAGFILTER}"
+TFIELD="awk '{print \$2}'"
+RCFILT="grep -v -e \"{}\$\" -e alpha -e beta -e \"[Rr][Cc].*\$\""
+TGTRIM="sed 's/refs\/tags\///'"
+TGS1="sort | uniq | tail -1"
+TGS2="sort -g | uniq | tail -1"
+
+V="${GLS} | ${TGS} | ${TFIELD} | ${RCFILT} | ${TGTRIM}"
+major=$(eval "${V} | awk -F'.' '{print \$1}' | ${TGS1}")
+minor=$(eval "${V} | grep ${major} | awk -F'.' '{print \$2}' | ${TGS2}")
+patch=$(eval "${V} | grep ${major}.${minor} | awk -F'.' '{print \$3}' | ${TGS2}")
+
+vers=""
+[ -z "${patch}" ] && vers=$major.$minor || vers=$major.$minor.$patch
+echo $vers
+
+download() {
+    echo "download $1 font"
+    V=$(echo $vers | sed 's/v//')
+    FN=${vers}-$1.zip
+    rm -f /tmp/${FN}
+    wget -qc ${REPO}/releases/download/${vers}/$1.zip -O /tmp/${FN}
+    mkdir -p ${FONTDIR}
+    unzip -qo -d ${FONTDIR} /tmp/${FN}
+    rm -f /tmp/${FN}
+}
+
+download Ubuntu
+download UbuntuMono
+download FiraMono
+download Noto

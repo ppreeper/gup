@@ -1,0 +1,5 @@
+#!/bin/sh
+URL="https://zoom.us/client/latest/zoom_amd64.deb"
+wget -qc "${URL}" -O $HOME/zoom_amd64.deb
+sudo apt install -y $HOME/zoom_amd64.deb
+sudo rm -f $HOME/zoom_amd64.deb

@@ -1,0 +1,12 @@
+= gup command
+
+github updater
+
+download latest package/file from github into system
+
+[source,bash]
+----
+gup go
+----
+
+

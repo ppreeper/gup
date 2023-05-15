@@ -1,0 +1,60 @@
+#!/bin/sh
+
+# This file is licensed under the BSD-3-Clause license.
+# See the AUTHORS and LICENSE files for more information.
+#
+# A best attempt is made here to find where GUP is actually located.
+# If you install GUP in less common ways this may might not find it.
+# Set GUP_LIB_DIR to avoid this logic.
+# GUP_LIB_DIR='./lib'
+if [ -z "$GUP_LIB_DIR" ]; then
+    GUP_SCRIPT=$0
+    while [ -h "$GUP_SCRIPT" ]; do
+        LS_OUT=`/bin/ls -l "$GUP_SCRIPT"`
+        GUP_SCRIPT="${LS_OUT##*-> }"
+    done
+
+    [ -z "${GUP_SCRIPT##*/*}" ] && GUP_SCRIPT_DIR="${GUP_SCRIPT%/*}" || GUP_SCRIPT_DIR='.'
+    GUP_LIB_DIR="${GUP_SCRIPT_DIR}/lib"
+fi
+
+. ${GUP_LIB_DIR}/core.sh
+
+COMMANDS="install"
+VERSION="0.0.1"
+
+## FUNCTIONS
+
+Help() {
+    cat << EOF
+${0##*/} v${VERSION}
+
+Syntax:
+${0##*/} <command> [ app ]
+
+COMMANDS:
+`for C in ${COMMANDS}; do printf '  %s\n' $C ; done`
+
+OPTIONS:
+  -h, --help        = Print this help and exit
+
+EOF
+    exit 0
+}
+
+case "$1" in
+    '-h'|'--help'|'')
+        Help;;
+    'install')
+        shift
+        echo "install"
+        echo Install $@
+        Install $@
+        ;;
+    *)
+        Help;;
+esac
+
+exit 0
+# vim: set ts=4 sw=4 expandtab:
+

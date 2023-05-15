@@ -1,0 +1,33 @@
+#!/bin/bash
+R="https://github.com/prometheus/"
+P="snmp_exporter"
+PRJ="${R}${P}"
+# updater
+major=$( git ls-remote --tags ${PRJ} | grep refs/tags/v | grep -v -e beta -e rc[0123456789] -e rc.[0123456789] -e "\^{}" | awk '{print $2}' | sed "s/refs\/tags\/v//" | awk -F'.' '{print $1}' | sort | uniq | tail -1 )
+
+minor=$( git ls-remote --tags ${PRJ} | grep refs/tags/v | grep -v -e beta -e rc[0123456789] -e rc.[0123456789] -e "\^{}" | awk '{print $2}' | sed "s/refs\/tags\/v//" | grep ^$major | awk -F'.' '{print $2}' | sort -g | uniq | tail -1)
+
+patch=$( git ls-remote --tags ${PRJ} | grep refs/tags/v | grep -v -e beta -e rc[0123456789] -e rc.]0123456789] -e "\^{}" | awk '{print $2}' | sed "s/refs\/tags\/v//" | grep ^$major.$minor | awk -F'.' '{print $3}' | sort -g | uniq | tail -1)
+
+vers=""
+
+if [ "$patch" = "" ]; then
+    vers=$major.$minor
+else
+    vers=$major.$minor.$patch
+fi
+
+echo ${vers}
+
+BDIR=/usr/local/bin
+
+echo "Installing $vers"
+
+sudo rm -f /tmp/${P}-$vers.linux-amd64.tar.gz
+wget -qc ${PRJ}/releases/download/v${vers}/${P}-${vers}.linux-amd64.tar.gz -O /tmp/${P}-${vers}.linux-amd64.tar.gz
+
+sudo tar axf /tmp/${P}-${vers}.linux-amd64.tar.gz -C /tmp
+sudo mv /tmp/${P}-${vers}.linux-amd64/${P} ${BDIR}/.
+sudo rm -f /tmp/${P}-$vers.linux-amd64.tar.gz
+sudo rm -rf /tmp/${P}-$vers.linux-amd64
+

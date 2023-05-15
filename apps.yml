@@ -1,0 +1,8 @@
+app:
+  - name: go
+    repo: https://github.com/golang/go
+    url: https://dl.google.com/go
+    tagfilter: refs/tags/go
+    app: go
+    appver: version | awk '{print $3}'
+

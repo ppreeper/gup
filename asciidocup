@@ -1,0 +1,51 @@
+#!/bin/bash
+# updater
+major=$(git ls-remote --tags https://github.com/asciidocfx/AsciidocFX/ | grep refs/tags/v | grep -v -e beta -e rc[123456789] -e RC[123456789] -e "\^{}" | awk '{print $2}' | sed "s/refs\/tags\///" | awk -F'.' '{print $1}' | sort | uniq)
+
+minor=$(git ls-remote --tags https://github.com/asciidocfx/AsciidocFX/ | grep refs/tags/v | grep -v -e beta -e rc[123456789] -e RC[123456789] -e "\^{}" | grep $major | awk -F'.' '{print $2}' | sort -g | uniq | tail -1)
+
+patch=$(git ls-remote --tags https://github.com/asciidocfx/AsciidocFX/ | grep refs/tags/v | grep -v -e beta -e rc[123456789] -e RC[123456789] -e "\^{}" | grep $major.$minor | awk -F'.' '{print $3}' | sort -g | uniq | tail -1)
+
+vers=""
+
+if [ "$patch" = "" ]; then
+    vers=$major.$minor
+else
+    vers=$major.$minor.$patch
+fi
+
+IDIR=/usr/local/lib
+BDIR=/usr/local/bin
+
+echo "Installing $vers"
+
+sudo rm -f /tmp/$vers.linux.tar.gz
+wget -qc https://github.com/asciidocfx/AsciidocFX/releases/download/$vers/AsciidocFX_Linux.tar.gz -O /tmp/$vers.linux.tar.gz
+
+sudo rm ${BDIR}/AsciidocFX
+sudo rm -rf ${IDIR}/AsciidocFX/
+sudo tar axf /tmp/${vers}.linux.tar.gz -C ${IDIR}
+sudo find ${IDIR} -type d -exec chmod 777 "{}" \;
+sudo ln -s ${IDIR}/AsciidocFX/AsciidocFX ${BDIR}/AsciidocFX
+
+cat << _EOF_ | sudo tee ${BDIR}/AsciidocFX.svg
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.2" baseProfile="tiny"
+width="10cm" height="10cm" viewBox="0 0 4000 4000">
+<rect x="0" y="0" width="1999" height="4000" fill="yellow" />
+<rect x="2000" y="0" width="1999" height="4000" fill="red" />
+<polygon points="0,4000 1999,0 2000,0 4000,4000 0,4000" fill="blue" />
+</svg>
+_EOF_
+
+cat << _EOF_ | tee ${HOME}/.local/share/applications/AsciidocFX.desktop
+[Desktop Entry]
+Encoding=UTF-8
+Version=1.0
+Type=Application
+Terminal=false
+Exec=/usr/local/bin/AsciidocFX
+Name=AsciidocFX
+Icon=/usr/local/bin/AsciidocFX.svg
+_EOF_
+

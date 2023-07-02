@@ -28,6 +28,8 @@ commands:
         help: postgres_exporter
       - name: snmp_exporter
         help: snmp_exporter
+      - name: go
+        help: go programming language
       - name: gotop
         help: gotop terminal based graphical activity monitor
       - name: helix

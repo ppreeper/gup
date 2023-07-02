@@ -81,6 +81,7 @@ gup_install_usage() {
 	printf "  %s   blackbox_exporter\n" "blackbox_exporter"
 	printf "  %s   postgres_exporter\n" "postgres_exporter"
 	printf "  %s   snmp_exporter\n" "snmp_exporter    "
+	printf "  %s   go programming language\n" "go               "
 	printf "  %s   gotop terminal based graphical activity monitor\n" "gotop            "
 	printf "  %s   helix text editor\n" "helix            "
 	printf "  %s   nerd-fonts\n" "nerd-fonts       "
@@ -381,6 +382,35 @@ gup_install_snmp_exporter_usage() {
 	printf "%s\n" "Usage:"
 	printf "  gup install snmp_exporter\n"
 	printf "  gup install snmp_exporter --help | -h\n"
+	echo
+
+	# :command.long_usage
+	if [[ -n $long_usage ]]; then
+		printf "%s\n" "Options:"
+
+		# :command.usage_fixed_flags
+		printf "  %s\n" "--help, -h"
+		printf "    Show this help\n"
+		echo
+
+	fi
+}
+
+# :command.usage
+gup_install_go_usage() {
+	if [[ -n $long_usage ]]; then
+		printf "gup install go - go programming language\n"
+		echo
+
+	else
+		printf "gup install go - go programming language\n"
+		echo
+
+	fi
+
+	printf "%s\n" "Usage:"
+	printf "  gup install go\n"
+	printf "  gup install go --help | -h\n"
 	echo
 
 	# :command.long_usage
@@ -1138,6 +1168,40 @@ gup_install_snmp_exporter_command() {
 }
 
 # :command.function
+gup_install_go_command() {
+	# src/install_go_command.sh
+	CMD="go"
+	REPO="https://github.com/golang/go"
+	DLREPO="https://dl.google.com/go"
+	vers=$(git ls-remote --tags ${REPO} | grep "refs/tags/go.*[0-9]$" | grep -v -e rc -e alpha -e beta | awk '{print $2}' | sed 's/refs\/tags\///' | sort -V | uniq | tail -1)
+
+	IDIR=/usr/lib
+	BDIR=/usr/bin
+
+	function download(){
+			echo "download $1 version"
+			echo "Installing $vers"
+			FN=$vers.linux-amd64.tar.gz
+			rm -f /tmp/${FN}
+			wget -qc ${DLREPO}/${FN} -O /tmp/${FN}
+			sudo ls ${IDIR}/go/bin 2>/dev/null | sudo xargs -I {} rm -f ${BDIR}/{}
+			sudo rm -rf ${IDIR}/go
+			sudo tar axf /tmp/${FN} -C ${IDIR}
+			sudo ls ${IDIR}/go/bin | sudo xargs -I {} ln -sf ${IDIR}/go/bin/{} ${BDIR}/{}
+			rm -f /tmp/${FN}
+	}
+
+	if [ -z $(which ${CMD}) ]; then
+			download new
+	else
+			APP=$(which ${CMD})
+			APPVER=$(${APP} version | awk '{print $3}')
+			[ "${APPVER}" = "${vers}" ] && echo "${CMD} version is current" || download $vers
+	fi
+
+}
+
+# :command.function
 gup_install_gotop_command() {
 	# src/install_gotop_command.sh
 	CMD="gotop"
@@ -1471,6 +1535,13 @@ gup_install_parse_requirements() {
 			action="snmp_exporter"
 			shift
 			gup_install_snmp_exporter_parse_requirements "$@"
+			shift $#
+			;;
+
+		go)
+			action="go"
+			shift
+			gup_install_go_parse_requirements "$@"
 			shift $#
 			;;
 
@@ -1986,6 +2057,50 @@ gup_install_snmp_exporter_parse_requirements() {
 }
 
 # :command.parse_requirements
+gup_install_go_parse_requirements() {
+	# :command.fixed_flags_filter
+	while [[ $# -gt 0 ]]; do
+		case "${1:-}" in
+			--help | -h)
+				long_usage=yes
+				gup_install_go_usage
+				exit
+				;;
+
+			*)
+				break
+				;;
+
+		esac
+	done
+
+	# :command.command_filter
+	action="install go"
+
+	# :command.parse_requirements_while
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+
+			-?*)
+				printf "invalid option: %s\n" "$key" >&2
+				exit 1
+				;;
+
+			*)
+				# :command.parse_requirements_case
+				# :command.parse_requirements_case_simple
+				printf "invalid argument: %s\n" "$key" >&2
+				exit 1
+
+				;;
+
+		esac
+	done
+
+}
+
+# :command.parse_requirements
 gup_install_gotop_parse_requirements() {
 	# :command.fixed_flags_filter
 	while [[ $# -gt 0 ]]; do
@@ -2417,6 +2532,7 @@ run() {
 		"install blackbox_exporter") gup_install_blackbox_exporter_command ;;
 		"install postgres_exporter") gup_install_postgres_exporter_command ;;
 		"install snmp_exporter") gup_install_snmp_exporter_command ;;
+		"install go") gup_install_go_command ;;
 		"install gotop") gup_install_gotop_command ;;
 		"install helix") gup_install_helix_command ;;
 		"install nerd-fonts") gup_install_nerd_fonts_command ;;

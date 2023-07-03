@@ -12,6 +12,8 @@ commands:
         help: caddy2 web server
       - name: consul
         help: consul
+      - name: docker-compose
+        help: docker-compose
       - name: kubectl
         help: kubectl
       - name: minikube

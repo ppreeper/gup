@@ -73,6 +73,7 @@ gup_install_usage() {
 	printf "%s\n" "Commands:"
 	printf "  %s   caddy2 web server\n" "caddy2           "
 	printf "  %s   consul\n" "consul           "
+	printf "  %s   docker-compose\n" "docker-compose   "
 	printf "  %s   kubectl\n" "kubectl          "
 	printf "  %s   minikube\n" "minikube         "
 	printf "  %s   traefik\n" "traefik          "
@@ -150,6 +151,35 @@ gup_install_consul_usage() {
 	printf "%s\n" "Usage:"
 	printf "  gup install consul\n"
 	printf "  gup install consul --help | -h\n"
+	echo
+
+	# :command.long_usage
+	if [[ -n $long_usage ]]; then
+		printf "%s\n" "Options:"
+
+		# :command.usage_fixed_flags
+		printf "  %s\n" "--help, -h"
+		printf "    Show this help\n"
+		echo
+
+	fi
+}
+
+# :command.usage
+gup_install_docker_compose_usage() {
+	if [[ -n $long_usage ]]; then
+		printf "gup install docker-compose - docker-compose\n"
+		echo
+
+	else
+		printf "gup install docker-compose - docker-compose\n"
+		echo
+
+	fi
+
+	printf "%s\n" "Usage:"
+	printf "  gup install docker-compose\n"
+	printf "  gup install docker-compose --help | -h\n"
 	echo
 
 	# :command.long_usage
@@ -800,6 +830,37 @@ gup_install_consul_command() {
 }
 
 # :command.function
+gup_install_docker_compose_command() {
+	# src/install_docker_compose_command.sh
+	echo "docker-compose"
+	APP="docker-compose"
+	REPO="https://github.com/docker/compose"
+	vers=$(git ls-remote --tags ${REPO} | grep "refs/tags/v.*[0-9]$" | grep -v -e rc -e alpha -e beta | awk '{print $2}' | sed 's/refs\/tags\///' | sort -V | uniq | tail -1)
+
+	BDIR="/usr/local/bin"
+	BDIR="${HOME}/.local/bin"
+
+	OS=$(uname -s)
+	ARCH=$(uname -m)
+
+	download() {
+			echo "download $1 version"
+			echo "Installing ${vers}"
+			echo sudo wget -qc "${REPO}/releases/download/${vers}/${APP}-${OS}-${ARCH}" -O ${BDIR}/${APP}
+			echo sudo chmod +x ${BDIR}/${APP}
+	}
+
+	if [ -z "$(which ${APP})" ]; then
+			download new
+	else
+		APPBIN=$(which ${APP})
+		APPVER=$(${APPBIN} version 2>&1 | grep ^Docker | awk '{print $4}')
+		[ "${APPVER}" = "${vers}" ] && echo "${APP} version is current" || download ${vers}
+	fi
+
+}
+
+# :command.function
 gup_install_kubectl_command() {
 	# src/install_kubectl_command.sh
 	curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
@@ -1333,6 +1394,13 @@ gup_install_parse_requirements() {
 			shift $#
 			;;
 
+		docker-compose)
+			action="docker-compose"
+			shift
+			gup_install_docker_compose_parse_requirements "$@"
+			shift $#
+			;;
+
 		kubectl)
 			action="kubectl"
 			shift
@@ -1531,6 +1599,50 @@ gup_install_consul_parse_requirements() {
 
 	# :command.command_filter
 	action="install consul"
+
+	# :command.parse_requirements_while
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+
+			-?*)
+				printf "invalid option: %s\n" "$key" >&2
+				exit 1
+				;;
+
+			*)
+				# :command.parse_requirements_case
+				# :command.parse_requirements_case_simple
+				printf "invalid argument: %s\n" "$key" >&2
+				exit 1
+
+				;;
+
+		esac
+	done
+
+}
+
+# :command.parse_requirements
+gup_install_docker_compose_parse_requirements() {
+	# :command.fixed_flags_filter
+	while [[ $# -gt 0 ]]; do
+		case "${1:-}" in
+			--help | -h)
+				long_usage=yes
+				gup_install_docker_compose_usage
+				exit
+				;;
+
+			*)
+				break
+				;;
+
+		esac
+	done
+
+	# :command.command_filter
+	action="install docker-compose"
 
 	# :command.parse_requirements_while
 	while [[ $# -gt 0 ]]; do
@@ -2375,6 +2487,7 @@ run() {
 		"install") gup_install_command ;;
 		"install caddy2") gup_install_caddy2_command ;;
 		"install consul") gup_install_consul_command ;;
+		"install docker-compose") gup_install_docker_compose_command ;;
 		"install kubectl") gup_install_kubectl_command ;;
 		"install minikube") gup_install_minikube_command ;;
 		"install traefik") gup_install_traefik_command ;;

@@ -1,4 +1,4 @@
-CMD="consul"
+APP="consul"
 REPO="https://github.com/hashicorp/consul"
 DURL="https://releases.hashicorp.com/consul"
 
@@ -11,20 +11,20 @@ download() {
   echo "download $1 version"
   echo "installing ${vers}"
   vers=$(echo $vers | sed 's/^v//')
-  FN=${CMD}_${vers}_linux_amd64.zip
+  FN=${APP}_${vers}_linux_amd64.zip
   rm -f /tmp/${FN}
   wget -qc ${DURL}/${vers}/${FN} -O /tmp/${FN}
-  unzip /tmp/${FN} -d /tmp/${CMD}_${vers}
-  install /tmp/${CMD}_${vers}/${CMD} ${BDIR}/${CMD}
-  rm -rf /tmp/${CMD}_${vers}
+  unzip /tmp/${FN} -d /tmp/${APP}_${vers}
+  install /tmp/${APP}_${vers}/${APP} ${BDIR}/${APP}
+  rm -rf /tmp/${APP}_${vers}
   rm -f /tmp/${FN}
 }
 
 
-if [ -z $(which ${CMD}) ]; then
+if [ -z $(which ${APP}) ]; then
   download new
 else
-  APP=$(which ${CMD})
-  APPVER=$(${APP} version | grep -i ^${CMD} | awk '{print $2}')
-  [ "${APPVER}" = "${vers}" ] && echo "${CMD} version is current" || download new
+  APPBIN=$(which ${APP})
+  APPVER=$(${APPBIN} version | grep -i ^${APP} | awk '{print $2}')
+  [ "${APPVER}" = "${vers}" ] && echo "${APP} version is current" || download ${vers}
 fi

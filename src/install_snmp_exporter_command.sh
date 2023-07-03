@@ -1,29 +1,29 @@
-CMD="snmp_exporter"
-REPO="https://github.com/prometheus/${CMD}"
+APP="snmp_exporter"
+REPO="https://github.com/prometheus/${APP}"
 vers=$(git ls-remote --tags ${REPO} | grep "refs/tags.*[0-9]$" | grep -v -e "rc" -e "alpha" -e "beta" | awk '{print $2}' | sed 's/refs\/tags\///g' | sort -V | uniq | tail -1)
 
 BDIR=/usr/local/bin
 BDIR=${HOME}/.local/bin
-IDIR=${HOME}/.local/$CMD
+IDIR=${HOME}/.local/$APP
 
 function download() {
     echo "download $1 version"
-    echo "Installing ${vers}"
+    echo "installing ${vers}"
     V=$(echo $vers | sed 's/^v//')
-    FN=${CMD}-${V}.linux-amd64.tar.gz
+    FN=${APP}-${V}.linux-amd64.tar.gz
     rm -f /tmp/${FN}
     wget -qc ${REPO}/releases/download/${vers}/${FN} -O /tmp/${FN}
     mkdir -p ${IDIR}
     rm -rf ${IDIR}/*
     tar -zxf /tmp/${FN} --strip-components=1 -C ${IDIR}
-    ln -sf ${IDIR}/$CMD ${BDIR}/$CMD
+    ln -sf ${IDIR}/$APP ${BDIR}/$APP
     rm -f /tmp/${FN}
 }
 
-if [ -z $(which ${CMD}) ]; then
+if [ -z $(which ${APP}) ]; then
     download new
 else
-    APP=$(which ${CMD})
-    APPVER=$(${APP} --version | grep -i "^${CMD}" | awk '{print $2}')
-    [ "${APPVER}" = "${vers}" ] && echo "${CMD} version is current" || download new
+    APPBIN=$(which ${APP})
+    APPVER=$(${APPBIN} --version 2>&1 | grep -i "^${APP}" | awk '{print $2}')
+    [ "${APPVER}" = "${vers}" ] && echo "${APP} version is current" || download ${vers}
 fi

@@ -1,4 +1,4 @@
-CMD="nvim"
+APP="nvim"
 REPO="https://github.com/neovim/neovim"
 vers=$(git ls-remote --tags ${REPO} | grep "refs/tags.*[0-9]$" | awk '{print $2}' | sed 's/refs\/tags\///g' | sort -V | uniq | tail -1)
 
@@ -7,7 +7,7 @@ BDIR=${HOME}/.local/bin
 
 function download() {
     echo "download $1 version"
-    echo "Installing ${vers}"
+    echo "installing ${vers}"
     wget -qc ${REPO}/releases/download/${vers}/nvim-linux64.tar.gz
     mkdir -p ${IDIR}
     rm -rf ${IDIR}/*
@@ -16,10 +16,10 @@ function download() {
     rm -f nvim-linux64.tar.gz
 }
 
-if [ -z $(which ${CMD}) ]; then
+if [ -z $(which ${APP}) ]; then
     download new
 else
-    APP=$(which ${CMD})
-    APPVER=$(${APP} --version | grep -e "^NVIM" | awk '{print $2}')
-    [ "${APPVER}" = "${vers}" ] && echo "${CMD} version is current" || download new
+    APPBIN=$(which ${APP})
+    APPVER=$(${APPBIN} --version | grep -i "^${APP}" | awk '{print $2}')
+    [ "${APPVER}" = "${vers}" ] && echo "${APP} version is current" || download ${vers}
 fi

@@ -1,4 +1,4 @@
-CMD="hx"
+APP="hx"
 REPO="https://github.com/helix-editor/helix"
 vers=$(git ls-remote --tags ${REPO} | grep "refs/tags.*[0-9]$" | awk '{print $2}' | sed 's/refs\/tags\///' | grep -v "^v" | sort -V | uniq | tail -1)
 
@@ -7,7 +7,7 @@ BDIR=${HOME}/.local/helix
 
 function download() {
     echo "download $1 version"
-    echo "Installing ${vers}"
+    echo "installing ${vers}"
     mkdir -p ${IDIR} ${BDIR}
     touch ${IDIR}/config.toml
     FN=helix-${vers}-x86_64-linux.tar.xz
@@ -20,10 +20,10 @@ function download() {
 }
 
 
-if [ -z $(which ${CMD}) ]; then
+if [ -z $(which ${APP}) ]; then
     download new
 else
-  APP=$(which ${CMD})
-  APPVER=$(${APP} -V | grep -e "^helix" | awk '{print $2}')
-  [ "${APPVER}" = "${vers}" ] && echo "${CMD} version is current" || download new
+  APPBIN=$(which ${APP})
+  APPVER=$(${APPBIN} -V | grep -e "^helix" | awk '{print $2}')
+  [ "${APPVER}" = "${vers}" ] && echo "${APP} version is current" || download ${vers}
 fi

@@ -1,10 +1,10 @@
-CMD="wkhtmltopdf"
+APP="wkhtmltopdf"
 REPO="https://github.com/wkhtmltopdf/packaging"
 vers=$(git ls-remote --tags ${REPO} | grep "refs/tags.*[0-9]$" | awk '{print $2}' | sed 's/refs\/tags\///' | sort -V | uniq | tail -1)
 
 function download() {
     echo "download $1 version"
-    echo "Installing ${vers}"
+    echo "installing ${vers}"
     VC=$(grep ^VERSION_CODENAME /etc/os-release | awk -F'=' '{print $2}')
     UC=$(grep ^UBUNTU_CODENAME /etc/os-release | awk -F'=' '{print $2}')
     CN=''
@@ -16,11 +16,11 @@ function download() {
     sudo rm -f /tmp/${FN}
 }
 
-if [ -z $(which ${CMD}) ]; then
+if [ -z $(which ${APP}) ]; then
     download new
 else
-    APP=$(which ${CMD})
-    APPVER=$(${APP} --version | awk '{print $2}')
+    APPBIN=$(which ${APP})
+    APPVER=$(${APPBIN} --version | awk '{print $2}')
     echo $APPVER $vers
-    [ "${APPVER}" = "${vers}" ] && echo "${CMD} version is current" || download new
+    [ "${APPVER}" = "${vers}" ] && echo "${APP} version is current" || download ${vers}
 fi

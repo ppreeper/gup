@@ -1,4 +1,4 @@
-CMD="go"
+APP="go"
 REPO="https://github.com/golang/go"
 DLREPO="https://dl.google.com/go"
 vers=$(git ls-remote --tags ${REPO} | grep "refs/tags/go.*[0-9]$" | grep -v -e rc -e alpha -e beta | awk '{print $2}' | sed 's/refs\/tags\///' | sort -V | uniq | tail -1)
@@ -8,7 +8,7 @@ BDIR=/usr/bin
 
 function download(){
     echo "download $1 version"
-    echo "Installing $vers"
+    echo "installing $vers"
     FN=$vers.linux-amd64.tar.gz
     rm -f /tmp/${FN}
     wget -qc ${DLREPO}/${FN} -O /tmp/${FN}
@@ -19,11 +19,11 @@ function download(){
     rm -f /tmp/${FN}
 }
 
-if [ -z $(which ${CMD}) ]; then
+if [ -z $(which ${APP}) ]; then
     download new
 else
-    APP=$(which ${CMD})
-    APPVER=$(${APP} version | awk '{print $3}')
-    [ "${APPVER}" = "${vers}" ] && echo "${CMD} version is current" || download $vers
+    APPBIN=$(which ${APP})
+    APPVER=$(${APPBIN} version | awk '{print $3}')
+    [ "${APPVER}" = "${vers}" ] && echo "${APP} version is current" || download ${vers}
 fi
 

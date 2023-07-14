@@ -77,6 +77,7 @@ gup_install_usage() {
 	printf "  %s   kubectl\n" "kubectl          "
 	printf "  %s   minikube\n" "minikube         "
 	printf "  %s   traefik\n" "traefik          "
+	printf "  %s   pgcat postgresql pooler\n" "pgcat            "
 	printf "  %s   loki\n" "loki             "
 	printf "  %s   prometheus\n" "prometheus       "
 	printf "  %s   blackbox_exporter\n" "blackbox_exporter"
@@ -267,6 +268,35 @@ gup_install_traefik_usage() {
 	printf "%s\n" "Usage:"
 	printf "  gup install traefik\n"
 	printf "  gup install traefik --help | -h\n"
+	echo
+
+	# :command.long_usage
+	if [[ -n $long_usage ]]; then
+		printf "%s\n" "Options:"
+
+		# :command.usage_fixed_flags
+		printf "  %s\n" "--help, -h"
+		printf "    Show this help\n"
+		echo
+
+	fi
+}
+
+# :command.usage
+gup_install_pgcat_usage() {
+	if [[ -n $long_usage ]]; then
+		printf "gup install pgcat - pgcat postgresql pooler\n"
+		echo
+
+	else
+		printf "gup install pgcat - pgcat postgresql pooler\n"
+		echo
+
+	fi
+
+	printf "%s\n" "Usage:"
+	printf "  gup install pgcat\n"
+	printf "  gup install pgcat --help | -h\n"
 	echo
 
 	# :command.long_usage
@@ -910,6 +940,40 @@ gup_install_traefik_command() {
 }
 
 # :command.function
+gup_install_pgcat_command() {
+	# src/install_pgcat_command.sh
+	APP="pgcat"
+	REPO="https://github.com/postgresml/pgcat"
+	DLREPO="https://github.com/postgresml/pgcat/archive/refs/tags"
+	vers=$(git ls-remote --tags ${REPO} | grep "refs/tags/.*[0-9]$" | grep -v -e rc -e alpha -e beta | awk '{print $2}' | sed 's/refs\/tags\///' | sort -V | uniq | tail -1)
+
+	CDIR=${HOME}/.config/pgcat
+	BDIR=${HOME}/.local/bin
+
+	function download() {
+			echo "download $1 version"
+			echo "installing ${vers}"
+			FN=${vers}.tar.gz
+			rm -f /tmp/${FN}
+			wget -qc ${DLREPO}/${FN} -O /tmp/${FN}
+			mkdir -p /tmp/${APP}
+			tar axvf /tmp/${FN} -C /tmp/${APP} --strip-components=1
+			podman run --rm -v /tmp/${APP}:/app docker.io/rust:1 bash -c "cd /app && cargo build --release"
+			mkdir -p ${CDIR}
+			cp /tmp/${APP}/pgcat.toml ${CDIR}/pgcat.toml
+			cp /tmp/${APP}/target/release/pgcat ${BDIR}/pgcat
+			rm -rf /tmp/${FN} /tmp/${APP}
+	}
+
+	if [ -z $(which "podman") ]; then
+		echo "podman required to build ${APP}"
+	else
+		download ${vers}
+	fi
+
+}
+
+# :command.function
 gup_install_loki_command() {
 	# src/install_loki_command.sh
 	APP="loki"
@@ -1422,6 +1486,13 @@ gup_install_parse_requirements() {
 			shift $#
 			;;
 
+		pgcat)
+			action="pgcat"
+			shift
+			gup_install_pgcat_parse_requirements "$@"
+			shift $#
+			;;
+
 		loki)
 			action="loki"
 			shift
@@ -1775,6 +1846,50 @@ gup_install_traefik_parse_requirements() {
 
 	# :command.command_filter
 	action="install traefik"
+
+	# :command.parse_requirements_while
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+
+			-?*)
+				printf "invalid option: %s\n" "$key" >&2
+				exit 1
+				;;
+
+			*)
+				# :command.parse_requirements_case
+				# :command.parse_requirements_case_simple
+				printf "invalid argument: %s\n" "$key" >&2
+				exit 1
+
+				;;
+
+		esac
+	done
+
+}
+
+# :command.parse_requirements
+gup_install_pgcat_parse_requirements() {
+	# :command.fixed_flags_filter
+	while [[ $# -gt 0 ]]; do
+		case "${1:-}" in
+			--help | -h)
+				long_usage=yes
+				gup_install_pgcat_usage
+				exit
+				;;
+
+			*)
+				break
+				;;
+
+		esac
+	done
+
+	# :command.command_filter
+	action="install pgcat"
 
 	# :command.parse_requirements_while
 	while [[ $# -gt 0 ]]; do
@@ -2491,6 +2606,7 @@ run() {
 		"install kubectl") gup_install_kubectl_command ;;
 		"install minikube") gup_install_minikube_command ;;
 		"install traefik") gup_install_traefik_command ;;
+		"install pgcat") gup_install_pgcat_command ;;
 		"install loki") gup_install_loki_command ;;
 		"install prometheus") gup_install_prometheus_command ;;
 		"install blackbox_exporter") gup_install_blackbox_exporter_command ;;

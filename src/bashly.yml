@@ -20,6 +20,8 @@ commands:
         help: minikube
       - name: traefik
         help: traefik
+      - name: pgcat
+        help: pgcat postgresql pooler
       - name: loki
         help: loki
       - name: prometheus

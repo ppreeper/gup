@@ -3,8 +3,8 @@ REPO="https://github.com/golang/go"
 DLREPO="https://dl.google.com/go"
 vers=$(git ls-remote --tags ${REPO} | grep "refs/tags/go.*[0-9]$" | grep -v -e rc -e alpha -e beta | awk '{print $2}' | sed 's/refs\/tags\///' | sort -V | uniq | tail -1)
 
-IDIR=/usr/lib
-BDIR=/usr/bin
+IDIR=/usr/local/lib
+BDIR=/usr/local/bin
 
 function download(){
     echo "download $1 version"

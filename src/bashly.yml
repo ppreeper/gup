@@ -36,6 +36,8 @@ commands:
         help: go programming language
       - name: gotop
         help: gotop terminal based graphical activity monitor
+      - name: oda
+        help: odoo administration tool
       - name: helix
         help: helix text editor
       - name: nerd-fonts

@@ -85,6 +85,7 @@ gup_install_usage() {
 	printf "  %s   snmp_exporter\n" "snmp_exporter    "
 	printf "  %s   go programming language\n" "go               "
 	printf "  %s   gotop terminal based graphical activity monitor\n" "gotop            "
+	printf "  %s   odoo administration tool\n" "oda              "
 	printf "  %s   helix text editor\n" "helix            "
 	printf "  %s   nerd-fonts\n" "nerd-fonts       "
 	printf "  %s   NeoVIM\n" "neovim           "
@@ -500,6 +501,35 @@ gup_install_gotop_usage() {
 	printf "%s\n" "Usage:"
 	printf "  gup install gotop\n"
 	printf "  gup install gotop --help | -h\n"
+	echo
+
+	# :command.long_usage
+	if [[ -n $long_usage ]]; then
+		printf "%s\n" "Options:"
+
+		# :command.usage_fixed_flags
+		printf "  %s\n" "--help, -h"
+		printf "    Show this help\n"
+		echo
+
+	fi
+}
+
+# :command.usage
+gup_install_oda_usage() {
+	if [[ -n $long_usage ]]; then
+		printf "gup install oda - odoo administration tool\n"
+		echo
+
+	else
+		printf "gup install oda - odoo administration tool\n"
+		echo
+
+	fi
+
+	printf "%s\n" "Usage:"
+	printf "  gup install oda\n"
+	printf "  gup install oda --help | -h\n"
 	echo
 
 	# :command.long_usage
@@ -1207,6 +1237,27 @@ gup_install_gotop_command() {
 }
 
 # :command.function
+gup_install_oda_command() {
+	# src/install_oda_command.sh
+	echo "# this file is located in 'src/install_oda_command.sh'"
+	echo "# code for 'gup install oda' goes here"
+	echo "# you can edit it freely and regenerate (it will not be overwritten)"
+	inspect_args
+	REPO="https://raw.githubusercontent.com/ppreeper/oda"
+	USERIDNUMBER=$(grep $(whoami) /etc/passwd | awk -F":" '{print $3}')
+
+	if [ ${USERIDNUMBER} == 0 ]; then
+		IDIR="/usr/local/bin"
+		sudo wget ${REPO}/main/oda -O ${IDIR}/oda
+		sudo wget ${REPO}/main/oda_db.py -O ${IDIR}/oda_db.py
+	else
+		IDIR="${HOME}/.local/bin"
+		wget ${REPO}/main/oda -O ${IDIR}/oda
+		wget ${REPO}/main/oda_db.py -O ${IDIR}/oda_db.py
+	fi
+}
+
+# :command.function
 gup_install_helix_command() {
 	# src/install_helix_command.sh
 	APP="hx"
@@ -1539,6 +1590,13 @@ gup_install_parse_requirements() {
 			action="gotop"
 			shift
 			gup_install_gotop_parse_requirements "$@"
+			shift $#
+			;;
+
+		oda)
+			action="oda"
+			shift
+			gup_install_oda_parse_requirements "$@"
 			shift $#
 			;;
 
@@ -2223,6 +2281,50 @@ gup_install_gotop_parse_requirements() {
 }
 
 # :command.parse_requirements
+gup_install_oda_parse_requirements() {
+	# :command.fixed_flags_filter
+	while [[ $# -gt 0 ]]; do
+		case "${1:-}" in
+			--help | -h)
+				long_usage=yes
+				gup_install_oda_usage
+				exit
+				;;
+
+			*)
+				break
+				;;
+
+		esac
+	done
+
+	# :command.command_filter
+	action="install oda"
+
+	# :command.parse_requirements_while
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+
+			-?*)
+				printf "invalid option: %s\n" "$key" >&2
+				exit 1
+				;;
+
+			*)
+				# :command.parse_requirements_case
+				# :command.parse_requirements_case_simple
+				printf "invalid argument: %s\n" "$key" >&2
+				exit 1
+
+				;;
+
+		esac
+	done
+
+}
+
+# :command.parse_requirements
 gup_install_helix_parse_requirements() {
 	# :command.fixed_flags_filter
 	while [[ $# -gt 0 ]]; do
@@ -2614,6 +2716,7 @@ run() {
 		"install snmp_exporter") gup_install_snmp_exporter_command ;;
 		"install go") gup_install_go_command ;;
 		"install gotop") gup_install_gotop_command ;;
+		"install oda") gup_install_oda_command ;;
 		"install helix") gup_install_helix_command ;;
 		"install nerd-fonts") gup_install_nerd_fonts_command ;;
 		"install neovim") gup_install_neovim_command ;;

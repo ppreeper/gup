@@ -1,7 +1,3 @@
-echo "# this file is located in 'src/install_oda_command.sh'"
-echo "# code for 'gup install oda' goes here"
-echo "# you can edit it freely and regenerate (it will not be overwritten)"
-inspect_args
 REPO="https://raw.githubusercontent.com/ppreeper/oda"
 USERIDNUMBER=$(grep $(whoami) /etc/passwd | awk -F":" '{print $3}')
 

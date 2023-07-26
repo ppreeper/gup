@@ -57,8 +57,10 @@ _EOF_
 # download new
 if [ -z $(which ${APP}) ]; then
   download new
+  config
 else
   APPBIN=$(which ${APP})
   APPVER=$(${APPBIN} --version | grep -i ^${APP} | awk '{print $3}')
   [ "${APPVER}" = "$(echo $vers | sed 's/^v//')" ] && echo "${APP} version is current" || download ${vers}
+  config
 fi

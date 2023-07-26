@@ -8,6 +8,8 @@ commands:
     examples:
       - gup install neovim
     commands:
+      - name: gup
+        help: install gup command
       - name: caddy2
         help: caddy2 web server
       - name: consul
@@ -22,8 +24,12 @@ commands:
         help: traefik
       - name: pgcat
         help: pgcat postgresql pooler
+      - name: promtail
+        help: promtail
       - name: loki
         help: loki
+      - name: grafana
+        help: grafana
       - name: prometheus
         help: prometheus
       - name: blackbox_exporter
@@ -60,3 +66,12 @@ commands:
         help: consul
       - name: neovim
         help: NeoVIM
+  - name: systemd
+    help: install systemd service
+    examples:
+      - gup install neovim
+    commands:
+      - name: promtail
+        help: promtail
+      - name: loki
+        help: loki

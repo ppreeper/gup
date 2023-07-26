@@ -36,6 +36,7 @@ gup_usage() {
 	printf "%s\n" "Commands:"
 	printf "  %s   install an application\n" "install"
 	printf "  %s   remove an application and settings\n" "remove "
+	printf "  %s   install systemd service\n" "systemd"
 	echo
 
 	# :command.long_usage
@@ -71,6 +72,7 @@ gup_install_usage() {
 	echo
 	# :command.usage_commands
 	printf "%s\n" "Commands:"
+	printf "  %s   install gup command\n" "gup              "
 	printf "  %s   caddy2 web server\n" "caddy2           "
 	printf "  %s   consul\n" "consul           "
 	printf "  %s   docker-compose\n" "docker-compose   "
@@ -78,7 +80,9 @@ gup_install_usage() {
 	printf "  %s   minikube\n" "minikube         "
 	printf "  %s   traefik\n" "traefik          "
 	printf "  %s   pgcat postgresql pooler\n" "pgcat            "
+	printf "  %s   promtail\n" "promtail         "
 	printf "  %s   loki\n" "loki             "
+	printf "  %s   grafana\n" "grafana          "
 	printf "  %s   prometheus\n" "prometheus       "
 	printf "  %s   blackbox_exporter\n" "blackbox_exporter"
 	printf "  %s   postgres_exporter\n" "postgres_exporter"
@@ -104,6 +108,35 @@ gup_install_usage() {
 		# :command.usage_examples
 		printf "%s\n" "Examples:"
 		printf "  gup install neovim\n"
+		echo
+
+	fi
+}
+
+# :command.usage
+gup_install_gup_usage() {
+	if [[ -n $long_usage ]]; then
+		printf "gup install gup - install gup command\n"
+		echo
+
+	else
+		printf "gup install gup - install gup command\n"
+		echo
+
+	fi
+
+	printf "%s\n" "Usage:"
+	printf "  gup install gup\n"
+	printf "  gup install gup --help | -h\n"
+	echo
+
+	# :command.long_usage
+	if [[ -n $long_usage ]]; then
+		printf "%s\n" "Options:"
+
+		# :command.usage_fixed_flags
+		printf "  %s\n" "--help, -h"
+		printf "    Show this help\n"
 		echo
 
 	fi
@@ -313,6 +346,35 @@ gup_install_pgcat_usage() {
 }
 
 # :command.usage
+gup_install_promtail_usage() {
+	if [[ -n $long_usage ]]; then
+		printf "gup install promtail - promtail\n"
+		echo
+
+	else
+		printf "gup install promtail - promtail\n"
+		echo
+
+	fi
+
+	printf "%s\n" "Usage:"
+	printf "  gup install promtail\n"
+	printf "  gup install promtail --help | -h\n"
+	echo
+
+	# :command.long_usage
+	if [[ -n $long_usage ]]; then
+		printf "%s\n" "Options:"
+
+		# :command.usage_fixed_flags
+		printf "  %s\n" "--help, -h"
+		printf "    Show this help\n"
+		echo
+
+	fi
+}
+
+# :command.usage
 gup_install_loki_usage() {
 	if [[ -n $long_usage ]]; then
 		printf "gup install loki - loki\n"
@@ -327,6 +389,35 @@ gup_install_loki_usage() {
 	printf "%s\n" "Usage:"
 	printf "  gup install loki\n"
 	printf "  gup install loki --help | -h\n"
+	echo
+
+	# :command.long_usage
+	if [[ -n $long_usage ]]; then
+		printf "%s\n" "Options:"
+
+		# :command.usage_fixed_flags
+		printf "  %s\n" "--help, -h"
+		printf "    Show this help\n"
+		echo
+
+	fi
+}
+
+# :command.usage
+gup_install_grafana_usage() {
+	if [[ -n $long_usage ]]; then
+		printf "gup install grafana - grafana\n"
+		echo
+
+	else
+		printf "gup install grafana - grafana\n"
+		echo
+
+	fi
+
+	printf "%s\n" "Usage:"
+	printf "  gup install grafana\n"
+	printf "  gup install grafana --help | -h\n"
 	echo
 
 	# :command.long_usage
@@ -766,6 +857,103 @@ gup_remove_neovim_usage() {
 	fi
 }
 
+# :command.usage
+gup_systemd_usage() {
+	if [[ -n $long_usage ]]; then
+		printf "gup systemd - install systemd service\n"
+		echo
+
+	else
+		printf "gup systemd - install systemd service\n"
+		echo
+
+	fi
+
+	printf "%s\n" "Usage:"
+	printf "  gup systemd COMMAND\n"
+	printf "  gup systemd [COMMAND] --help | -h\n"
+	echo
+	# :command.usage_commands
+	printf "%s\n" "Commands:"
+	printf "  %s   promtail\n" "promtail"
+	printf "  %s   loki\n" "loki    "
+	echo
+
+	# :command.long_usage
+	if [[ -n $long_usage ]]; then
+		printf "%s\n" "Options:"
+
+		# :command.usage_fixed_flags
+		printf "  %s\n" "--help, -h"
+		printf "    Show this help\n"
+		echo
+
+		# :command.usage_examples
+		printf "%s\n" "Examples:"
+		printf "  gup install neovim\n"
+		echo
+
+	fi
+}
+
+# :command.usage
+gup_systemd_promtail_usage() {
+	if [[ -n $long_usage ]]; then
+		printf "gup systemd promtail - promtail\n"
+		echo
+
+	else
+		printf "gup systemd promtail - promtail\n"
+		echo
+
+	fi
+
+	printf "%s\n" "Usage:"
+	printf "  gup systemd promtail\n"
+	printf "  gup systemd promtail --help | -h\n"
+	echo
+
+	# :command.long_usage
+	if [[ -n $long_usage ]]; then
+		printf "%s\n" "Options:"
+
+		# :command.usage_fixed_flags
+		printf "  %s\n" "--help, -h"
+		printf "    Show this help\n"
+		echo
+
+	fi
+}
+
+# :command.usage
+gup_systemd_loki_usage() {
+	if [[ -n $long_usage ]]; then
+		printf "gup systemd loki - loki\n"
+		echo
+
+	else
+		printf "gup systemd loki - loki\n"
+		echo
+
+	fi
+
+	printf "%s\n" "Usage:"
+	printf "  gup systemd loki\n"
+	printf "  gup systemd loki --help | -h\n"
+	echo
+
+	# :command.long_usage
+	if [[ -n $long_usage ]]; then
+		printf "%s\n" "Options:"
+
+		# :command.usage_fixed_flags
+		printf "  %s\n" "--help, -h"
+		printf "    Show this help\n"
+		echo
+
+	fi
+}
+
 # :command.normalize_input
 normalize_input() {
 	local arg flags
@@ -821,14 +1009,33 @@ inspect_args() {
 # :command.command_functions
 
 # :command.function
+gup_install_gup_command() {
+	# src/install_gup_command.sh
+	REPO="https://raw.githubusercontent.com/ppreeper/gup"
+	USERIDNUMBER=$(grep $(whoami) /etc/passwd | awk -F":" '{print $3}')
+
+	if [ ${USERIDNUMBER} == 0 ]; then
+		IDIR="/usr/local/bin"
+		sudo wget -q ${REPO}/main/gup -O ${IDIR}/gup
+	else
+		IDIR="${HOME}/.local/bin"
+		wget -q ${REPO}/main/gup -O ${IDIR}/gup
+	fi
+}
+
+# :command.function
 gup_install_caddy2_command() {
 	# src/install_caddy2_command.sh
 	APP="caddy"
 	REPO="https://github.com/caddyserver/caddy"
 	vers=$(git ls-remote --tags ${REPO} | grep "refs/tags.*[0-9]$" | grep -v -e rc -e alpha -e beta | awk '{print $2}' | sed 's/refs\/tags\///' | sort -V | uniq | tail -1)
 
-	BDIR="/usr/local/bin"
-	BDIR="${HOME}/.local/bin"
+	USERIDNUMBER=$(grep $(whoami) /etc/passwd | awk -F":" '{print $3}')
+	if [ ${USERIDNUMBER} == 0 ]; then
+		BDIR="/usr/local/bin"
+	else
+		BDIR="${HOME}/.local/bin"
+	fi
 
 	download() {
 			echo "download $1 version"
@@ -863,8 +1070,12 @@ gup_install_consul_command() {
 
 	vers=$(git ls-remote --tags ${REPO} | grep "refs/tags.*[0-9]$" | grep -v -e "rc" -e "alpha" -e "beta" | awk '{print $2}' | sed 's/refs\/tags\///g' | sort -V | uniq | tail -1)
 
-	# BDIR="/usr/local/bin"
-	BDIR="${HOME}/.local/bin"
+	USERIDNUMBER=$(grep $(whoami) /etc/passwd | awk -F":" '{print $3}')
+	if [ ${USERIDNUMBER} == 0 ]; then
+		BDIR="/usr/local/bin"
+	else
+		BDIR="${HOME}/.local/bin"
+	fi
 
 	download() {
 		echo "download $1 version"
@@ -945,7 +1156,12 @@ gup_install_traefik_command() {
 	REPO="https://github.com/traefik/traefik"
 	vers=$(git ls-remote --tags ${REPO} | grep "refs/tags.*[0-9]$" | grep -v -e "rc" -e "alpha" -e "beta" | awk '{print $2}' | sed 's/refs\/tags\///' | sort -V | uniq | tail -1)
 
-	BDIR=${HOME}/.local/bin
+	USERIDNUMBER=$(grep $(whoami) /etc/passwd | awk -F":" '{print $3}')
+	if [ ${USERIDNUMBER} == 0 ]; then
+		BDIR="/usr/local/bin"
+	else
+		BDIR="${HOME}/.local/bin"
+	fi
 
 	function download(){
 			echo "download $1 version"
@@ -1004,14 +1220,18 @@ gup_install_pgcat_command() {
 }
 
 # :command.function
-gup_install_loki_command() {
-	# src/install_loki_command.sh
-	APP="loki"
-	REPO="https://github.com/grafana/loki"
+gup_install_promtail_command() {
+	# src/install_promtail_command.sh
+	APP="promtail"
+	REPO="https://github.com/grafana/promtail"
 	vers=$(git ls-remote --tags ${REPO} | grep "refs/tags.*[0-9]$" | grep -v -e "helm" | awk '{print $2}' | sed 's/refs\/tags\///' | sort -V | uniq | tail -1)
 
-	BDIR="/usr/local/bin"
-	BDIR="${HOME}/.local/bin"
+	USERIDNUMBER=$(grep $(whoami) /etc/passwd | awk -F":" '{print $3}')
+	if [ ${USERIDNUMBER} == 0 ]; then
+		BDIR="/usr/local/bin"
+	else
+		BDIR="${HOME}/.local/bin"
+	fi
 
 	download() {
 			echo "download $1 version"
@@ -1026,6 +1246,38 @@ gup_install_loki_command() {
 			rm -rf /tmp/${APP}_${vers} /tmp/${FN}
 	}
 
+	config() {
+		sudo mkdir /etc/promtail
+	cat <<-_EOF_ | sudo tee /etc/promtail/promtail-config.yml > /dev/null
+	server:
+		http_listen_port: 9080
+		grpc_listen_port: 0
+	positions:
+		filename: /tmp/positions.yaml
+	clients:
+		- url: http://localhost:3100/loki/api/v1/push
+	scrape_configs:
+		- job_name: syslog
+			syslog:
+				listen_address: 0.0.0.0:1514
+				labels:
+					job: syslog
+			relabel_configs:
+				- source_labels: [__syslog_message_hostname]
+					target_label: host
+				- source_labels: [__syslog_message_hostname]
+					target_label: hostname
+				- source_labels: [__syslog_message_severity]
+					target_label: level
+				- source_labels: [__syslog_message_app_name]
+					target_label: application
+				- source_labels: [__syslog_message_facility]
+					target_label: facility
+				- source_labels: [__syslog_connection_hostname]
+					target_label: connection_hostname
+	_EOF_
+	}
+
 	# download new
 	if [ -z $(which ${APP}) ]; then
 		download new
@@ -1038,14 +1290,116 @@ gup_install_loki_command() {
 }
 
 # :command.function
+gup_install_loki_command() {
+	# src/install_loki_command.sh
+	APP="loki"
+	REPO="https://github.com/grafana/loki"
+	vers=$(git ls-remote --tags ${REPO} | grep "refs/tags.*[0-9]$" | grep -v -e "helm" | awk '{print $2}' | sed 's/refs\/tags\///' | sort -V | uniq | tail -1)
+
+	USERIDNUMBER=$(grep $(whoami) /etc/passwd | awk -F":" '{print $3}')
+	if [ ${USERIDNUMBER} == 0 ]; then
+		BDIR="/usr/local/bin"
+	else
+		BDIR="${HOME}/.local/bin"
+	fi
+
+	download() {
+			echo "download $1 version"
+			echo "installing ${vers}"
+			FN=${APP}-linux-amd64.zip
+			rm -rf /tmp/${APP}_${vers} /tmp/${FN}
+			wget -qc ${REPO}/releases/download/${vers}/${FN} -O /tmp/${FN}
+			mkdir -p /tmp/${APP}_${vers}
+			unzip /tmp/${FN} -d /tmp/${APP}_${vers}
+			rm -f ${BDIR}/${APP}
+			install /tmp/${APP}_${vers}/${APP}-linux-amd64 ${BDIR}/${APP}
+			rm -rf /tmp/${APP}_${vers} /tmp/${FN}
+	}
+
+	config() {
+		sudo mkdir /etc/loki
+	cat <<-_EOF_ | sudo tee /etc/loki/loki-config.yml > /dev/null
+	auth_enabled: false
+	server:
+		http_listen_port: 3100
+	ingester:
+		lifecycler:
+			address: 127.0.0.1
+			ring:
+				kvstore:
+					store: inmemory
+				replication_factor: 1
+			final_sleep: 0s
+		chunk_idle_period: 5m
+		chunk_retain_period: 30s
+	schema_config:
+		configs:
+		- from: 2020-05-15
+			store: boltdb
+			object_store: filesystem
+			schema: v11
+			index:
+				prefix: index_
+				period: 168h
+	storage_config:
+		boltdb:
+			directory: /tmp/loki/index
+		filesystem:
+			directory: /tmp/loki/chunks
+	limits_config:
+		enforce_metric_name: false
+		reject_old_samples: true
+		reject_old_samples_max_age: 168h
+		max_entries_limit_per_query: 500000
+	# By default, Loki will send anonymous, but uniquely-identifiable usage and configuration
+	# analytics to Grafana Labs. These statistics are sent to https://stats.grafana.org/
+	#
+	# Statistics help us better understand how Loki is used, and they show us performance
+	# levels for most users. This helps us prioritize features and documentation.
+	# For more information on what's sent, look at
+	# https://github.com/grafana/loki/blob/main/pkg/usagestats/stats.go
+	# Refer to the buildReport method to see what goes into a report.
+	#
+	# If you would like to disable reporting, uncomment the following lines:
+	#analytics:
+	#  reporting_enabled: false
+	_EOF_
+	}
+
+	# download new
+	if [ -z $(which ${APP}) ]; then
+		download new
+		config
+	else
+		APPBIN=$(which ${APP})
+		APPVER=$(${APPBIN} --version | grep -i ^${APP} | awk '{print $3}')
+		[ "${APPVER}" = "$(echo $vers | sed 's/^v//')" ] && echo "${APP} version is current" || download ${vers}
+		config
+	fi
+
+}
+
+# :command.function
+gup_install_grafana_command() {
+	# src/install_grafana_command.sh
+	sudo wget https://packages.grafana.com/gpg.key -O /etc/apt/trusted.gpg.d/grafana.gpg.asc
+	echo "deb https://packages.grafana.com/oss/deb stable main" | sudo tee /etc/apt/sources.list.d/grafana.list
+	sudo apt update -y && sudo apt install -y grafana && sudo systemctl enable grafana-server
+}
+
+# :command.function
 gup_install_prometheus_command() {
 	# src/install_prometheus_command.sh
 	APP="prometheus"
 	REPO="https://github.com/prometheus/prometheus"
 	vers=$(git ls-remote --tags ${REPO} | grep "refs/tags.*[0-9]$" | grep -v -e rc -e alpha -e beta | awk '{print $2}' | sed 's/refs\/tags\///' | sort -V | uniq | tail -1)
 
-	BDIR="/usr/local/bin"
-	BDIR="${HOME}/.local/bin"
+	USERIDNUMBER=$(grep $(whoami) /etc/passwd | awk -F":" '{print $3}')
+	if [ ${USERIDNUMBER} == 0 ]; then
+		BDIR="/usr/local/bin"
+	else
+		BDIR="${HOME}/.local/bin"
+	fi
 
 	download() {
 			echo "download $1 version"
@@ -1114,8 +1468,12 @@ gup_install_postgres_exporter_command() {
 	REPO="https://github.com/prometheus-community/postgres_exporter"
 	vers=$(git ls-remote --tags ${REPO} | grep "refs/tags.*[0-9]$" | grep -v -e rc -e alpha -e beta | awk '{print $2}' | sed 's/refs\/tags\///' | sort -V | uniq | tail -1)
 
-	BDIR="/usr/local/bin"
-	BDIR="${HOME}/.local/bin"
+	USERIDNUMBER=$(grep $(whoami) /etc/passwd | awk -F":" '{print $3}')
+	if [ ${USERIDNUMBER} == 0 ]; then
+		BDIR="/usr/local/bin"
+	else
+		BDIR="${HOME}/.local/bin"
+	fi
 
 	download() {
 			echo "download $1 version"
@@ -1214,7 +1572,12 @@ gup_install_gotop_command() {
 	REPO="https://github.com/xxxserxxx/gotop"
 	vers=$(git ls-remote --tags ${REPO} | grep "refs/tags.*[0-9]$" | awk '{print $2}' | sed 's/refs\/tags\///' | sort -V | uniq | tail -1)
 
-	BDIR="${HOME}/.local/bin"
+	USERIDNUMBER=$(grep $(whoami) /etc/passwd | awk -F":" '{print $3}')
+	if [ ${USERIDNUMBER} == 0 ]; then
+		BDIR="/usr/local/bin"
+	else
+		BDIR="${HOME}/.local/bin"
+	fi
 
 	function download() {
 			echo "download $1 version"
@@ -1388,6 +1751,52 @@ gup_remove_neovim_command() {
 	rm -rf ${HOME}/.local/nvim ${HOME}/.local/share/nvim ${HOME}/.local/state/nvim ${HOME}/.cache/nvim ${HOME}/.config/nvim ${HOME}/.local/bin/nvim
 }
 
+# :command.function
+gup_systemd_promtail_command() {
+	# src/systemd_promtail_command.sh
+	function servicefile() {
+	cat <<-_EOF_ | sudo tee /etc/systemd/system/promtail.service > /dev/null
+	[Unit]
+	Description=Promtail service
+	After=network.target
+
+	[Service]
+	Type=simple
+	User=root
+	ExecStart=/usr/local/bin/promtail -config.file /etc/promtail/promtail-config.yml
+
+	[Install]
+	WantedBy=multi-user.target
+	_EOF_
+	}
+
+	servicefile
+	sudo systemctl daemon-reload
+}
+
+# :command.function
+gup_systemd_loki_command() {
+	# src/systemd_loki_command.sh
+	function servicefile() {
+	cat <<-_EOF_ | sudo tee /etc/systemd/system/loki.service > /dev/null
+	[Unit]
+	Description=Loki service
+	After=network.target
+
+	[Service]
+	Type=simple
+	User=root
+	ExecStart=/usr/local/bin/loki -config.file /etc/loki/loki-config.yml
+
+	[Install]
+	WantedBy=multi-user.target
+	_EOF_
+	}
+
+	servicefile
+	sudo systemctl daemon-reload
+}
+
 # :command.parse_requirements
 parse_requirements() {
 	# :command.fixed_flags_filter
@@ -1428,6 +1837,13 @@ parse_requirements() {
 			action="remove"
 			shift
 			gup_remove_parse_requirements "$@"
+			shift $#
+			;;
+
+		systemd)
+			action="systemd"
+			shift
+			gup_systemd_parse_requirements "$@"
 			shift $#
 			;;
 
@@ -1491,6 +1907,13 @@ gup_install_parse_requirements() {
 	case $action in
 		-*) ;;
 
+		gup)
+			action="gup"
+			shift
+			gup_install_gup_parse_requirements "$@"
+			shift $#
+			;;
+
 		caddy2)
 			action="caddy2"
 			shift
@@ -1540,10 +1963,24 @@ gup_install_parse_requirements() {
 			shift $#
 			;;
 
+		promtail)
+			action="promtail"
+			shift
+			gup_install_promtail_parse_requirements "$@"
+			shift $#
+			;;
+
 		loki)
 			action="loki"
 			shift
 			gup_install_loki_parse_requirements "$@"
+			shift $#
+			;;
+
+		grafana)
+			action="grafana"
+			shift
+			gup_install_grafana_parse_requirements "$@"
 			shift $#
 			;;
 
@@ -1636,6 +2073,50 @@ gup_install_parse_requirements() {
 			;;
 
 	esac
+
+	# :command.parse_requirements_while
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+
+			-?*)
+				printf "invalid option: %s\n" "$key" >&2
+				exit 1
+				;;
+
+			*)
+				# :command.parse_requirements_case
+				# :command.parse_requirements_case_simple
+				printf "invalid argument: %s\n" "$key" >&2
+				exit 1
+
+				;;
+
+		esac
+	done
+
+}
+
+# :command.parse_requirements
+gup_install_gup_parse_requirements() {
+	# :command.fixed_flags_filter
+	while [[ $# -gt 0 ]]; do
+		case "${1:-}" in
+			--help | -h)
+				long_usage=yes
+				gup_install_gup_usage
+				exit
+				;;
+
+			*)
+				break
+				;;
+
+		esac
+	done
+
+	# :command.command_filter
+	action="install gup"
 
 	# :command.parse_requirements_while
 	while [[ $# -gt 0 ]]; do
@@ -1969,6 +2450,50 @@ gup_install_pgcat_parse_requirements() {
 }
 
 # :command.parse_requirements
+gup_install_promtail_parse_requirements() {
+	# :command.fixed_flags_filter
+	while [[ $# -gt 0 ]]; do
+		case "${1:-}" in
+			--help | -h)
+				long_usage=yes
+				gup_install_promtail_usage
+				exit
+				;;
+
+			*)
+				break
+				;;
+
+		esac
+	done
+
+	# :command.command_filter
+	action="install promtail"
+
+	# :command.parse_requirements_while
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+
+			-?*)
+				printf "invalid option: %s\n" "$key" >&2
+				exit 1
+				;;
+
+			*)
+				# :command.parse_requirements_case
+				# :command.parse_requirements_case_simple
+				printf "invalid argument: %s\n" "$key" >&2
+				exit 1
+
+				;;
+
+		esac
+	done
+
+}
+
+# :command.parse_requirements
 gup_install_loki_parse_requirements() {
 	# :command.fixed_flags_filter
 	while [[ $# -gt 0 ]]; do
@@ -1988,6 +2513,50 @@ gup_install_loki_parse_requirements() {
 
 	# :command.command_filter
 	action="install loki"
+
+	# :command.parse_requirements_while
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+
+			-?*)
+				printf "invalid option: %s\n" "$key" >&2
+				exit 1
+				;;
+
+			*)
+				# :command.parse_requirements_case
+				# :command.parse_requirements_case_simple
+				printf "invalid argument: %s\n" "$key" >&2
+				exit 1
+
+				;;
+
+		esac
+	done
+
+}
+
+# :command.parse_requirements
+gup_install_grafana_parse_requirements() {
+	# :command.fixed_flags_filter
+	while [[ $# -gt 0 ]]; do
+		case "${1:-}" in
+			--help | -h)
+				long_usage=yes
+				gup_install_grafana_usage
+				exit
+				;;
+
+			*)
+				break
+				;;
+
+		esac
+	done
+
+	# :command.command_filter
+	action="install grafana"
 
 	# :command.parse_requirements_while
 	while [[ $# -gt 0 ]]; do
@@ -2679,6 +3248,168 @@ gup_remove_neovim_parse_requirements() {
 
 }
 
+# :command.parse_requirements
+gup_systemd_parse_requirements() {
+	# :command.fixed_flags_filter
+	while [[ $# -gt 0 ]]; do
+		case "${1:-}" in
+			--help | -h)
+				long_usage=yes
+				gup_systemd_usage
+				exit
+				;;
+
+			*)
+				break
+				;;
+
+		esac
+	done
+
+	# :command.command_filter
+	action=${1:-}
+
+	case $action in
+		-*) ;;
+
+		promtail)
+			action="promtail"
+			shift
+			gup_systemd_promtail_parse_requirements "$@"
+			shift $#
+			;;
+
+		loki)
+			action="loki"
+			shift
+			gup_systemd_loki_parse_requirements "$@"
+			shift $#
+			;;
+
+		# :command.command_fallback
+		"")
+			gup_systemd_usage >&2
+			exit 1
+			;;
+
+		*)
+			printf "invalid command: %s\n" "$action" >&2
+			exit 1
+			;;
+
+	esac
+
+	# :command.parse_requirements_while
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+
+			-?*)
+				printf "invalid option: %s\n" "$key" >&2
+				exit 1
+				;;
+
+			*)
+				# :command.parse_requirements_case
+				# :command.parse_requirements_case_simple
+				printf "invalid argument: %s\n" "$key" >&2
+				exit 1
+
+				;;
+
+		esac
+	done
+
+}
+
+# :command.parse_requirements
+gup_systemd_promtail_parse_requirements() {
+	# :command.fixed_flags_filter
+	while [[ $# -gt 0 ]]; do
+		case "${1:-}" in
+			--help | -h)
+				long_usage=yes
+				gup_systemd_promtail_usage
+				exit
+				;;
+
+			*)
+				break
+				;;
+
+		esac
+	done
+
+	# :command.command_filter
+	action="systemd promtail"
+
+	# :command.parse_requirements_while
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+
+			-?*)
+				printf "invalid option: %s\n" "$key" >&2
+				exit 1
+				;;
+
+			*)
+				# :command.parse_requirements_case
+				# :command.parse_requirements_case_simple
+				printf "invalid argument: %s\n" "$key" >&2
+				exit 1
+
+				;;
+
+		esac
+	done
+
+}
+
+# :command.parse_requirements
+gup_systemd_loki_parse_requirements() {
+	# :command.fixed_flags_filter
+	while [[ $# -gt 0 ]]; do
+		case "${1:-}" in
+			--help | -h)
+				long_usage=yes
+				gup_systemd_loki_usage
+				exit
+				;;
+
+			*)
+				break
+				;;
+
+		esac
+	done
+
+	# :command.command_filter
+	action="systemd loki"
+
+	# :command.parse_requirements_while
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+
+			-?*)
+				printf "invalid option: %s\n" "$key" >&2
+				exit 1
+				;;
+
+			*)
+				# :command.parse_requirements_case
+				# :command.parse_requirements_case_simple
+				printf "invalid argument: %s\n" "$key" >&2
+				exit 1
+
+				;;
+
+		esac
+	done
+
+}
+
 # :command.initialize
 initialize() {
 	version="0.1.0"
@@ -2698,6 +3429,7 @@ run() {
 
 	case "$action" in
 		"install") gup_install_command ;;
+		"install gup") gup_install_gup_command ;;
 		"install caddy2") gup_install_caddy2_command ;;
 		"install consul") gup_install_consul_command ;;
 		"install docker-compose") gup_install_docker_compose_command ;;
@@ -2705,7 +3437,9 @@ run() {
 		"install minikube") gup_install_minikube_command ;;
 		"install traefik") gup_install_traefik_command ;;
 		"install pgcat") gup_install_pgcat_command ;;
+		"install promtail") gup_install_promtail_command ;;
 		"install loki") gup_install_loki_command ;;
+		"install grafana") gup_install_grafana_command ;;
 		"install prometheus") gup_install_prometheus_command ;;
 		"install blackbox_exporter") gup_install_blackbox_exporter_command ;;
 		"install postgres_exporter") gup_install_postgres_exporter_command ;;
@@ -2720,6 +3454,9 @@ run() {
 		"remove") gup_remove_command ;;
 		"remove consul") gup_remove_consul_command ;;
 		"remove neovim") gup_remove_neovim_command ;;
+		"systemd") gup_systemd_command ;;
+		"systemd promtail") gup_systemd_promtail_command ;;
+		"systemd loki") gup_systemd_loki_command ;;
 	esac
 }
 

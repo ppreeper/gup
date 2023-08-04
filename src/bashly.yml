@@ -10,42 +10,30 @@ commands:
     commands:
       - name: gup
         help: install gup command
+      - name: blackbox_exporter
+        help: blackbox_exporter
       - name: caddy2
         help: caddy2 web server
       - name: consul
         help: consul
       - name: docker-compose
         help: docker-compose
-      - name: kubectl
-        help: kubectl
-      - name: minikube
-        help: minikube
-      - name: traefik
-        help: traefik
-      - name: pgcat
-        help: pgcat postgresql pooler
-      - name: promtail
-        help: promtail
-      - name: loki
-        help: loki
-      - name: grafana
-        help: grafana
-      - name: prometheus
-        help: prometheus
-      - name: blackbox_exporter
-        help: blackbox_exporter
-      - name: postgres_exporter
-        help: postgres_exporter
-      - name: snmp_exporter
-        help: snmp_exporter
       - name: go
         help: go programming language
       - name: gotop
         help: gotop terminal based graphical activity monitor
-      - name: oda
-        help: odoo administration tool
+      - name: grafana
+        help: grafana
       - name: helix
         help: helix text editor
+      - name: kubectl
+        help: kubectl
+      - name: loki
+        help: loki
+      - name: minikube
+        help: minikube
+      - name: neovim
+        help: NeoVIM
       - name: nerd-fonts
         help: nerd-fonts
         args:
@@ -53,8 +41,22 @@ commands:
             required: true
             repeatable: true
             allowed: [Ubuntu, UbuntuMono, Hack, FiraMono, Noto]
-      - name: neovim
-        help: NeoVIM
+      - name: oda
+        help: odoo administration tool
+      - name: pgcat
+        help: pgcat postgresql pooler
+      - name: postgres_exporter
+        help: postgres_exporter
+      - name: prometheus
+        help: prometheus
+      - name: promtail
+        help: promtail
+      - name: snmp_exporter
+        help: snmp_exporter
+      - name: traefik
+        help: traefik
+      - name: update
+        help: update script for apt update
       - name: wkhtmltopdf
         help: wkhtmltopdf
   - name: remove
@@ -71,7 +73,7 @@ commands:
     examples:
       - gup install neovim
     commands:
-      - name: promtail
-        help: promtail
       - name: loki
         help: loki
+      - name: promtail
+        help: promtail

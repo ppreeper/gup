@@ -95,6 +95,7 @@ gup_install_usage() {
 	printf "  %s   traefik\n" "traefik          "
 	printf "  %s   update script for apt update\n" "update           "
 	printf "  %s   wkhtmltopdf\n" "wkhtmltopdf      "
+	printf "  %s   A portable, performant script to make rolling ZFS snapshots easy\n" "zfsnap           "
 	echo
 
 	# :command.long_usage
@@ -776,6 +777,35 @@ gup_install_wkhtmltopdf_usage() {
 	printf "%s\n" "Usage:"
 	printf "  gup install wkhtmltopdf\n"
 	printf "  gup install wkhtmltopdf --help | -h\n"
+	echo
+
+	# :command.long_usage
+	if [[ -n $long_usage ]]; then
+		printf "%s\n" "Options:"
+
+		# :command.usage_fixed_flags
+		printf "  %s\n" "--help, -h"
+		printf "    Show this help\n"
+		echo
+
+	fi
+}
+
+# :command.usage
+gup_install_zfsnap_usage() {
+	if [[ -n $long_usage ]]; then
+		printf "gup install zfsnap - A portable, performant script to make rolling ZFS snapshots easy\n"
+		echo
+
+	else
+		printf "gup install zfsnap - A portable, performant script to make rolling ZFS snapshots easy\n"
+		echo
+
+	fi
+
+	printf "%s\n" "Usage:"
+	printf "  gup install zfsnap\n"
+	printf "  gup install zfsnap --help | -h\n"
 	echo
 
 	# :command.long_usage
@@ -1788,6 +1818,27 @@ gup_install_wkhtmltopdf_command() {
 }
 
 # :command.function
+gup_install_zfsnap_command() {
+	# src/install_zfsnap_command.sh
+	APP="zfsnap"
+	REPO="https://github.com/zfsnap/zfsnap"
+	BREPO="https://raw.githubusercontent.com/zfsnap/zfsnap"
+	vers=$(git ls-remote --tags ${REPO} | grep "refs/tags/v2.*[0-9]$" | grep -v -e rc -e alpha | awk '{print $2}' | sed 's/refs\/tags\///' | sort -V | uniq | tail -1)
+
+	sudo mkdir -p /usr/share/zfsnap/commands
+	sudo wget -qc -O /usr/share/zfsnap/core.sh "${BREPO}/${vers}/share/zfsnap/core.sh"
+	sudo wget -qc -O /usr/share/zfsnap/commands/destroy.sh "${BREPO}/${vers}/share/zfsnap/commands/destroy.sh"
+	sudo wget -qc -O /usr/share/zfsnap/commands/recurseback.sh "${BREPO}/${vers}/share/zfsnap/commands/recurseback.sh"
+	sudo wget -qc -O /usr/share/zfsnap/commands/snapshot.sh "${BREPO}/${vers}/share/zfsnap/commands/snapshot.sh"
+	sudo wget -qc -O /usr/sbin/zfsnap "${BREPO}/${vers}/sbin/zfsnap.sh"
+	sudo chmod +x /usr/share/zfsnap/core.sh
+	sudo chmod +x /usr/share/zfsnap/commands/destroy.sh
+	sudo chmod +x /usr/share/zfsnap/commands/recurseback.sh
+	sudo chmod +x /usr/share/zfsnap/commands/snapshot.sh
+	sudo chmod +x /usr/sbin/zfsnap
+}
+
+# :command.function
 gup_remove_consul_command() {
 	# src/remove_consul_command.sh
 	APP=$(which consul)
@@ -2114,6 +2165,13 @@ gup_install_parse_requirements() {
 			action="wkhtmltopdf"
 			shift
 			gup_install_wkhtmltopdf_parse_requirements "$@"
+			shift $#
+			;;
+
+		zfsnap)
+			action="zfsnap"
+			shift
+			gup_install_zfsnap_parse_requirements "$@"
 			shift $#
 			;;
 
@@ -3187,6 +3245,50 @@ gup_install_wkhtmltopdf_parse_requirements() {
 }
 
 # :command.parse_requirements
+gup_install_zfsnap_parse_requirements() {
+	# :command.fixed_flags_filter
+	while [[ $# -gt 0 ]]; do
+		case "${1:-}" in
+			--help | -h)
+				long_usage=yes
+				gup_install_zfsnap_usage
+				exit
+				;;
+
+			*)
+				break
+				;;
+
+		esac
+	done
+
+	# :command.command_filter
+	action="install zfsnap"
+
+	# :command.parse_requirements_while
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+
+			-?*)
+				printf "invalid option: %s\n" "$key" >&2
+				exit 1
+				;;
+
+			*)
+				# :command.parse_requirements_case
+				# :command.parse_requirements_case_simple
+				printf "invalid argument: %s\n" "$key" >&2
+				exit 1
+
+				;;
+
+		esac
+	done
+
+}
+
+# :command.parse_requirements
 gup_remove_parse_requirements() {
 	# :command.fixed_flags_filter
 	while [[ $# -gt 0 ]]; do
@@ -3552,6 +3654,7 @@ run() {
 		"install traefik") gup_install_traefik_command ;;
 		"install update") gup_install_update_command ;;
 		"install wkhtmltopdf") gup_install_wkhtmltopdf_command ;;
+		"install zfsnap") gup_install_zfsnap_command ;;
 		"remove") gup_remove_command ;;
 		"remove consul") gup_remove_consul_command ;;
 		"remove neovim") gup_remove_neovim_command ;;

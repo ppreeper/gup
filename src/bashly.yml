@@ -59,6 +59,8 @@ commands:
         help: update script for apt update
       - name: wkhtmltopdf
         help: wkhtmltopdf
+      - name: zfsnap
+        help: A portable, performant script to make rolling ZFS snapshots easy
   - name: remove
     help: remove an application and settings
     examples:

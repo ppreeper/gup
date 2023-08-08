@@ -57,6 +57,8 @@ commands:
         help: traefik
       - name: update
         help: update script for apt update
+      - name: vagrant
+        help: HashiCorp Vagrant
       - name: wkhtmltopdf
         help: wkhtmltopdf
       - name: zfsnap

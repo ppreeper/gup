@@ -94,6 +94,7 @@ gup_install_usage() {
 	printf "  %s   snmp_exporter\n" "snmp_exporter    "
 	printf "  %s   traefik\n" "traefik          "
 	printf "  %s   update script for apt update\n" "update           "
+	printf "  %s   HashiCorp Vagrant\n" "vagrant          "
 	printf "  %s   wkhtmltopdf\n" "wkhtmltopdf      "
 	printf "  %s   A portable, performant script to make rolling ZFS snapshots easy\n" "zfsnap           "
 	echo
@@ -748,6 +749,35 @@ gup_install_update_usage() {
 	printf "%s\n" "Usage:"
 	printf "  gup install update\n"
 	printf "  gup install update --help | -h\n"
+	echo
+
+	# :command.long_usage
+	if [[ -n $long_usage ]]; then
+		printf "%s\n" "Options:"
+
+		# :command.usage_fixed_flags
+		printf "  %s\n" "--help, -h"
+		printf "    Show this help\n"
+		echo
+
+	fi
+}
+
+# :command.usage
+gup_install_vagrant_usage() {
+	if [[ -n $long_usage ]]; then
+		printf "gup install vagrant - HashiCorp Vagrant\n"
+		echo
+
+	else
+		printf "gup install vagrant - HashiCorp Vagrant\n"
+		echo
+
+	fi
+
+	printf "%s\n" "Usage:"
+	printf "  gup install vagrant\n"
+	printf "  gup install vagrant --help | -h\n"
 	echo
 
 	# :command.long_usage
@@ -1787,6 +1817,15 @@ gup_install_update_command() {
 }
 
 # :command.function
+gup_install_vagrant_command() {
+	# src/install_vagrant_command.sh
+	lsb=$(grep VERSION_CODENAME /etc/os-release | awk -F'=' '{print $2}')
+	wget -O- https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
+	echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com ${lsb} main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
+	sudo apt update -y && sudo apt install vagrant
+}
+
+# :command.function
 gup_install_wkhtmltopdf_command() {
 	# src/install_wkhtmltopdf_command.sh
 	APP="wkhtmltopdf"
@@ -2158,6 +2197,13 @@ gup_install_parse_requirements() {
 			action="update"
 			shift
 			gup_install_update_parse_requirements "$@"
+			shift $#
+			;;
+
+		vagrant)
+			action="vagrant"
+			shift
+			gup_install_vagrant_parse_requirements "$@"
 			shift $#
 			;;
 
@@ -3201,6 +3247,50 @@ gup_install_update_parse_requirements() {
 }
 
 # :command.parse_requirements
+gup_install_vagrant_parse_requirements() {
+	# :command.fixed_flags_filter
+	while [[ $# -gt 0 ]]; do
+		case "${1:-}" in
+			--help | -h)
+				long_usage=yes
+				gup_install_vagrant_usage
+				exit
+				;;
+
+			*)
+				break
+				;;
+
+		esac
+	done
+
+	# :command.command_filter
+	action="install vagrant"
+
+	# :command.parse_requirements_while
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+
+			-?*)
+				printf "invalid option: %s\n" "$key" >&2
+				exit 1
+				;;
+
+			*)
+				# :command.parse_requirements_case
+				# :command.parse_requirements_case_simple
+				printf "invalid argument: %s\n" "$key" >&2
+				exit 1
+
+				;;
+
+		esac
+	done
+
+}
+
+# :command.parse_requirements
 gup_install_wkhtmltopdf_parse_requirements() {
 	# :command.fixed_flags_filter
 	while [[ $# -gt 0 ]]; do
@@ -3653,6 +3743,7 @@ run() {
 		"install snmp_exporter") gup_install_snmp_exporter_command ;;
 		"install traefik") gup_install_traefik_command ;;
 		"install update") gup_install_update_command ;;
+		"install vagrant") gup_install_vagrant_command ;;
 		"install wkhtmltopdf") gup_install_wkhtmltopdf_command ;;
 		"install zfsnap") gup_install_zfsnap_command ;;
 		"remove") gup_remove_command ;;

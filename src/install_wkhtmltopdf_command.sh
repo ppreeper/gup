@@ -12,7 +12,7 @@ function download() {
     FN="wkhtmltox_${vers}.${CN}_amd64.deb"
     sudo rm -f /tmp/${FN}
     wget -qc ${REPO}/releases/download/${vers}/${FN} -O /tmp/${FN}
-    sudo apt install /tmp/${FN}
+    sudo apt install -y /tmp/${FN}
     sudo rm -f /tmp/${FN}
 }
 

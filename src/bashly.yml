@@ -36,8 +36,8 @@ commands:
         help: minikube
       - name: neovim
         help: NeoVIM
-      - name: nerd-fonts
-        help: nerd-fonts
+      - name: nerdfonts
+        help: nerdfonts installer
         args:
           - name: font
             required: true

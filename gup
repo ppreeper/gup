@@ -86,7 +86,7 @@ gup_install_usage() {
 	printf "  %s   loki\n" "loki             "
 	printf "  %s   minikube\n" "minikube         "
 	printf "  %s   NeoVIM\n" "neovim           "
-	printf "  %s   nerd-fonts\n" "nerd-fonts       "
+	printf "  %s   nerdfonts installer\n" "nerdfonts        "
 	printf "  %s   odoo administration tool\n" "oda              "
 	printf "  %s   pgcat postgresql pooler\n" "pgcat            "
 	printf "  %s   postgres_exporter\n" "postgres_exporter"
@@ -524,20 +524,20 @@ gup_install_neovim_usage() {
 }
 
 # :command.usage
-gup_install_nerd_fonts_usage() {
+gup_install_nerdfonts_usage() {
 	if [[ -n $long_usage ]]; then
-		printf "gup install nerd-fonts - nerd-fonts\n"
+		printf "gup install nerdfonts - nerdfonts installer\n"
 		echo
 
 	else
-		printf "gup install nerd-fonts - nerd-fonts\n"
+		printf "gup install nerdfonts - nerdfonts installer\n"
 		echo
 
 	fi
 
 	printf "%s\n" "Usage:"
-	printf "  gup install nerd-fonts FONT...\n"
-	printf "  gup install nerd-fonts --help | -h\n"
+	printf "  gup install nerdfonts FONT...\n"
+	printf "  gup install nerdfonts --help | -h\n"
 	echo
 
 	# :command.long_usage
@@ -1569,8 +1569,8 @@ gup_install_neovim_command() {
 }
 
 # :command.function
-gup_install_nerd_fonts_command() {
-	# src/install_nerd_fonts_command.sh
+gup_install_nerdfonts_command() {
+	# src/install_nerdfonts_command.sh
 	FONTDIR="${HOME}/.local/share/fonts"
 	REPO="https://github.com/ryanoasis/nerd-fonts"
 
@@ -2207,10 +2207,10 @@ gup_install_parse_requirements() {
 			shift $#
 			;;
 
-		nerd-fonts)
-			action="nerd-fonts"
+		nerdfonts)
+			action="nerdfonts"
 			shift
-			gup_install_nerd_fonts_parse_requirements "$@"
+			gup_install_nerdfonts_parse_requirements "$@"
 			shift $#
 			;;
 
@@ -2944,13 +2944,13 @@ gup_install_neovim_parse_requirements() {
 }
 
 # :command.parse_requirements
-gup_install_nerd_fonts_parse_requirements() {
+gup_install_nerdfonts_parse_requirements() {
 	# :command.fixed_flags_filter
 	while [[ $# -gt 0 ]]; do
 		case "${1:-}" in
 			--help | -h)
 				long_usage=yes
-				gup_install_nerd_fonts_usage
+				gup_install_nerdfonts_usage
 				exit
 				;;
 
@@ -2962,7 +2962,7 @@ gup_install_nerd_fonts_parse_requirements() {
 	done
 
 	# :command.command_filter
-	action="install nerd-fonts"
+	action="install nerdfonts"
 
 	# :command.parse_requirements_while
 	while [[ $# -gt 0 ]]; do
@@ -2993,7 +2993,7 @@ gup_install_nerd_fonts_parse_requirements() {
 
 	# :command.required_args_filter
 	if [[ -z ${args['font']+x} ]]; then
-		printf "missing required argument: FONT\nusage: gup install nerd-fonts FONT...\n" >&2
+		printf "missing required argument: FONT\nusage: gup install nerdfonts FONT...\n" >&2
 		exit 1
 	fi
 
@@ -3849,7 +3849,7 @@ run() {
 		"install loki") gup_install_loki_command ;;
 		"install minikube") gup_install_minikube_command ;;
 		"install neovim") gup_install_neovim_command ;;
-		"install nerd-fonts") gup_install_nerd_fonts_command ;;
+		"install nerdfonts") gup_install_nerdfonts_command ;;
 		"install oda") gup_install_oda_command ;;
 		"install pgcat") gup_install_pgcat_command ;;
 		"install postgres_exporter") gup_install_postgres_exporter_command ;;

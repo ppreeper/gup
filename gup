@@ -81,6 +81,7 @@ gup_install_usage() {
 	printf "  %s   gotop terminal based graphical activity monitor\n" "gotop            "
 	printf "  %s   grafana\n" "grafana          "
 	printf "  %s   helix text editor\n" "helix            "
+	printf "  %s   hugo website generator\n" "hugo             "
 	printf "  %s   kubectl\n" "kubectl          "
 	printf "  %s   loki\n" "loki             "
 	printf "  %s   minikube\n" "minikube         "
@@ -363,6 +364,35 @@ gup_install_helix_usage() {
 	printf "%s\n" "Usage:"
 	printf "  gup install helix\n"
 	printf "  gup install helix --help | -h\n"
+	echo
+
+	# :command.long_usage
+	if [[ -n $long_usage ]]; then
+		printf "%s\n" "Options:"
+
+		# :command.usage_fixed_flags
+		printf "  %s\n" "--help, -h"
+		printf "    Show this help\n"
+		echo
+
+	fi
+}
+
+# :command.usage
+gup_install_hugo_usage() {
+	if [[ -n $long_usage ]]; then
+		printf "gup install hugo - hugo website generator\n"
+		echo
+
+	else
+		printf "gup install hugo - hugo website generator\n"
+		echo
+
+	fi
+
+	printf "%s\n" "Usage:"
+	printf "  gup install hugo\n"
+	printf "  gup install hugo --help | -h\n"
 	echo
 
 	# :command.long_usage
@@ -1368,6 +1398,39 @@ gup_install_helix_command() {
 }
 
 # :command.function
+gup_install_hugo_command() {
+	# src/install_hugo_command.sh
+	APP="hugo"
+	REPO="https://github.com/gohugoio/hugo"
+	vers=$(git ls-remote --tags ${REPO} | grep "refs/tags.*[0-9]$" | awk '{print $2}' | sed 's/refs\/tags\///g' | sort -V | uniq | tail -1)
+
+	USERIDNUMBER=$(grep $(whoami) /etc/passwd | awk -F":" '{print $3}')
+	if [ ${USERIDNUMBER} == 0 ]; then
+		BDIR="/usr/local/bin"
+	else
+		BDIR="${HOME}/.local/bin"
+	fi
+
+	function download() {
+			echo "download $1 version"
+			echo "installing ${vers}"
+			V=$(echo ${vers} | sed 's/^v//')
+			FN=${APP}_extended_${V}_Linux-64bit.tar.gz
+			wget -qc ${REPO}/releases/download/${vers}/${FN} -O /tmp/hugo.tar.gz
+			tar -axf /tmp/hugo.tar.gz -C ${BDIR} hugo
+			rm -f /tmp/hugo.tar.gz
+	}
+
+	if [ -z $(which ${APP}) ]; then
+			download new
+	else
+			APPBIN=$(which ${APP})
+			APPVER=$(${APPBIN} version | awk '{print $2}' | awk -F'-' '{print $1}')
+			[ "${APPVER}" = "${vers}" ] && echo "${APP} version is current" || download ${vers}
+	fi
+}
+
+# :command.function
 gup_install_kubectl_command() {
 	# src/install_kubectl_command.sh
 	curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
@@ -2109,6 +2172,13 @@ gup_install_parse_requirements() {
 			shift $#
 			;;
 
+		hugo)
+			action="hugo"
+			shift
+			gup_install_hugo_parse_requirements "$@"
+			shift $#
+			;;
+
 		kubectl)
 			action="kubectl"
 			shift
@@ -2629,6 +2699,50 @@ gup_install_helix_parse_requirements() {
 
 	# :command.command_filter
 	action="install helix"
+
+	# :command.parse_requirements_while
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+
+			-?*)
+				printf "invalid option: %s\n" "$key" >&2
+				exit 1
+				;;
+
+			*)
+				# :command.parse_requirements_case
+				# :command.parse_requirements_case_simple
+				printf "invalid argument: %s\n" "$key" >&2
+				exit 1
+
+				;;
+
+		esac
+	done
+
+}
+
+# :command.parse_requirements
+gup_install_hugo_parse_requirements() {
+	# :command.fixed_flags_filter
+	while [[ $# -gt 0 ]]; do
+		case "${1:-}" in
+			--help | -h)
+				long_usage=yes
+				gup_install_hugo_usage
+				exit
+				;;
+
+			*)
+				break
+				;;
+
+		esac
+	done
+
+	# :command.command_filter
+	action="install hugo"
 
 	# :command.parse_requirements_while
 	while [[ $# -gt 0 ]]; do
@@ -3730,6 +3844,7 @@ run() {
 		"install gotop") gup_install_gotop_command ;;
 		"install grafana") gup_install_grafana_command ;;
 		"install helix") gup_install_helix_command ;;
+		"install hugo") gup_install_hugo_command ;;
 		"install kubectl") gup_install_kubectl_command ;;
 		"install loki") gup_install_loki_command ;;
 		"install minikube") gup_install_minikube_command ;;

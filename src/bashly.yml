@@ -26,6 +26,8 @@ commands:
         help: grafana
       - name: helix
         help: helix text editor
+      - name: hugo
+        help: hugo website generator
       - name: kubectl
         help: kubectl
       - name: loki

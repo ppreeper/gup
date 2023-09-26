@@ -84,6 +84,7 @@ gup_install_usage() {
 	printf "  %s   hugo website generator\n" "hugo             "
 	printf "  %s   kubectl\n" "kubectl          "
 	printf "  %s   loki\n" "loki             "
+	printf "  %s   A lightweight text editor written in Lua\n" "litexl           "
 	printf "  %s   minikube\n" "minikube         "
 	printf "  %s   NeoVIM\n" "neovim           "
 	printf "  %s   nerdfonts installer\n" "nerdfonts        "
@@ -451,6 +452,35 @@ gup_install_loki_usage() {
 	printf "%s\n" "Usage:"
 	printf "  gup install loki\n"
 	printf "  gup install loki --help | -h\n"
+	echo
+
+	# :command.long_usage
+	if [[ -n $long_usage ]]; then
+		printf "%s\n" "Options:"
+
+		# :command.usage_fixed_flags
+		printf "  %s\n" "--help, -h"
+		printf "    Show this help\n"
+		echo
+
+	fi
+}
+
+# :command.usage
+gup_install_litexl_usage() {
+	if [[ -n $long_usage ]]; then
+		printf "gup install litexl - A lightweight text editor written in Lua\n"
+		echo
+
+	else
+		printf "gup install litexl - A lightweight text editor written in Lua\n"
+		echo
+
+	fi
+
+	printf "%s\n" "Usage:"
+	printf "  gup install litexl\n"
+	printf "  gup install litexl --help | -h\n"
 	echo
 
 	# :command.long_usage
@@ -1530,6 +1560,28 @@ gup_install_loki_command() {
 }
 
 # :command.function
+gup_install_litexl_command() {
+	# src/install_litexl_command.sh
+	APP="litexl"
+	REPO="https://github.com/lite-xl/lite-xl"
+	vers=$(git ls-remote --tags ${REPO} | grep "refs/tags.*[0-9]$" | awk '{print $2}' | sed 's/refs\/tags\///' | grep "^v" | sort -V | uniq | tail -1)
+
+	BDIR=${HOME}/.local/bin
+
+	function download() {
+			echo "download $1 version"
+			echo "installing ${vers}"
+			mkdir -p ${BDIR}
+			FN=LiteXL-${vers}-addons-x86_64.AppImage
+			wget -qc ${REPO}/releases/download/${vers}/LiteXL-v2.1.1-addons-x86_64.AppImage -O ${BDIR}/litexl
+			chmod +x ${BDIR}/litexl
+	}
+
+	download ${vers}
+
+}
+
+# :command.function
 gup_install_minikube_command() {
 	# src/install_minikube_command.sh
 	curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
@@ -2193,6 +2245,13 @@ gup_install_parse_requirements() {
 			shift $#
 			;;
 
+		litexl)
+			action="litexl"
+			shift
+			gup_install_litexl_parse_requirements "$@"
+			shift $#
+			;;
+
 		minikube)
 			action="minikube"
 			shift
@@ -2831,6 +2890,50 @@ gup_install_loki_parse_requirements() {
 
 	# :command.command_filter
 	action="install loki"
+
+	# :command.parse_requirements_while
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+
+			-?*)
+				printf "invalid option: %s\n" "$key" >&2
+				exit 1
+				;;
+
+			*)
+				# :command.parse_requirements_case
+				# :command.parse_requirements_case_simple
+				printf "invalid argument: %s\n" "$key" >&2
+				exit 1
+
+				;;
+
+		esac
+	done
+
+}
+
+# :command.parse_requirements
+gup_install_litexl_parse_requirements() {
+	# :command.fixed_flags_filter
+	while [[ $# -gt 0 ]]; do
+		case "${1:-}" in
+			--help | -h)
+				long_usage=yes
+				gup_install_litexl_usage
+				exit
+				;;
+
+			*)
+				break
+				;;
+
+		esac
+	done
+
+	# :command.command_filter
+	action="install litexl"
 
 	# :command.parse_requirements_while
 	while [[ $# -gt 0 ]]; do
@@ -3847,6 +3950,7 @@ run() {
 		"install hugo") gup_install_hugo_command ;;
 		"install kubectl") gup_install_kubectl_command ;;
 		"install loki") gup_install_loki_command ;;
+		"install litexl") gup_install_litexl_command ;;
 		"install minikube") gup_install_minikube_command ;;
 		"install neovim") gup_install_neovim_command ;;
 		"install nerdfonts") gup_install_nerdfonts_command ;;

@@ -32,6 +32,8 @@ commands:
         help: kubectl
       - name: loki
         help: loki
+      - name: litexl
+        help: A lightweight text editor written in Lua
       - name: minikube
         help: minikube
       - name: neovim

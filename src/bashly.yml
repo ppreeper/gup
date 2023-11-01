@@ -47,6 +47,8 @@ commands:
             allowed: [Ubuntu, UbuntuMono, Hack, FiraMono, Noto]
       - name: oda
         help: odoo administration tool
+      - name: odo
+        help: odoo podman administration tool
       - name: pgcat
         help: pgcat postgresql pooler
       - name: postgres_exporter

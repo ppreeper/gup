@@ -89,6 +89,7 @@ gup_install_usage() {
 	printf "  %s   NeoVIM\n" "neovim           "
 	printf "  %s   nerdfonts installer\n" "nerdfonts        "
 	printf "  %s   odoo administration tool\n" "oda              "
+	printf "  %s   odoo podman administration tool\n" "odo              "
 	printf "  %s   pgcat postgresql pooler\n" "pgcat            "
 	printf "  %s   postgres_exporter\n" "postgres_exporter"
 	printf "  %s   prometheus\n" "prometheus       "
@@ -606,6 +607,35 @@ gup_install_oda_usage() {
 	printf "%s\n" "Usage:"
 	printf "  gup install oda\n"
 	printf "  gup install oda --help | -h\n"
+	echo
+
+	# :command.long_usage
+	if [[ -n $long_usage ]]; then
+		printf "%s\n" "Options:"
+
+		# :command.usage_fixed_flags
+		printf "  %s\n" "--help, -h"
+		printf "    Show this help\n"
+		echo
+
+	fi
+}
+
+# :command.usage
+gup_install_odo_usage() {
+	if [[ -n $long_usage ]]; then
+		printf "gup install odo - odoo podman administration tool\n"
+		echo
+
+	else
+		printf "gup install odo - odoo podman administration tool\n"
+		echo
+
+	fi
+
+	printf "%s\n" "Usage:"
+	printf "  gup install odo\n"
+	printf "  gup install odo --help | -h\n"
 	echo
 
 	# :command.long_usage
@@ -1669,6 +1699,23 @@ gup_install_oda_command() {
 }
 
 # :command.function
+gup_install_odo_command() {
+	# src/install_odo_command.sh
+	REPO="https://raw.githubusercontent.com/ppreeper/odo"
+	USERIDNUMBER=$(grep $(whoami) /etc/passwd | awk -F":" '{print $3}')
+
+	if [ ${USERIDNUMBER} == 0 ]; then
+		IDIR="/usr/local/bin"
+		sudo wget -q ${REPO}/main/odo -O ${IDIR}/odo
+		chmod +x ${IDIR}/odo
+	else
+		IDIR="${HOME}/.local/bin"
+		wget -q ${REPO}/main/odo -O ${IDIR}/odo
+		chmod +x ${IDIR}/odo
+	fi
+}
+
+# :command.function
 gup_install_pgcat_command() {
 	# src/install_pgcat_command.sh
 	APP="pgcat"
@@ -2277,6 +2324,13 @@ gup_install_parse_requirements() {
 			action="oda"
 			shift
 			gup_install_oda_parse_requirements "$@"
+			shift $#
+			;;
+
+		odo)
+			action="odo"
+			shift
+			gup_install_odo_parse_requirements "$@"
 			shift $#
 			;;
 
@@ -3156,6 +3210,50 @@ gup_install_oda_parse_requirements() {
 }
 
 # :command.parse_requirements
+gup_install_odo_parse_requirements() {
+	# :command.fixed_flags_filter
+	while [[ $# -gt 0 ]]; do
+		case "${1:-}" in
+			--help | -h)
+				long_usage=yes
+				gup_install_odo_usage
+				exit
+				;;
+
+			*)
+				break
+				;;
+
+		esac
+	done
+
+	# :command.command_filter
+	action="install odo"
+
+	# :command.parse_requirements_while
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+
+			-?*)
+				printf "invalid option: %s\n" "$key" >&2
+				exit 1
+				;;
+
+			*)
+				# :command.parse_requirements_case
+				# :command.parse_requirements_case_simple
+				printf "invalid argument: %s\n" "$key" >&2
+				exit 1
+
+				;;
+
+		esac
+	done
+
+}
+
+# :command.parse_requirements
 gup_install_pgcat_parse_requirements() {
 	# :command.fixed_flags_filter
 	while [[ $# -gt 0 ]]; do
@@ -3955,6 +4053,7 @@ run() {
 		"install neovim") gup_install_neovim_command ;;
 		"install nerdfonts") gup_install_nerdfonts_command ;;
 		"install oda") gup_install_oda_command ;;
+		"install odo") gup_install_odo_command ;;
 		"install pgcat") gup_install_pgcat_command ;;
 		"install postgres_exporter") gup_install_postgres_exporter_command ;;
 		"install prometheus") gup_install_prometheus_command ;;

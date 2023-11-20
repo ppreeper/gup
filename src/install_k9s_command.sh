@@ -12,7 +12,7 @@ function download() {
     echo "download $1 version"
     echo "installing ${vers}"
     mkdir -p ${IDIR}
-    FN=k9s-Linux_amd64.tar.gz
+    FN=k9s_Linux_amd64.tar.gz
     rm -rf /tmp/k9s /tmp/${FN}
     echo wget -qc ${REPO}/releases/download/${vers}/${FN} -O /tmp/${FN}
     tar axf ${FN} /tmp/k9s

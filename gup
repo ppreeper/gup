@@ -73,33 +73,51 @@ gup_install_usage() {
 	# :command.usage_commands
 	printf "%s\n" "Commands:"
 	printf "  %s   install gup command\n" "gup              "
-	printf "  %s   blackbox_exporter\n" "blackbox_exporter"
-	printf "  %s   caddy2 web server\n" "caddy2           "
-	printf "  %s   consul\n" "consul           "
-	printf "  %s   docker-compose\n" "docker-compose   "
-	printf "  %s   go programming language\n" "go               "
-	printf "  %s   gotop terminal based graphical activity monitor\n" "gotop            "
-	printf "  %s   grafana\n" "grafana          "
-	printf "  %s   helix text editor\n" "helix            "
-	printf "  %s   hugo website generator\n" "hugo             "
-	printf "  %s   kubectl\n" "kubectl          "
-	printf "  %s   loki\n" "loki             "
-	printf "  %s   A lightweight text editor written in Lua\n" "litexl           "
-	printf "  %s   minikube\n" "minikube         "
-	printf "  %s   NeoVIM\n" "neovim           "
 	printf "  %s   nerdfonts installer\n" "nerdfonts        "
-	printf "  %s   odoo administration tool\n" "oda              "
-	printf "  %s   odoo podman administration tool\n" "odo              "
-	printf "  %s   pgcat postgresql pooler\n" "pgcat            "
+	printf "  %s   update script for apt update\n" "update           "
+	echo
+	printf "%s\n" "Monitoring Commands:"
+	printf "  %s   blackbox_exporter\n" "blackbox_exporter"
+	printf "  %s   grafana\n" "grafana          "
+	printf "  %s   loki\n" "loki             "
 	printf "  %s   postgres_exporter\n" "postgres_exporter"
 	printf "  %s   prometheus\n" "prometheus       "
 	printf "  %s   promtail\n" "promtail         "
 	printf "  %s   snmp_exporter\n" "snmp_exporter    "
+	echo
+	printf "%s\n" "Web Commands:"
+	printf "  %s   caddy2 web server\n" "caddy2           "
+	printf "  %s   hugo website generator\n" "hugo             "
 	printf "  %s   traefik\n" "traefik          "
-	printf "  %s   update script for apt update\n" "update           "
+	echo
+	printf "%s\n" "Kubernetes Commands:"
+	printf "  %s   consul\n" "consul           "
+	printf "  %s   Kubernetes CLI\n" "k9s              "
+	printf "  %s   kubectl\n" "kubectl          "
+	printf "  %s   minikube\n" "minikube         "
+	echo
+	printf "%s\n" "Containers Commands:"
+	printf "  %s   docker-compose\n" "docker-compose   "
+	printf "  %s   podman container system\n" "podman           "
 	printf "  %s   HashiCorp Vagrant\n" "vagrant          "
-	printf "  %s   wkhtmltopdf\n" "wkhtmltopdf      "
+	echo
+	printf "%s\n" "Language Commands:"
+	printf "  %s   go programming language\n" "go               "
+	echo
+	printf "%s\n" "Utilities Commands:"
+	printf "  %s   gotop terminal based graphical activity monitor\n" "gotop            "
+	printf "  %s   pgcat postgresql pooler\n" "pgcat            "
 	printf "  %s   A portable, performant script to make rolling ZFS snapshots easy\n" "zfsnap           "
+	echo
+	printf "%s\n" "Editor Commands:"
+	printf "  %s   helix text editor\n" "helix            "
+	printf "  %s   A lightweight text editor written in Lua\n" "litexl           "
+	printf "  %s   NeoVIM\n" "neovim           "
+	echo
+	printf "%s\n" "Odoo Commands:"
+	printf "  %s   odoo administration tool\n" "oda              "
+	printf "  %s   odoo podman administration tool\n" "odo              "
+	printf "  %s   wkhtmltopdf\n" "wkhtmltopdf      "
 	echo
 
 	# :command.long_usage
@@ -410,6 +428,35 @@ gup_install_hugo_usage() {
 }
 
 # :command.usage
+gup_install_k9s_usage() {
+	if [[ -n $long_usage ]]; then
+		printf "gup install k9s - Kubernetes CLI\n"
+		echo
+
+	else
+		printf "gup install k9s - Kubernetes CLI\n"
+		echo
+
+	fi
+
+	printf "%s\n" "Usage:"
+	printf "  gup install k9s\n"
+	printf "  gup install k9s --help | -h\n"
+	echo
+
+	# :command.long_usage
+	if [[ -n $long_usage ]]; then
+		printf "%s\n" "Options:"
+
+		# :command.usage_fixed_flags
+		printf "  %s\n" "--help, -h"
+		printf "    Show this help\n"
+		echo
+
+	fi
+}
+
+# :command.usage
 gup_install_kubectl_usage() {
 	if [[ -n $long_usage ]]; then
 		printf "gup install kubectl - kubectl\n"
@@ -665,6 +712,35 @@ gup_install_pgcat_usage() {
 	printf "%s\n" "Usage:"
 	printf "  gup install pgcat\n"
 	printf "  gup install pgcat --help | -h\n"
+	echo
+
+	# :command.long_usage
+	if [[ -n $long_usage ]]; then
+		printf "%s\n" "Options:"
+
+		# :command.usage_fixed_flags
+		printf "  %s\n" "--help, -h"
+		printf "    Show this help\n"
+		echo
+
+	fi
+}
+
+# :command.usage
+gup_install_podman_usage() {
+	if [[ -n $long_usage ]]; then
+		printf "gup install podman - podman container system\n"
+		echo
+
+	else
+		printf "gup install podman - podman container system\n"
+		echo
+
+	fi
+
+	printf "%s\n" "Usage:"
+	printf "  gup install podman\n"
+	printf "  gup install podman --help | -h\n"
 	echo
 
 	# :command.long_usage
@@ -1491,6 +1567,41 @@ gup_install_hugo_command() {
 }
 
 # :command.function
+gup_install_k9s_command() {
+	# src/install_k9s_command.sh
+	APP="k9s"
+	REPO="https://github.com/derailed/k9s"
+	vers=$(git ls-remote --tags ${REPO} | grep "refs/tags.*[0-9]$" | awk '{print $2}' | sed 's/refs\/tags\///' | sort -V | uniq | tail -1)
+
+	IDIR="${HOME}/.local/bin"
+
+	if [ ${USERIDNUMBER} == 0 ]; then
+		IDIR="/usr/local/bin"
+	fi
+
+	function download() {
+			echo "download $1 version"
+			echo "installing ${vers}"
+			mkdir -p ${IDIR}
+			FN=k9s-Linux_amd64.tar.gz
+			rm -rf /tmp/k9s /tmp/${FN}
+			echo wget -qc ${REPO}/releases/download/${vers}/${FN} -O /tmp/${FN}
+			tar axf ${FN} /tmp/k9s
+			install /tmp/k9s $IDIR
+			rm -rf /tmp/k9s /tmp/${FN}
+	}
+
+	if [ -z $(which ${APP}) ]; then
+			download new
+	else
+		APPBIN=$(which ${APP})
+		APPVER=$(${APPBIN} version | grep -e "^Version" | awk '{print $2}')
+		[ "${APPVER}" = "${vers}" ] && echo "${APP} version is current" || download ${vers}
+	fi
+
+}
+
+# :command.function
 gup_install_kubectl_command() {
 	# src/install_kubectl_command.sh
 	curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
@@ -1746,6 +1857,41 @@ gup_install_pgcat_command() {
 	else
 		download ${vers}
 	fi
+
+}
+
+# :command.function
+gup_install_podman_command() {
+	# src/install_podman_command.sh
+	KEYDIR="/etc/apt/trusted.gpg.d"
+	ID=$(grep -e "^ID=" /etc/os-release | cut -d "=" -f 2)
+	VERSION_CODENAME=$(grep ^VERSION_CODENAME /etc/os-release | cut -d "=" -f 2)
+	VERSION_ID=$(grep ^VERSION_ID /etc/os-release | cut -d "=" -f 2)
+	DEBIAN_CODENAME=$(grep ^DEBIAN_CODENAME /etc/os-release | cut -d "=" -f 2)
+	UBUNTU_CODENAME=$(grep ^UBUNTU_CODENAME /etc/os-release | cut -d "=" -f 2)
+	RELEASE=""
+
+	if [ "${ID}" == "linuxmint" ]; then
+		if [ "${DEBIAN_CODENAME}" == "bookworm" ]; then
+			RELEASE="Debian_Testing"
+		elif [ "${UBUNTU_CODENAME}" == "jammy" ]; then
+			RELEASE="xUbuntu_22.04"
+		fi
+	elif [ "${ID}" == "debian" ]; then
+		RELEASE="Debian_Testing"
+	elif [ "${ID}" == "ubuntu" ]; then
+		RELEASE="xUbuntu_22.04"
+	fi
+
+	RELEASE_KEY="https://download.opensuse.org/repositories/devel:kubic:libcontainers:unstable/${RELEASE}/Release.key"
+
+	# Install Podman Repo
+	curl -fsSL "${RELEASE_KEY}" | gpg --dearmor | sudo tee ${KEYDIR}/devel_kubic_libcontainers_unstable.gpg > /dev/null
+	echo "deb [arch=$(dpkg --print-architecture) signed-by=${KEYDIR}/devel_kubic_libcontainers_unstable.gpg] https://download.opensuse.org/repositories/devel:kubic:libcontainers:unstable/${RELEASE}/ /" \
+		| sudo tee /etc/apt/sources.list.d/devel:kubic:libcontainers:unstable.list > /dev/null
+
+	# Install Podman
+	sudo bash -c "apt-get update -y && sudo apt-get install -y podman"
 
 }
 
@@ -2278,6 +2424,13 @@ gup_install_parse_requirements() {
 			shift $#
 			;;
 
+		k9s)
+			action="k9s"
+			shift
+			gup_install_k9s_parse_requirements "$@"
+			shift $#
+			;;
+
 		kubectl)
 			action="kubectl"
 			shift
@@ -2338,6 +2491,13 @@ gup_install_parse_requirements() {
 			action="pgcat"
 			shift
 			gup_install_pgcat_parse_requirements "$@"
+			shift $#
+			;;
+
+		podman)
+			action="podman"
+			shift
+			gup_install_podman_parse_requirements "$@"
 			shift $#
 			;;
 
@@ -2881,6 +3041,50 @@ gup_install_hugo_parse_requirements() {
 }
 
 # :command.parse_requirements
+gup_install_k9s_parse_requirements() {
+	# :command.fixed_flags_filter
+	while [[ $# -gt 0 ]]; do
+		case "${1:-}" in
+			--help | -h)
+				long_usage=yes
+				gup_install_k9s_usage
+				exit
+				;;
+
+			*)
+				break
+				;;
+
+		esac
+	done
+
+	# :command.command_filter
+	action="install k9s"
+
+	# :command.parse_requirements_while
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+
+			-?*)
+				printf "invalid option: %s\n" "$key" >&2
+				exit 1
+				;;
+
+			*)
+				# :command.parse_requirements_case
+				# :command.parse_requirements_case_simple
+				printf "invalid argument: %s\n" "$key" >&2
+				exit 1
+
+				;;
+
+		esac
+	done
+
+}
+
+# :command.parse_requirements
 gup_install_kubectl_parse_requirements() {
 	# :command.fixed_flags_filter
 	while [[ $# -gt 0 ]]; do
@@ -3273,6 +3477,50 @@ gup_install_pgcat_parse_requirements() {
 
 	# :command.command_filter
 	action="install pgcat"
+
+	# :command.parse_requirements_while
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+
+			-?*)
+				printf "invalid option: %s\n" "$key" >&2
+				exit 1
+				;;
+
+			*)
+				# :command.parse_requirements_case
+				# :command.parse_requirements_case_simple
+				printf "invalid argument: %s\n" "$key" >&2
+				exit 1
+
+				;;
+
+		esac
+	done
+
+}
+
+# :command.parse_requirements
+gup_install_podman_parse_requirements() {
+	# :command.fixed_flags_filter
+	while [[ $# -gt 0 ]]; do
+		case "${1:-}" in
+			--help | -h)
+				long_usage=yes
+				gup_install_podman_usage
+				exit
+				;;
+
+			*)
+				break
+				;;
+
+		esac
+	done
+
+	# :command.command_filter
+	action="install podman"
 
 	# :command.parse_requirements_while
 	while [[ $# -gt 0 ]]; do
@@ -4046,6 +4294,7 @@ run() {
 		"install grafana") gup_install_grafana_command ;;
 		"install helix") gup_install_helix_command ;;
 		"install hugo") gup_install_hugo_command ;;
+		"install k9s") gup_install_k9s_command ;;
 		"install kubectl") gup_install_kubectl_command ;;
 		"install loki") gup_install_loki_command ;;
 		"install litexl") gup_install_litexl_command ;;
@@ -4055,6 +4304,7 @@ run() {
 		"install oda") gup_install_oda_command ;;
 		"install odo") gup_install_odo_command ;;
 		"install pgcat") gup_install_pgcat_command ;;
+		"install podman") gup_install_podman_command ;;
 		"install postgres_exporter") gup_install_postgres_exporter_command ;;
 		"install prometheus") gup_install_prometheus_command ;;
 		"install promtail") gup_install_promtail_command ;;

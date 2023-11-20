@@ -12,32 +12,49 @@ commands:
         help: install gup command
       - name: blackbox_exporter
         help: blackbox_exporter
+        group: Monitoring
       - name: caddy2
         help: caddy2 web server
+        group: Web
       - name: consul
         help: consul
+        group: Kubernetes
       - name: docker-compose
         help: docker-compose
+        group: Containers
       - name: go
         help: go programming language
+        group: Language
       - name: gotop
         help: gotop terminal based graphical activity monitor
+        group: Utilities
       - name: grafana
         help: grafana
+        group: Monitoring
       - name: helix
         help: helix text editor
+        group: Editor
       - name: hugo
         help: hugo website generator
+        group: Web
+      - name: k9s
+        help: Kubernetes CLI
+        group: Kubernetes
       - name: kubectl
         help: kubectl
+        group: Kubernetes
       - name: loki
         help: loki
+        group: Monitoring
       - name: litexl
         help: A lightweight text editor written in Lua
+        group: Editor
       - name: minikube
         help: minikube
+        group: Kubernetes
       - name: neovim
         help: NeoVIM
+        group: Editor
       - name: nerdfonts
         help: nerdfonts installer
         args:
@@ -47,28 +64,42 @@ commands:
             allowed: [Ubuntu, UbuntuMono, Hack, FiraMono, Noto]
       - name: oda
         help: odoo administration tool
+        group: Odoo
       - name: odo
         help: odoo podman administration tool
+        group: Odoo
       - name: pgcat
         help: pgcat postgresql pooler
+        group: Utilities
+      - name: podman
+        help: podman container system
+        group: Containers
       - name: postgres_exporter
         help: postgres_exporter
+        group: Monitoring
       - name: prometheus
         help: prometheus
+        group: Monitoring
       - name: promtail
         help: promtail
+        group: Monitoring
       - name: snmp_exporter
         help: snmp_exporter
+        group: Monitoring
       - name: traefik
         help: traefik
+        group: Web
       - name: update
         help: update script for apt update
       - name: vagrant
         help: HashiCorp Vagrant
+        group: Containers
       - name: wkhtmltopdf
         help: wkhtmltopdf
+        group: Odoo
       - name: zfsnap
         help: A portable, performant script to make rolling ZFS snapshots easy
+        group: Utilities
   - name: remove
     help: remove an application and settings
     examples:

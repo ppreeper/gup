@@ -4,7 +4,7 @@ DURL="https://releases.hashicorp.com/consul"
 
 vers=$(git ls-remote --tags ${REPO} | grep "refs/tags.*[0-9]$" | grep -v -e "rc" -e "alpha" -e "beta" | awk '{print $2}' | sed 's/refs\/tags\///g' | sort -V | uniq | tail -1)
 
-USERIDNUMBER=$(grep $(whoami) /etc/passwd | awk -F":" '{print $3}')
+USERIDNUMBER=$(grep ${USER} /etc/passwd | awk -F":" '{print $3}')
 if [ ${USERIDNUMBER} == 0 ]; then
   BDIR="/usr/local/bin"
 else

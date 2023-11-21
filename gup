@@ -1268,9 +1268,8 @@ inspect_args() {
 gup_install_gup_command() {
 	# src/install_gup_command.sh
 	REPO="https://raw.githubusercontent.com/ppreeper/gup"
-	USERIDNUMBER=$(grep ${USER} /etc/passwd | awk -F":" '{print $3}')
 
-	if [ ${USERIDNUMBER} == 0 ]; then
+	if [ $(id -u) == 0 ]; then
 		IDIR="/usr/local/bin"
 		sudo wget -q ${REPO}/main/gup -O ${IDIR}/gup
 		chmod +x ${IDIR}/gup
@@ -1322,8 +1321,7 @@ gup_install_caddy2_command() {
 	REPO="https://github.com/caddyserver/caddy"
 	vers=$(git ls-remote --tags ${REPO} | grep "refs/tags.*[0-9]$" | grep -v -e rc -e alpha -e beta | awk '{print $2}' | sed 's/refs\/tags\///' | sort -V | uniq | tail -1)
 
-	USERIDNUMBER=$(grep ${USER} /etc/passwd | awk -F":" '{print $3}')
-	if [ ${USERIDNUMBER} == 0 ]; then
+	if [ $(id -u) == 0 ]; then
 		BDIR="/usr/local/bin"
 	else
 		BDIR="${HOME}/.local/bin"
@@ -1362,8 +1360,7 @@ gup_install_consul_command() {
 
 	vers=$(git ls-remote --tags ${REPO} | grep "refs/tags.*[0-9]$" | grep -v -e "rc" -e "alpha" -e "beta" | awk '{print $2}' | sed 's/refs\/tags\///g' | sort -V | uniq | tail -1)
 
-	USERIDNUMBER=$(grep ${USER} /etc/passwd | awk -F":" '{print $3}')
-	if [ ${USERIDNUMBER} == 0 ]; then
+	if [ $(id -u) == 0 ]; then
 		BDIR="/usr/local/bin"
 	else
 		BDIR="${HOME}/.local/bin"
@@ -1464,8 +1461,7 @@ gup_install_gotop_command() {
 	REPO="https://github.com/xxxserxxx/gotop"
 	vers=$(git ls-remote --tags ${REPO} | grep "refs/tags.*[0-9]$" | awk '{print $2}' | sed 's/refs\/tags\///' | sort -V | uniq | tail -1)
 
-	USERIDNUMBER=$(grep ${USER} /etc/passwd | awk -F":" '{print $3}')
-	if [ ${USERIDNUMBER} == 0 ]; then
+	if [ $(id -u) == 0 ]; then
 		BDIR="/usr/local/bin"
 	else
 		BDIR="${HOME}/.local/bin"
@@ -1540,8 +1536,7 @@ gup_install_hugo_command() {
 	REPO="https://github.com/gohugoio/hugo"
 	vers=$(git ls-remote --tags ${REPO} | grep "refs/tags.*[0-9]$" | awk '{print $2}' | sed 's/refs\/tags\///g' | sort -V | uniq | tail -1)
 
-	USERIDNUMBER=$(grep ${USER} /etc/passwd | awk -F":" '{print $3}')
-	if [ ${USERIDNUMBER} == 0 ]; then
+	if [ $(id -u) == 0 ]; then
 		BDIR="/usr/local/bin"
 	else
 		BDIR="${HOME}/.local/bin"
@@ -1575,7 +1570,7 @@ gup_install_k9s_command() {
 
 	IDIR="${HOME}/.local/bin"
 
-	if [ ${USERIDNUMBER} == 0 ]; then
+	if [ $(id -u) == 0 ]; then
 		IDIR="/usr/local/bin"
 	fi
 
@@ -1617,8 +1612,7 @@ gup_install_loki_command() {
 	REPO="https://github.com/grafana/loki"
 	vers=$(git ls-remote --tags ${REPO} | grep "refs/tags.*[0-9]$" | grep -v -e "helm" | awk '{print $2}' | sed 's/refs\/tags\///' | sort -V | uniq | tail -1)
 
-	USERIDNUMBER=$(grep $(whoami) /etc/passwd | awk -F":" '{print $3}')
-	if [ ${USERIDNUMBER} == 0 ]; then
+	if [ $(id -u) == 0 ]; then
 		BDIR="/usr/local/bin"
 	else
 		BDIR="${HOME}/.local/bin"
@@ -1792,9 +1786,8 @@ gup_install_nerdfonts_command() {
 gup_install_oda_command() {
 	# src/install_oda_command.sh
 	REPO="https://raw.githubusercontent.com/ppreeper/oda"
-	USERIDNUMBER=$(grep ${USER} /etc/passwd | awk -F":" '{print $3}')
 
-	if [ ${USERIDNUMBER} == 0 ]; then
+	if [ $(id -u) == 0 ]; then
 		IDIR="/usr/local/bin"
 		sudo wget -q ${REPO}/main/oda -O ${IDIR}/oda
 		sudo wget -q ${REPO}/main/oda_db.py -O ${IDIR}/oda_db.py
@@ -1813,9 +1806,8 @@ gup_install_oda_command() {
 gup_install_odo_command() {
 	# src/install_odo_command.sh
 	REPO="https://raw.githubusercontent.com/ppreeper/odo"
-	USERIDNUMBER=$(grep ${USER} /etc/passwd | awk -F":" '{print $3}')
 
-	if [ ${USERIDNUMBER} == 0 ]; then
+	if [ $(id -u) == 0 ]; then
 		IDIR="/usr/local/bin"
 		sudo wget -q ${REPO}/main/odo -O ${IDIR}/odo
 		chmod +x ${IDIR}/odo
@@ -1902,8 +1894,7 @@ gup_install_postgres_exporter_command() {
 	REPO="https://github.com/prometheus-community/postgres_exporter"
 	vers=$(git ls-remote --tags ${REPO} | grep "refs/tags.*[0-9]$" | grep -v -e rc -e alpha -e beta | awk '{print $2}' | sed 's/refs\/tags\///' | sort -V | uniq | tail -1)
 
-	USERIDNUMBER=$(grep ${USER} /etc/passwd | awk -F":" '{print $3}')
-	if [ ${USERIDNUMBER} == 0 ]; then
+	if [ $(id -u) == 0 ]; then
 		BDIR="/usr/local/bin"
 	else
 		BDIR="${HOME}/.local/bin"
@@ -1938,8 +1929,7 @@ gup_install_prometheus_command() {
 	REPO="https://github.com/prometheus/prometheus"
 	vers=$(git ls-remote --tags ${REPO} | grep "refs/tags.*[0-9]$" | grep -v -e rc -e alpha -e beta | awk '{print $2}' | sed 's/refs\/tags\///' | sort -V | uniq | tail -1)
 
-	USERIDNUMBER=$(grep ${USER} /etc/passwd | awk -F":" '{print $3}')
-	if [ ${USERIDNUMBER} == 0 ]; then
+	if [ $(id -u) == 0 ]; then
 		BDIR="/usr/local/bin"
 	else
 		BDIR="${HOME}/.local/bin"
@@ -1978,8 +1968,7 @@ gup_install_promtail_command() {
 	REPO="https://github.com/grafana/loki"
 	vers=$(git ls-remote --tags ${REPO} | grep "refs/tags.*[0-9]$" | grep -v -e "helm" | awk '{print $2}' | sed 's/refs\/tags\///' | sort -V | uniq | tail -1)
 
-	USERIDNUMBER=$(grep ${USER} /etc/passwd | awk -F":" '{print $3}')
-	if [ ${USERIDNUMBER} == 0 ]; then
+	if [ $(id -u) == 0 ]; then
 		BDIR="/usr/local/bin"
 	else
 		BDIR="${HOME}/.local/bin"
@@ -2084,8 +2073,7 @@ gup_install_traefik_command() {
 	REPO="https://github.com/traefik/traefik"
 	vers=$(git ls-remote --tags ${REPO} | grep "refs/tags.*[0-9]$" | grep -v -e "rc" -e "alpha" -e "beta" | awk '{print $2}' | sed 's/refs\/tags\///' | sort -V | uniq | tail -1)
 
-	USERIDNUMBER=$(grep ${USER} /etc/passwd | awk -F":" '{print $3}')
-	if [ ${USERIDNUMBER} == 0 ]; then
+	if [ $(id -u) == 0 ]; then
 		BDIR="/usr/local/bin"
 	else
 		BDIR="${HOME}/.local/bin"

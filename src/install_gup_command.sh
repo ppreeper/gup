@@ -1,7 +1,6 @@
 REPO="https://raw.githubusercontent.com/ppreeper/gup"
-USERIDNUMBER=$(grep ${USER} /etc/passwd | awk -F":" '{print $3}')
 
-if [ ${USERIDNUMBER} == 0 ]; then
+if [ $(id -u) == 0 ]; then
   IDIR="/usr/local/bin"
   sudo wget -q ${REPO}/main/gup -O ${IDIR}/gup
   chmod +x ${IDIR}/gup

@@ -4,7 +4,7 @@ vers=$(git ls-remote --tags ${REPO} | grep "refs/tags.*[0-9]$" | awk '{print $2}
 
 IDIR="${HOME}/.local/bin"
 
-if [ ${USERIDNUMBER} == 0 ]; then
+if [ $(id -u) == 0 ]; then
   IDIR="/usr/local/bin"
 fi
 

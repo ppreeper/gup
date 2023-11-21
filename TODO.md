@@ -5,6 +5,9 @@
 - odootools
 - oda (v2) (plus requirements)
 - kubernetes personal distribution
-- k9s (https://k9scli.io/)
 - locust.io (web testing)
 - selenium (web testing)
+- air (github.com/cosmtrek/air)
+- bombardier (github.com/codesenberg/bombardier)
+- scc (github.com/boyter/scc)
+- timer (github.com/caarlos0/timer)

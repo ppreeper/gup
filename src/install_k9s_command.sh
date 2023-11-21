@@ -14,10 +14,10 @@ function download() {
     mkdir -p ${IDIR}
     FN=k9s_Linux_amd64.tar.gz
     rm -rf /tmp/k9s /tmp/${FN}
-    echo wget -qc ${REPO}/releases/download/${vers}/${FN} -O /tmp/${FN}
-    tar axf ${FN} /tmp/k9s
-    install /tmp/k9s $IDIR
-    rm -rf /tmp/k9s /tmp/${FN}
+    wget -qc ${REPO}/releases/download/${vers}/${FN} -O /tmp/${FN}
+    tar axf /tmp/${FN} k9s
+    install k9s $IDIR
+    rm -rf k9s /tmp/${FN}
 }
 
 
@@ -25,6 +25,6 @@ if [ -z $(which ${APP}) ]; then
     download new
 else
   APPBIN=$(which ${APP})
-  APPVER=$(${APPBIN} version | grep -e "^Version" | awk '{print $2}')
+  APPVER=$(${APPBIN} version 2>&1 | grep Version | awk '{print $2}')
   [ "${APPVER}" = "${vers}" ] && echo "${APP} version is current" || download ${vers}
 fi

@@ -43,6 +43,9 @@ commands:
       - name: kubectl
         help: kubectl
         group: Kubernetes
+      - name: lazygit
+        help: A simple terminal UI for git commands
+        group: Utilities
       - name: loki
         help: loki
         group: Monitoring

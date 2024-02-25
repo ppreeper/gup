@@ -9,7 +9,7 @@ function download() {
     echo "installing ${vers}"
     mkdir -p ${BDIR}
     FN=LiteXL-${vers}-addons-x86_64.AppImage
-    wget -qc ${REPO}/releases/download/${vers}/LiteXL-v2.1.1-addons-x86_64.AppImage -O ${BDIR}/litexl
+    wget -qc ${REPO}/releases/download/${vers}/${FN} -O ${BDIR}/litexl
     chmod +x ${BDIR}/litexl
 }
 

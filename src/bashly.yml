@@ -92,6 +92,9 @@ commands:
       - name: traefik
         help: traefik
         group: Web
+      - name: tailwindcss
+        help: tailwindcss cli
+        group: Web
       - name: update
         help: update script for apt update
       - name: vagrant

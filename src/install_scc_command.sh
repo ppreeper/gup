@@ -1,0 +1,1 @@
+go install github.com/boyter/scc/v3@latest

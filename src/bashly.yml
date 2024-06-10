@@ -10,6 +10,9 @@ commands:
     commands:
       - name: gup
         help: install gup command
+      - name: air
+        help: Live reload for Go apps
+        group: Web
       - name: blackbox_exporter
         help: blackbox_exporter
         group: Monitoring
@@ -22,6 +25,12 @@ commands:
       - name: docker-compose
         help: docker-compose
         group: Containers
+      - name: duf
+        help: Disk Usage/Free Utility
+        group: utilities
+      - name: gdu
+        help: Fast disk usage analyzer with console interface written in Go
+        group: utilities
       - name: go
         help: go programming language
         group: Language
@@ -86,15 +95,30 @@ commands:
       - name: promtail
         help: promtail
         group: Monitoring
+      - name: scc
+        help: Sloc Cloc and Code (scc)
+        group: utilities
       - name: snmp_exporter
         help: snmp_exporter
         group: Monitoring
+      - name: sqlc
+        help: Generate type-safe code from SQL
+        group: Web
+      - name: swag
+        help: Automatically generate RESTful API documentation with Swagger 2.0 for Go
+        group: Web
+      - name: templ
+        help: build HTML with Go
+        group: Web
       - name: traefik
         help: traefik
         group: Web
       - name: tailwindcss
         help: tailwindcss cli
         group: Web
+      - name: task
+        help: A task runner / simpler Make alternative written in Go
+        group: utilities
       - name: update
         help: update script for apt update
       - name: vagrant

@@ -76,6 +76,16 @@ gup_install_usage() {
 	printf "  %s   nerdfonts installer\n" "nerdfonts        "
 	printf "  %s   update script for apt update\n" "update           "
 	echo
+	printf "%s\n" "Web Commands:"
+	printf "  %s   Live reload for Go apps\n" "air              "
+	printf "  %s   caddy2 web server\n" "caddy2           "
+	printf "  %s   hugo website generator\n" "hugo             "
+	printf "  %s   Generate type-safe code from SQL\n" "sqlc             "
+	printf "  %s   Automatically generate RESTful API documentation with Swagger 2.0 for Go\n" "swag             "
+	printf "  %s   build HTML with Go\n" "templ            "
+	printf "  %s   traefik\n" "traefik          "
+	printf "  %s   tailwindcss cli\n" "tailwindcss      "
+	echo
 	printf "%s\n" "Monitoring Commands:"
 	printf "  %s   blackbox_exporter\n" "blackbox_exporter"
 	printf "  %s   grafana\n" "grafana          "
@@ -84,12 +94,6 @@ gup_install_usage() {
 	printf "  %s   prometheus\n" "prometheus       "
 	printf "  %s   promtail\n" "promtail         "
 	printf "  %s   snmp_exporter\n" "snmp_exporter    "
-	echo
-	printf "%s\n" "Web Commands:"
-	printf "  %s   caddy2 web server\n" "caddy2           "
-	printf "  %s   hugo website generator\n" "hugo             "
-	printf "  %s   traefik\n" "traefik          "
-	printf "  %s   tailwindcss cli\n" "tailwindcss      "
 	echo
 	printf "%s\n" "Kubernetes Commands:"
 	printf "  %s   consul\n" "consul           "
@@ -101,6 +105,12 @@ gup_install_usage() {
 	printf "  %s   docker-compose\n" "docker-compose   "
 	printf "  %s   podman container\n" "podman           "
 	printf "  %s   HashiCorp Vagrant\n" "vagrant          "
+	echo
+	printf "%s\n" "utilities Commands:"
+	printf "  %s   Disk Usage/Free Utility\n" "duf              "
+	printf "  %s   Fast disk usage analyzer with console interface written in Go\n" "gdu              "
+	printf "  %s   Sloc Cloc and Code (scc)\n" "scc              "
+	printf "  %s   A task runner / simpler Make alternative written in Go\n" "task             "
 	echo
 	printf "%s\n" "Language Commands:"
 	printf "  %s   go programming language\n" "go               "
@@ -155,6 +165,35 @@ gup_install_gup_usage() {
 	printf "%s\n" "Usage:"
 	printf "  gup install gup\n"
 	printf "  gup install gup --help | -h\n"
+	echo
+
+	# :command.long_usage
+	if [[ -n $long_usage ]]; then
+		printf "%s\n" "Options:"
+
+		# :command.usage_fixed_flags
+		printf "  %s\n" "--help, -h"
+		printf "    Show this help\n"
+		echo
+
+	fi
+}
+
+# :command.usage
+gup_install_air_usage() {
+	if [[ -n $long_usage ]]; then
+		printf "gup install air - Live reload for Go apps\n"
+		echo
+
+	else
+		printf "gup install air - Live reload for Go apps\n"
+		echo
+
+	fi
+
+	printf "%s\n" "Usage:"
+	printf "  gup install air\n"
+	printf "  gup install air --help | -h\n"
 	echo
 
 	# :command.long_usage
@@ -271,6 +310,64 @@ gup_install_docker_compose_usage() {
 	printf "%s\n" "Usage:"
 	printf "  gup install docker-compose\n"
 	printf "  gup install docker-compose --help | -h\n"
+	echo
+
+	# :command.long_usage
+	if [[ -n $long_usage ]]; then
+		printf "%s\n" "Options:"
+
+		# :command.usage_fixed_flags
+		printf "  %s\n" "--help, -h"
+		printf "    Show this help\n"
+		echo
+
+	fi
+}
+
+# :command.usage
+gup_install_duf_usage() {
+	if [[ -n $long_usage ]]; then
+		printf "gup install duf - Disk Usage/Free Utility\n"
+		echo
+
+	else
+		printf "gup install duf - Disk Usage/Free Utility\n"
+		echo
+
+	fi
+
+	printf "%s\n" "Usage:"
+	printf "  gup install duf\n"
+	printf "  gup install duf --help | -h\n"
+	echo
+
+	# :command.long_usage
+	if [[ -n $long_usage ]]; then
+		printf "%s\n" "Options:"
+
+		# :command.usage_fixed_flags
+		printf "  %s\n" "--help, -h"
+		printf "    Show this help\n"
+		echo
+
+	fi
+}
+
+# :command.usage
+gup_install_gdu_usage() {
+	if [[ -n $long_usage ]]; then
+		printf "gup install gdu - Fast disk usage analyzer with console interface written in Go\n"
+		echo
+
+	else
+		printf "gup install gdu - Fast disk usage analyzer with console interface written in Go\n"
+		echo
+
+	fi
+
+	printf "%s\n" "Usage:"
+	printf "  gup install gdu\n"
+	printf "  gup install gdu --help | -h\n"
 	echo
 
 	# :command.long_usage
@@ -875,6 +972,35 @@ gup_install_promtail_usage() {
 }
 
 # :command.usage
+gup_install_scc_usage() {
+	if [[ -n $long_usage ]]; then
+		printf "gup install scc - Sloc Cloc and Code (scc)\n"
+		echo
+
+	else
+		printf "gup install scc - Sloc Cloc and Code (scc)\n"
+		echo
+
+	fi
+
+	printf "%s\n" "Usage:"
+	printf "  gup install scc\n"
+	printf "  gup install scc --help | -h\n"
+	echo
+
+	# :command.long_usage
+	if [[ -n $long_usage ]]; then
+		printf "%s\n" "Options:"
+
+		# :command.usage_fixed_flags
+		printf "  %s\n" "--help, -h"
+		printf "    Show this help\n"
+		echo
+
+	fi
+}
+
+# :command.usage
 gup_install_snmp_exporter_usage() {
 	if [[ -n $long_usage ]]; then
 		printf "gup install snmp_exporter - snmp_exporter\n"
@@ -889,6 +1015,93 @@ gup_install_snmp_exporter_usage() {
 	printf "%s\n" "Usage:"
 	printf "  gup install snmp_exporter\n"
 	printf "  gup install snmp_exporter --help | -h\n"
+	echo
+
+	# :command.long_usage
+	if [[ -n $long_usage ]]; then
+		printf "%s\n" "Options:"
+
+		# :command.usage_fixed_flags
+		printf "  %s\n" "--help, -h"
+		printf "    Show this help\n"
+		echo
+
+	fi
+}
+
+# :command.usage
+gup_install_sqlc_usage() {
+	if [[ -n $long_usage ]]; then
+		printf "gup install sqlc - Generate type-safe code from SQL\n"
+		echo
+
+	else
+		printf "gup install sqlc - Generate type-safe code from SQL\n"
+		echo
+
+	fi
+
+	printf "%s\n" "Usage:"
+	printf "  gup install sqlc\n"
+	printf "  gup install sqlc --help | -h\n"
+	echo
+
+	# :command.long_usage
+	if [[ -n $long_usage ]]; then
+		printf "%s\n" "Options:"
+
+		# :command.usage_fixed_flags
+		printf "  %s\n" "--help, -h"
+		printf "    Show this help\n"
+		echo
+
+	fi
+}
+
+# :command.usage
+gup_install_swag_usage() {
+	if [[ -n $long_usage ]]; then
+		printf "gup install swag - Automatically generate RESTful API documentation with Swagger 2.0 for Go\n"
+		echo
+
+	else
+		printf "gup install swag - Automatically generate RESTful API documentation with Swagger 2.0 for Go\n"
+		echo
+
+	fi
+
+	printf "%s\n" "Usage:"
+	printf "  gup install swag\n"
+	printf "  gup install swag --help | -h\n"
+	echo
+
+	# :command.long_usage
+	if [[ -n $long_usage ]]; then
+		printf "%s\n" "Options:"
+
+		# :command.usage_fixed_flags
+		printf "  %s\n" "--help, -h"
+		printf "    Show this help\n"
+		echo
+
+	fi
+}
+
+# :command.usage
+gup_install_templ_usage() {
+	if [[ -n $long_usage ]]; then
+		printf "gup install templ - build HTML with Go\n"
+		echo
+
+	else
+		printf "gup install templ - build HTML with Go\n"
+		echo
+
+	fi
+
+	printf "%s\n" "Usage:"
+	printf "  gup install templ\n"
+	printf "  gup install templ --help | -h\n"
 	echo
 
 	# :command.long_usage
@@ -947,6 +1160,35 @@ gup_install_tailwindcss_usage() {
 	printf "%s\n" "Usage:"
 	printf "  gup install tailwindcss\n"
 	printf "  gup install tailwindcss --help | -h\n"
+	echo
+
+	# :command.long_usage
+	if [[ -n $long_usage ]]; then
+		printf "%s\n" "Options:"
+
+		# :command.usage_fixed_flags
+		printf "  %s\n" "--help, -h"
+		printf "    Show this help\n"
+		echo
+
+	fi
+}
+
+# :command.usage
+gup_install_task_usage() {
+	if [[ -n $long_usage ]]; then
+		printf "gup install task - A task runner / simpler Make alternative written in Go\n"
+		echo
+
+	else
+		printf "gup install task - A task runner / simpler Make alternative written in Go\n"
+		echo
+
+	fi
+
+	printf "%s\n" "Usage:"
+	printf "  gup install task\n"
+	printf "  gup install task --help | -h\n"
 	echo
 
 	# :command.long_usage
@@ -1391,6 +1633,12 @@ gup_install_gup_command() {
 }
 
 # :command.function
+gup_install_air_command() {
+	# src/install_air_command.sh
+	go install github.com/air-verse/air@latest
+}
+
+# :command.function
 gup_install_blackbox_exporter_command() {
 	# src/install_blackbox_exporter_command.sh
 	APP="blackbox_exporter"
@@ -1528,6 +1776,18 @@ gup_install_docker_compose_command() {
 		[ "${APPVER}" = "${vers}" ] && echo "${APP} version is current" || download ${vers}
 	fi
 
+}
+
+# :command.function
+gup_install_duf_command() {
+	# src/install_duf_command.sh
+	go install github.com/muesli/duf@latest
+}
+
+# :command.function
+gup_install_gdu_command() {
+	# src/install_gdu_command.sh
+	go install github.com/dundee/gdu/v5/cmd/gdu@latest
 }
 
 # :command.function
@@ -2178,6 +2438,12 @@ _EOF_
 }
 
 # :command.function
+gup_install_scc_command() {
+	# src/install_scc_command.sh
+	go install github.com/boyter/scc/v3@latest
+}
+
+# :command.function
 gup_install_snmp_exporter_command() {
 	# src/install_snmp_exporter_command.sh
 	APP="snmp_exporter"
@@ -2209,6 +2475,24 @@ gup_install_snmp_exporter_command() {
 			APPVER=$(${APPBIN} --version 2>&1 | grep -i "^${APP}" | awk '{print $2}')
 			[ "${APPVER}" = "${vers}" ] && echo "${APP} version is current" || download ${vers}
 	fi
+}
+
+# :command.function
+gup_install_sqlc_command() {
+	# src/install_sqlc_command.sh
+	go install github.com/sqlc-dev/sqlc/cmd/sqlc@latest
+}
+
+# :command.function
+gup_install_swag_command() {
+	# src/install_swag_command.sh
+	go install github.com/swaggo/swag/cmd/swag@latest
+}
+
+# :command.function
+gup_install_templ_command() {
+	# src/install_templ_command.sh
+	go install github.com/a-h/templ/cmd/templ@latest
 }
 
 # :command.function
@@ -2274,6 +2558,12 @@ gup_install_tailwindcss_command() {
 			APPVER=$(${APPBIN} --help 2>&1 | grep ^${APP} | awk '{print $2}')
 			[ "${APPVER}" = "${vers}" ] && echo "${APP} version is current" || download ${vers}
 	fi
+}
+
+# :command.function
+gup_install_task_command() {
+	# src/install_task_command.sh
+	go install github.com/go-task/task/v3/cmd/task@latest
 }
 
 # :command.function
@@ -2559,6 +2849,13 @@ gup_install_parse_requirements() {
 			shift $#
 			;;
 
+		air)
+			action="air"
+			shift
+			gup_install_air_parse_requirements "$@"
+			shift $#
+			;;
+
 		blackbox_exporter)
 			action="blackbox_exporter"
 			shift
@@ -2584,6 +2881,20 @@ gup_install_parse_requirements() {
 			action="docker-compose"
 			shift
 			gup_install_docker_compose_parse_requirements "$@"
+			shift $#
+			;;
+
+		duf)
+			action="duf"
+			shift
+			gup_install_duf_parse_requirements "$@"
+			shift $#
+			;;
+
+		gdu)
+			action="gdu"
+			shift
+			gup_install_gdu_parse_requirements "$@"
 			shift $#
 			;;
 
@@ -2727,10 +3038,38 @@ gup_install_parse_requirements() {
 			shift $#
 			;;
 
+		scc)
+			action="scc"
+			shift
+			gup_install_scc_parse_requirements "$@"
+			shift $#
+			;;
+
 		snmp_exporter)
 			action="snmp_exporter"
 			shift
 			gup_install_snmp_exporter_parse_requirements "$@"
+			shift $#
+			;;
+
+		sqlc)
+			action="sqlc"
+			shift
+			gup_install_sqlc_parse_requirements "$@"
+			shift $#
+			;;
+
+		swag)
+			action="swag"
+			shift
+			gup_install_swag_parse_requirements "$@"
+			shift $#
+			;;
+
+		templ)
+			action="templ"
+			shift
+			gup_install_templ_parse_requirements "$@"
 			shift $#
 			;;
 
@@ -2745,6 +3084,13 @@ gup_install_parse_requirements() {
 			action="tailwindcss"
 			shift
 			gup_install_tailwindcss_parse_requirements "$@"
+			shift $#
+			;;
+
+		task)
+			action="task"
+			shift
+			gup_install_task_parse_requirements "$@"
 			shift $#
 			;;
 
@@ -2839,6 +3185,50 @@ gup_install_gup_parse_requirements() {
 
 	# :command.command_filter
 	action="install gup"
+
+	# :command.parse_requirements_while
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+
+			-?*)
+				printf "invalid option: %s\n" "$key" >&2
+				exit 1
+				;;
+
+			*)
+				# :command.parse_requirements_case
+				# :command.parse_requirements_case_simple
+				printf "invalid argument: %s\n" "$key" >&2
+				exit 1
+
+				;;
+
+		esac
+	done
+
+}
+
+# :command.parse_requirements
+gup_install_air_parse_requirements() {
+	# :command.fixed_flags_filter
+	while [[ $# -gt 0 ]]; do
+		case "${1:-}" in
+			--help | -h)
+				long_usage=yes
+				gup_install_air_usage
+				exit
+				;;
+
+			*)
+				break
+				;;
+
+		esac
+	done
+
+	# :command.command_filter
+	action="install air"
 
 	# :command.parse_requirements_while
 	while [[ $# -gt 0 ]]; do
@@ -3015,6 +3405,94 @@ gup_install_docker_compose_parse_requirements() {
 
 	# :command.command_filter
 	action="install docker-compose"
+
+	# :command.parse_requirements_while
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+
+			-?*)
+				printf "invalid option: %s\n" "$key" >&2
+				exit 1
+				;;
+
+			*)
+				# :command.parse_requirements_case
+				# :command.parse_requirements_case_simple
+				printf "invalid argument: %s\n" "$key" >&2
+				exit 1
+
+				;;
+
+		esac
+	done
+
+}
+
+# :command.parse_requirements
+gup_install_duf_parse_requirements() {
+	# :command.fixed_flags_filter
+	while [[ $# -gt 0 ]]; do
+		case "${1:-}" in
+			--help | -h)
+				long_usage=yes
+				gup_install_duf_usage
+				exit
+				;;
+
+			*)
+				break
+				;;
+
+		esac
+	done
+
+	# :command.command_filter
+	action="install duf"
+
+	# :command.parse_requirements_while
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+
+			-?*)
+				printf "invalid option: %s\n" "$key" >&2
+				exit 1
+				;;
+
+			*)
+				# :command.parse_requirements_case
+				# :command.parse_requirements_case_simple
+				printf "invalid argument: %s\n" "$key" >&2
+				exit 1
+
+				;;
+
+		esac
+	done
+
+}
+
+# :command.parse_requirements
+gup_install_gdu_parse_requirements() {
+	# :command.fixed_flags_filter
+	while [[ $# -gt 0 ]]; do
+		case "${1:-}" in
+			--help | -h)
+				long_usage=yes
+				gup_install_gdu_usage
+				exit
+				;;
+
+			*)
+				break
+				;;
+
+		esac
+	done
+
+	# :command.command_filter
+	action="install gdu"
 
 	# :command.parse_requirements_while
 	while [[ $# -gt 0 ]]; do
@@ -3942,6 +4420,50 @@ gup_install_promtail_parse_requirements() {
 }
 
 # :command.parse_requirements
+gup_install_scc_parse_requirements() {
+	# :command.fixed_flags_filter
+	while [[ $# -gt 0 ]]; do
+		case "${1:-}" in
+			--help | -h)
+				long_usage=yes
+				gup_install_scc_usage
+				exit
+				;;
+
+			*)
+				break
+				;;
+
+		esac
+	done
+
+	# :command.command_filter
+	action="install scc"
+
+	# :command.parse_requirements_while
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+
+			-?*)
+				printf "invalid option: %s\n" "$key" >&2
+				exit 1
+				;;
+
+			*)
+				# :command.parse_requirements_case
+				# :command.parse_requirements_case_simple
+				printf "invalid argument: %s\n" "$key" >&2
+				exit 1
+
+				;;
+
+		esac
+	done
+
+}
+
+# :command.parse_requirements
 gup_install_snmp_exporter_parse_requirements() {
 	# :command.fixed_flags_filter
 	while [[ $# -gt 0 ]]; do
@@ -3961,6 +4483,138 @@ gup_install_snmp_exporter_parse_requirements() {
 
 	# :command.command_filter
 	action="install snmp_exporter"
+
+	# :command.parse_requirements_while
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+
+			-?*)
+				printf "invalid option: %s\n" "$key" >&2
+				exit 1
+				;;
+
+			*)
+				# :command.parse_requirements_case
+				# :command.parse_requirements_case_simple
+				printf "invalid argument: %s\n" "$key" >&2
+				exit 1
+
+				;;
+
+		esac
+	done
+
+}
+
+# :command.parse_requirements
+gup_install_sqlc_parse_requirements() {
+	# :command.fixed_flags_filter
+	while [[ $# -gt 0 ]]; do
+		case "${1:-}" in
+			--help | -h)
+				long_usage=yes
+				gup_install_sqlc_usage
+				exit
+				;;
+
+			*)
+				break
+				;;
+
+		esac
+	done
+
+	# :command.command_filter
+	action="install sqlc"
+
+	# :command.parse_requirements_while
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+
+			-?*)
+				printf "invalid option: %s\n" "$key" >&2
+				exit 1
+				;;
+
+			*)
+				# :command.parse_requirements_case
+				# :command.parse_requirements_case_simple
+				printf "invalid argument: %s\n" "$key" >&2
+				exit 1
+
+				;;
+
+		esac
+	done
+
+}
+
+# :command.parse_requirements
+gup_install_swag_parse_requirements() {
+	# :command.fixed_flags_filter
+	while [[ $# -gt 0 ]]; do
+		case "${1:-}" in
+			--help | -h)
+				long_usage=yes
+				gup_install_swag_usage
+				exit
+				;;
+
+			*)
+				break
+				;;
+
+		esac
+	done
+
+	# :command.command_filter
+	action="install swag"
+
+	# :command.parse_requirements_while
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+
+			-?*)
+				printf "invalid option: %s\n" "$key" >&2
+				exit 1
+				;;
+
+			*)
+				# :command.parse_requirements_case
+				# :command.parse_requirements_case_simple
+				printf "invalid argument: %s\n" "$key" >&2
+				exit 1
+
+				;;
+
+		esac
+	done
+
+}
+
+# :command.parse_requirements
+gup_install_templ_parse_requirements() {
+	# :command.fixed_flags_filter
+	while [[ $# -gt 0 ]]; do
+		case "${1:-}" in
+			--help | -h)
+				long_usage=yes
+				gup_install_templ_usage
+				exit
+				;;
+
+			*)
+				break
+				;;
+
+		esac
+	done
+
+	# :command.command_filter
+	action="install templ"
 
 	# :command.parse_requirements_while
 	while [[ $# -gt 0 ]]; do
@@ -4049,6 +4703,50 @@ gup_install_tailwindcss_parse_requirements() {
 
 	# :command.command_filter
 	action="install tailwindcss"
+
+	# :command.parse_requirements_while
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+
+			-?*)
+				printf "invalid option: %s\n" "$key" >&2
+				exit 1
+				;;
+
+			*)
+				# :command.parse_requirements_case
+				# :command.parse_requirements_case_simple
+				printf "invalid argument: %s\n" "$key" >&2
+				exit 1
+
+				;;
+
+		esac
+	done
+
+}
+
+# :command.parse_requirements
+gup_install_task_parse_requirements() {
+	# :command.fixed_flags_filter
+	while [[ $# -gt 0 ]]; do
+		case "${1:-}" in
+			--help | -h)
+				long_usage=yes
+				gup_install_task_usage
+				exit
+				;;
+
+			*)
+				break
+				;;
+
+		esac
+	done
+
+	# :command.command_filter
+	action="install task"
 
 	# :command.parse_requirements_while
 	while [[ $# -gt 0 ]]; do
@@ -4638,10 +5336,13 @@ run() {
 	case "$action" in
 		"install") gup_install_command ;;
 		"install gup") gup_install_gup_command ;;
+		"install air") gup_install_air_command ;;
 		"install blackbox_exporter") gup_install_blackbox_exporter_command ;;
 		"install caddy2") gup_install_caddy2_command ;;
 		"install consul") gup_install_consul_command ;;
 		"install docker-compose") gup_install_docker_compose_command ;;
+		"install duf") gup_install_duf_command ;;
+		"install gdu") gup_install_gdu_command ;;
 		"install go") gup_install_go_command ;;
 		"install gotop") gup_install_gotop_command ;;
 		"install grafana") gup_install_grafana_command ;;
@@ -4662,9 +5363,14 @@ run() {
 		"install postgres_exporter") gup_install_postgres_exporter_command ;;
 		"install prometheus") gup_install_prometheus_command ;;
 		"install promtail") gup_install_promtail_command ;;
+		"install scc") gup_install_scc_command ;;
 		"install snmp_exporter") gup_install_snmp_exporter_command ;;
+		"install sqlc") gup_install_sqlc_command ;;
+		"install swag") gup_install_swag_command ;;
+		"install templ") gup_install_templ_command ;;
 		"install traefik") gup_install_traefik_command ;;
 		"install tailwindcss") gup_install_tailwindcss_command ;;
+		"install task") gup_install_task_command ;;
 		"install update") gup_install_update_command ;;
 		"install vagrant") gup_install_vagrant_command ;;
 		"install wkhtmltopdf") gup_install_wkhtmltopdf_command ;;

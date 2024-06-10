@@ -75,7 +75,7 @@ commands:
         help: pgcat postgresql pooler
         group: Utilities
       - name: podman
-        help: podman container system
+        help: podman container
         group: Containers
       - name: postgres_exporter
         help: postgres_exporter
@@ -103,6 +103,9 @@ commands:
       - name: wkhtmltopdf
         help: wkhtmltopdf
         group: Odoo
+      - name: zig
+        help: zig programming language
+        group: Language
       - name: zfsnap
         help: A portable, performant script to make rolling ZFS snapshots easy
         group: Utilities

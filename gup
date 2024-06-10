@@ -76,14 +76,13 @@ gup_install_usage() {
 	printf "  %s   nerdfonts installer\n" "nerdfonts        "
 	printf "  %s   update script for apt update\n" "update           "
 	echo
-	printf "%s\n" "Web Commands:"
+	printf "%s\n" "Development Commands:"
 	printf "  %s   Live reload for Go apps\n" "air              "
-	printf "  %s   caddy2 web server\n" "caddy2           "
-	printf "  %s   hugo website generator\n" "hugo             "
+	printf "  %s   A simple terminal UI for git commands\n" "lazygit          "
+	printf "  %s   an extremely fast Python linter and code formatter, written in Rust\n" "ruff             "
 	printf "  %s   Generate type-safe code from SQL\n" "sqlc             "
 	printf "  %s   Automatically generate RESTful API documentation with Swagger 2.0 for Go\n" "swag             "
 	printf "  %s   build HTML with Go\n" "templ            "
-	printf "  %s   traefik\n" "traefik          "
 	printf "  %s   tailwindcss cli\n" "tailwindcss      "
 	echo
 	printf "%s\n" "Monitoring Commands:"
@@ -94,6 +93,11 @@ gup_install_usage() {
 	printf "  %s   prometheus\n" "prometheus       "
 	printf "  %s   promtail\n" "promtail         "
 	printf "  %s   snmp_exporter\n" "snmp_exporter    "
+	echo
+	printf "%s\n" "Web Commands:"
+	printf "  %s   caddy2 web server\n" "caddy2           "
+	printf "  %s   hugo website generator\n" "hugo             "
+	printf "  %s   traefik\n" "traefik          "
 	echo
 	printf "%s\n" "Kubernetes Commands:"
 	printf "  %s   consul\n" "consul           "
@@ -106,21 +110,18 @@ gup_install_usage() {
 	printf "  %s   podman container\n" "podman           "
 	printf "  %s   HashiCorp Vagrant\n" "vagrant          "
 	echo
-	printf "%s\n" "utilities Commands:"
+	printf "%s\n" "Utilities Commands:"
 	printf "  %s   Disk Usage/Free Utility\n" "duf              "
 	printf "  %s   Fast disk usage analyzer with console interface written in Go\n" "gdu              "
+	printf "  %s   gotop terminal based graphical activity monitor\n" "gotop            "
+	printf "  %s   pgcat postgresql pooler\n" "pgcat            "
 	printf "  %s   Sloc Cloc and Code (scc)\n" "scc              "
 	printf "  %s   A task runner / simpler Make alternative written in Go\n" "task             "
+	printf "  %s   A portable, performant script to make rolling ZFS snapshots easy\n" "zfsnap           "
 	echo
 	printf "%s\n" "Language Commands:"
 	printf "  %s   go programming language\n" "go               "
 	printf "  %s   zig programming language\n" "zig              "
-	echo
-	printf "%s\n" "Utilities Commands:"
-	printf "  %s   gotop terminal based graphical activity monitor\n" "gotop            "
-	printf "  %s   A simple terminal UI for git commands\n" "lazygit          "
-	printf "  %s   pgcat postgresql pooler\n" "pgcat            "
-	printf "  %s   A portable, performant script to make rolling ZFS snapshots easy\n" "zfsnap           "
 	echo
 	printf "%s\n" "Editor Commands:"
 	printf "  %s   helix text editor\n" "helix            "
@@ -129,7 +130,6 @@ gup_install_usage() {
 	echo
 	printf "%s\n" "Odoo Commands:"
 	printf "  %s   odoo administration tool\n" "oda              "
-	printf "  %s   odoo podman administration tool\n" "odo              "
 	printf "  %s   wkhtmltopdf\n" "wkhtmltopdf      "
 	echo
 
@@ -798,35 +798,6 @@ gup_install_oda_usage() {
 }
 
 # :command.usage
-gup_install_odo_usage() {
-	if [[ -n $long_usage ]]; then
-		printf "gup install odo - odoo podman administration tool\n"
-		echo
-
-	else
-		printf "gup install odo - odoo podman administration tool\n"
-		echo
-
-	fi
-
-	printf "%s\n" "Usage:"
-	printf "  gup install odo\n"
-	printf "  gup install odo --help | -h\n"
-	echo
-
-	# :command.long_usage
-	if [[ -n $long_usage ]]; then
-		printf "%s\n" "Options:"
-
-		# :command.usage_fixed_flags
-		printf "  %s\n" "--help, -h"
-		printf "    Show this help\n"
-		echo
-
-	fi
-}
-
-# :command.usage
 gup_install_pgcat_usage() {
 	if [[ -n $long_usage ]]; then
 		printf "gup install pgcat - pgcat postgresql pooler\n"
@@ -957,6 +928,35 @@ gup_install_promtail_usage() {
 	printf "%s\n" "Usage:"
 	printf "  gup install promtail\n"
 	printf "  gup install promtail --help | -h\n"
+	echo
+
+	# :command.long_usage
+	if [[ -n $long_usage ]]; then
+		printf "%s\n" "Options:"
+
+		# :command.usage_fixed_flags
+		printf "  %s\n" "--help, -h"
+		printf "    Show this help\n"
+		echo
+
+	fi
+}
+
+# :command.usage
+gup_install_ruff_usage() {
+	if [[ -n $long_usage ]]; then
+		printf "gup install ruff - an extremely fast Python linter and code formatter, written in Rust\n"
+		echo
+
+	else
+		printf "gup install ruff - an extremely fast Python linter and code formatter, written in Rust\n"
+		echo
+
+	fi
+
+	printf "%s\n" "Usage:"
+	printf "  gup install ruff\n"
+	printf "  gup install ruff --help | -h\n"
 	echo
 
 	# :command.long_usage
@@ -2208,22 +2208,6 @@ gup_install_oda_command() {
 }
 
 # :command.function
-gup_install_odo_command() {
-	# src/install_odo_command.sh
-	REPO="https://raw.githubusercontent.com/ppreeper/odo"
-
-	if [ $(id -u) == 0 ]; then
-		IDIR="/usr/local/bin"
-		sudo wget -q ${REPO}/main/odo -O ${IDIR}/odo
-		chmod +x ${IDIR}/odo
-	else
-		IDIR="${HOME}/.local/bin"
-		wget -q ${REPO}/main/odo -O ${IDIR}/odo
-		chmod +x ${IDIR}/odo
-	fi
-}
-
-# :command.function
 gup_install_pgcat_command() {
 	# src/install_pgcat_command.sh
 	APP="pgcat"
@@ -2435,6 +2419,35 @@ _EOF_
 		config
 	fi
 
+}
+
+# :command.function
+gup_install_ruff_command() {
+	# src/install_ruff_command.sh
+	APP="ruff"
+	REPO="https://github.com/astral-sh/ruff"
+	vers=$(git ls-remote --tags ${REPO} | grep "refs/tags.*[0-9]$" | grep -v -e "rc" -e "alpha" -e "beta" | awk '{print $2}' | sed 's/refs\/tags\///g' | sort -V | uniq | tail -1)
+
+	BDIR=/usr/local/bin
+
+	function download() {
+			echo "download $1 version"
+			echo "installing ${vers}"
+			V=$(echo $vers | sed 's/^v//')
+			FN=${APP}-${V}-x86_64-unknown-linux-gnu.tar.gz
+			rm -f /tmp/${FN}
+			wget -qc ${REPO}/releases/download/${vers}/${FN} -O /tmp/${FN}
+			sudo tar -axf /tmp/${FN} -C ${BDIR}
+			rm -f /tmp/${FN}
+	}
+
+	if [ -z $(which ${APP}) ]; then
+			download new
+	else
+			APPBIN=$(which ${APP})
+			APPVER=$(${APPBIN} version | awk '{print "v"$2}')
+			[ "${APPVER}" = "${vers}" ] && echo "${APP} version is current" || download ${vers}
+	fi
 }
 
 # :command.function
@@ -2996,13 +3009,6 @@ gup_install_parse_requirements() {
 			shift $#
 			;;
 
-		odo)
-			action="odo"
-			shift
-			gup_install_odo_parse_requirements "$@"
-			shift $#
-			;;
-
 		pgcat)
 			action="pgcat"
 			shift
@@ -3035,6 +3041,13 @@ gup_install_parse_requirements() {
 			action="promtail"
 			shift
 			gup_install_promtail_parse_requirements "$@"
+			shift $#
+			;;
+
+		ruff)
+			action="ruff"
+			shift
+			gup_install_ruff_parse_requirements "$@"
 			shift $#
 			;;
 
@@ -4156,50 +4169,6 @@ gup_install_oda_parse_requirements() {
 }
 
 # :command.parse_requirements
-gup_install_odo_parse_requirements() {
-	# :command.fixed_flags_filter
-	while [[ $# -gt 0 ]]; do
-		case "${1:-}" in
-			--help | -h)
-				long_usage=yes
-				gup_install_odo_usage
-				exit
-				;;
-
-			*)
-				break
-				;;
-
-		esac
-	done
-
-	# :command.command_filter
-	action="install odo"
-
-	# :command.parse_requirements_while
-	while [[ $# -gt 0 ]]; do
-		key="$1"
-		case "$key" in
-
-			-?*)
-				printf "invalid option: %s\n" "$key" >&2
-				exit 1
-				;;
-
-			*)
-				# :command.parse_requirements_case
-				# :command.parse_requirements_case_simple
-				printf "invalid argument: %s\n" "$key" >&2
-				exit 1
-
-				;;
-
-		esac
-	done
-
-}
-
-# :command.parse_requirements
 gup_install_pgcat_parse_requirements() {
 	# :command.fixed_flags_filter
 	while [[ $# -gt 0 ]]; do
@@ -4395,6 +4364,50 @@ gup_install_promtail_parse_requirements() {
 
 	# :command.command_filter
 	action="install promtail"
+
+	# :command.parse_requirements_while
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+
+			-?*)
+				printf "invalid option: %s\n" "$key" >&2
+				exit 1
+				;;
+
+			*)
+				# :command.parse_requirements_case
+				# :command.parse_requirements_case_simple
+				printf "invalid argument: %s\n" "$key" >&2
+				exit 1
+
+				;;
+
+		esac
+	done
+
+}
+
+# :command.parse_requirements
+gup_install_ruff_parse_requirements() {
+	# :command.fixed_flags_filter
+	while [[ $# -gt 0 ]]; do
+		case "${1:-}" in
+			--help | -h)
+				long_usage=yes
+				gup_install_ruff_usage
+				exit
+				;;
+
+			*)
+				break
+				;;
+
+		esac
+	done
+
+	# :command.command_filter
+	action="install ruff"
 
 	# :command.parse_requirements_while
 	while [[ $# -gt 0 ]]; do
@@ -5357,12 +5370,12 @@ run() {
 		"install neovim") gup_install_neovim_command ;;
 		"install nerdfonts") gup_install_nerdfonts_command ;;
 		"install oda") gup_install_oda_command ;;
-		"install odo") gup_install_odo_command ;;
 		"install pgcat") gup_install_pgcat_command ;;
 		"install podman") gup_install_podman_command ;;
 		"install postgres_exporter") gup_install_postgres_exporter_command ;;
 		"install prometheus") gup_install_prometheus_command ;;
 		"install promtail") gup_install_promtail_command ;;
+		"install ruff") gup_install_ruff_command ;;
 		"install scc") gup_install_scc_command ;;
 		"install snmp_exporter") gup_install_snmp_exporter_command ;;
 		"install sqlc") gup_install_sqlc_command ;;

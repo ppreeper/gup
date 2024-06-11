@@ -78,6 +78,7 @@ gup_install_usage() {
 	echo
 	printf "%s\n" "Development Commands:"
 	printf "  %s   Live reload for Go apps\n" "air              "
+	printf "  %s   Go-blueprint allows users to spin up a quick Go project using a popular framework\n" "go-blueprint     "
 	printf "  %s   A simple terminal UI for git commands\n" "lazygit          "
 	printf "  %s   an extremely fast Python linter and code formatter, written in Rust\n" "ruff             "
 	printf "  %s   Generate type-safe code from SQL\n" "sqlc             "
@@ -397,6 +398,35 @@ gup_install_go_usage() {
 	printf "%s\n" "Usage:"
 	printf "  gup install go\n"
 	printf "  gup install go --help | -h\n"
+	echo
+
+	# :command.long_usage
+	if [[ -n $long_usage ]]; then
+		printf "%s\n" "Options:"
+
+		# :command.usage_fixed_flags
+		printf "  %s\n" "--help, -h"
+		printf "    Show this help\n"
+		echo
+
+	fi
+}
+
+# :command.usage
+gup_install_go_blueprint_usage() {
+	if [[ -n $long_usage ]]; then
+		printf "gup install go-blueprint - Go-blueprint allows users to spin up a quick Go project using a popular framework\n"
+		echo
+
+	else
+		printf "gup install go-blueprint - Go-blueprint allows users to spin up a quick Go project using a popular framework\n"
+		echo
+
+	fi
+
+	printf "%s\n" "Usage:"
+	printf "  gup install go-blueprint\n"
+	printf "  gup install go-blueprint --help | -h\n"
 	echo
 
 	# :command.long_usage
@@ -1825,6 +1855,12 @@ gup_install_go_command() {
 }
 
 # :command.function
+gup_install_go_blueprint_command() {
+	# src/install_go_blueprint_command.sh
+	go install github.com/melkeydev/go-blueprint@latest
+}
+
+# :command.function
 gup_install_gotop_command() {
 	# src/install_gotop_command.sh
 	APP="gotop"
@@ -2918,6 +2954,13 @@ gup_install_parse_requirements() {
 			shift $#
 			;;
 
+		go-blueprint)
+			action="go-blueprint"
+			shift
+			gup_install_go_blueprint_parse_requirements "$@"
+			shift $#
+			;;
+
 		gotop)
 			action="gotop"
 			shift
@@ -3550,6 +3593,50 @@ gup_install_go_parse_requirements() {
 
 	# :command.command_filter
 	action="install go"
+
+	# :command.parse_requirements_while
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+
+			-?*)
+				printf "invalid option: %s\n" "$key" >&2
+				exit 1
+				;;
+
+			*)
+				# :command.parse_requirements_case
+				# :command.parse_requirements_case_simple
+				printf "invalid argument: %s\n" "$key" >&2
+				exit 1
+
+				;;
+
+		esac
+	done
+
+}
+
+# :command.parse_requirements
+gup_install_go_blueprint_parse_requirements() {
+	# :command.fixed_flags_filter
+	while [[ $# -gt 0 ]]; do
+		case "${1:-}" in
+			--help | -h)
+				long_usage=yes
+				gup_install_go_blueprint_usage
+				exit
+				;;
+
+			*)
+				break
+				;;
+
+		esac
+	done
+
+	# :command.command_filter
+	action="install go-blueprint"
 
 	# :command.parse_requirements_while
 	while [[ $# -gt 0 ]]; do
@@ -5357,6 +5444,7 @@ run() {
 		"install duf") gup_install_duf_command ;;
 		"install gdu") gup_install_gdu_command ;;
 		"install go") gup_install_go_command ;;
+		"install go-blueprint") gup_install_go_blueprint_command ;;
 		"install gotop") gup_install_gotop_command ;;
 		"install grafana") gup_install_grafana_command ;;
 		"install helix") gup_install_helix_command ;;

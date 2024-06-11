@@ -34,6 +34,9 @@ commands:
       - name: go
         help: go programming language
         group: Language
+      - name: go-blueprint
+        help: Go-blueprint allows users to spin up a quick Go project using a popular framework
+        group: Development
       - name: gotop
         help: gotop terminal based graphical activity monitor
         group: Utilities

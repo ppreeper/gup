@@ -1,0 +1,1 @@
+go install github.com/gowebly/gowebly/v2@latest

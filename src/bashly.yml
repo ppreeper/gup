@@ -40,6 +40,9 @@ commands:
       - name: gotop
         help: gotop terminal based graphical activity monitor
         group: Utilities
+      - name: gowebly
+        help: CLI tool to create amazing web applications with Go
+        group: Development
       - name: grafana
         help: grafana
         group: Monitoring

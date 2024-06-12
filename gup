@@ -79,6 +79,7 @@ gup_install_usage() {
 	printf "%s\n" "Development Commands:"
 	printf "  %s   Live reload for Go apps\n" "air              "
 	printf "  %s   Go-blueprint allows users to spin up a quick Go project using a popular framework\n" "go-blueprint     "
+	printf "  %s   CLI tool to create amazing web applications with Go\n" "gowebly          "
 	printf "  %s   A simple terminal UI for git commands\n" "lazygit          "
 	printf "  %s   an extremely fast Python linter and code formatter, written in Rust\n" "ruff             "
 	printf "  %s   Generate type-safe code from SQL\n" "sqlc             "
@@ -456,6 +457,35 @@ gup_install_gotop_usage() {
 	printf "%s\n" "Usage:"
 	printf "  gup install gotop\n"
 	printf "  gup install gotop --help | -h\n"
+	echo
+
+	# :command.long_usage
+	if [[ -n $long_usage ]]; then
+		printf "%s\n" "Options:"
+
+		# :command.usage_fixed_flags
+		printf "  %s\n" "--help, -h"
+		printf "    Show this help\n"
+		echo
+
+	fi
+}
+
+# :command.usage
+gup_install_gowebly_usage() {
+	if [[ -n $long_usage ]]; then
+		printf "gup install gowebly - CLI tool to create amazing web applications with Go\n"
+		echo
+
+	else
+		printf "gup install gowebly - CLI tool to create amazing web applications with Go\n"
+		echo
+
+	fi
+
+	printf "%s\n" "Usage:"
+	printf "  gup install gowebly\n"
+	printf "  gup install gowebly --help | -h\n"
 	echo
 
 	# :command.long_usage
@@ -1894,6 +1924,12 @@ gup_install_gotop_command() {
 }
 
 # :command.function
+gup_install_gowebly_command() {
+	# src/install_gowebly_command.sh
+	go install github.com/gowebly/gowebly/v2@latest
+}
+
+# :command.function
 gup_install_grafana_command() {
 	# src/install_grafana_command.sh
 	sudo wget https://packages.grafana.com/gpg.key -O /etc/apt/trusted.gpg.d/grafana.gpg.asc
@@ -2968,6 +3004,13 @@ gup_install_parse_requirements() {
 			shift $#
 			;;
 
+		gowebly)
+			action="gowebly"
+			shift
+			gup_install_gowebly_parse_requirements "$@"
+			shift $#
+			;;
+
 		grafana)
 			action="grafana"
 			shift
@@ -3681,6 +3724,50 @@ gup_install_gotop_parse_requirements() {
 
 	# :command.command_filter
 	action="install gotop"
+
+	# :command.parse_requirements_while
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+
+			-?*)
+				printf "invalid option: %s\n" "$key" >&2
+				exit 1
+				;;
+
+			*)
+				# :command.parse_requirements_case
+				# :command.parse_requirements_case_simple
+				printf "invalid argument: %s\n" "$key" >&2
+				exit 1
+
+				;;
+
+		esac
+	done
+
+}
+
+# :command.parse_requirements
+gup_install_gowebly_parse_requirements() {
+	# :command.fixed_flags_filter
+	while [[ $# -gt 0 ]]; do
+		case "${1:-}" in
+			--help | -h)
+				long_usage=yes
+				gup_install_gowebly_usage
+				exit
+				;;
+
+			*)
+				break
+				;;
+
+		esac
+	done
+
+	# :command.command_filter
+	action="install gowebly"
 
 	# :command.parse_requirements_while
 	while [[ $# -gt 0 ]]; do
@@ -5446,6 +5533,7 @@ run() {
 		"install go") gup_install_go_command ;;
 		"install go-blueprint") gup_install_go_blueprint_command ;;
 		"install gotop") gup_install_gotop_command ;;
+		"install gowebly") gup_install_gowebly_command ;;
 		"install grafana") gup_install_grafana_command ;;
 		"install helix") gup_install_helix_command ;;
 		"install hugo") gup_install_hugo_command ;;

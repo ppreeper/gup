@@ -131,7 +131,8 @@ gup_install_usage() {
 	printf "  %s   NeoVIM\n" "neovim           "
 	echo
 	printf "%s\n" "Odoo Commands:"
-	printf "  %s   odoo administration tool\n" "oda              "
+	printf "  %s   odoo admin tool for client\n" "oda              "
+	printf "  %s   odoo admin tool for server\n" "odaserver        "
 	printf "  %s   wkhtmltopdf\n" "wkhtmltopdf      "
 	echo
 
@@ -831,11 +832,11 @@ gup_install_nerdfonts_usage() {
 # :command.usage
 gup_install_oda_usage() {
 	if [[ -n $long_usage ]]; then
-		printf "gup install oda - odoo administration tool\n"
+		printf "gup install oda - odoo admin tool for client\n"
 		echo
 
 	else
-		printf "gup install oda - odoo administration tool\n"
+		printf "gup install oda - odoo admin tool for client\n"
 		echo
 
 	fi
@@ -843,6 +844,35 @@ gup_install_oda_usage() {
 	printf "%s\n" "Usage:"
 	printf "  gup install oda\n"
 	printf "  gup install oda --help | -h\n"
+	echo
+
+	# :command.long_usage
+	if [[ -n $long_usage ]]; then
+		printf "%s\n" "Options:"
+
+		# :command.usage_fixed_flags
+		printf "  %s\n" "--help, -h"
+		printf "    Show this help\n"
+		echo
+
+	fi
+}
+
+# :command.usage
+gup_install_odaserver_usage() {
+	if [[ -n $long_usage ]]; then
+		printf "gup install odaserver - odoo admin tool for server\n"
+		echo
+
+	else
+		printf "gup install odaserver - odoo admin tool for server\n"
+		echo
+
+	fi
+
+	printf "%s\n" "Usage:"
+	printf "  gup install odaserver\n"
+	printf "  gup install odaserver --help | -h\n"
 	echo
 
 	# :command.long_usage
@@ -2262,21 +2292,42 @@ gup_install_nerdfonts_command() {
 # :command.function
 gup_install_oda_command() {
 	# src/install_oda_command.sh
-	REPO="https://raw.githubusercontent.com/ppreeper/oda"
+	APP="odacli"
+	REPO="https://github.com/ppreeper/oda"
+	vers=$(git ls-remote --tags ${REPO} | grep "refs/tags.*[0-9]$" | awk '{print $2}' | sed 's/refs\/tags\/v//' | sort -V | uniq | tail -1)
 
-	if [ $(id -u) == 0 ]; then
-		IDIR="/usr/local/bin"
-		sudo wget -q ${REPO}/main/oda -O ${IDIR}/oda
-		sudo wget -q ${REPO}/main/oda_db.py -O ${IDIR}/oda_db.py
-		chmod +x ${IDIR}/oda
-		chmod +x ${IDIR}/oda_db.py
-	else
-		IDIR="${HOME}/.local/bin"
-		wget -q ${REPO}/main/oda -O ${IDIR}/oda
-		wget -q ${REPO}/main/oda_db.py -O ${IDIR}/oda_db.py
-		chmod +x ${IDIR}/oda
-		chmod +x ${IDIR}/oda_db.py
-	fi
+	function download() {
+			echo "download $1 version"
+			echo "installing ${vers}"
+			FN=${APP}_${vers}_amd64.deb
+			rm -f /tmp/${FN}
+			wget -qc ${REPO}/releases/download/v${vers}/${FN} -O /tmp/${FN}
+			sudo apt install /tmp/${FN}
+			rm -f /tmp/${FN}
+	}
+
+	download new
+}
+
+# :command.function
+gup_install_odaserver_command() {
+	# src/install_odaserver_command.sh
+	APP="odaserver"
+	REPO="https://github.com/ppreeper/oda"
+	vers=$(git ls-remote --tags ${REPO} | grep "refs/tags.*[0-9]$" | awk '{print $2}' | sed 's/refs\/tags\/v//' | sort -V | uniq | tail -1)
+
+	function download() {
+			echo "download $1 version"
+			echo "installing ${vers}"
+			FN=${APP}_${vers}_amd64.deb
+			rm -f /tmp/${FN}
+			wget -qc ${REPO}/releases/download/v${vers}/${FN} -O /tmp/${FN}
+			sudo apt install /tmp/${FN}
+			rm -f /tmp/${FN}
+	}
+
+	download new
+
 }
 
 # :command.function
@@ -3092,6 +3143,13 @@ gup_install_parse_requirements() {
 			action="oda"
 			shift
 			gup_install_oda_parse_requirements "$@"
+			shift $#
+			;;
+
+		odaserver)
+			action="odaserver"
+			shift
+			gup_install_odaserver_parse_requirements "$@"
 			shift $#
 			;;
 
@@ -4343,6 +4401,50 @@ gup_install_oda_parse_requirements() {
 }
 
 # :command.parse_requirements
+gup_install_odaserver_parse_requirements() {
+	# :command.fixed_flags_filter
+	while [[ $# -gt 0 ]]; do
+		case "${1:-}" in
+			--help | -h)
+				long_usage=yes
+				gup_install_odaserver_usage
+				exit
+				;;
+
+			*)
+				break
+				;;
+
+		esac
+	done
+
+	# :command.command_filter
+	action="install odaserver"
+
+	# :command.parse_requirements_while
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+
+			-?*)
+				printf "invalid option: %s\n" "$key" >&2
+				exit 1
+				;;
+
+			*)
+				# :command.parse_requirements_case
+				# :command.parse_requirements_case_simple
+				printf "invalid argument: %s\n" "$key" >&2
+				exit 1
+
+				;;
+
+		esac
+	done
+
+}
+
+# :command.parse_requirements
 gup_install_pgcat_parse_requirements() {
 	# :command.fixed_flags_filter
 	while [[ $# -gt 0 ]]; do
@@ -5546,6 +5648,7 @@ run() {
 		"install neovim") gup_install_neovim_command ;;
 		"install nerdfonts") gup_install_nerdfonts_command ;;
 		"install oda") gup_install_oda_command ;;
+		"install odaserver") gup_install_odaserver_command ;;
 		"install pgcat") gup_install_pgcat_command ;;
 		"install podman") gup_install_podman_command ;;
 		"install postgres_exporter") gup_install_postgres_exporter_command ;;

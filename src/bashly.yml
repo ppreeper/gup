@@ -81,7 +81,10 @@ commands:
             repeatable: true
             allowed: [Ubuntu, UbuntuMono, Hack, FiraMono, Noto]
       - name: oda
-        help: odoo administration tool
+        help: odoo admin tool for client
+        group: Odoo
+      - name: odaserver
+        help: odoo admin tool for server
         group: Odoo
       - name: pgcat
         help: pgcat postgresql pooler

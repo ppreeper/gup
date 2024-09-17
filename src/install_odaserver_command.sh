@@ -1,4 +1,4 @@
-APP="odacli"
+APP="odaserver"
 REPO="https://github.com/ppreeper/oda"
 vers=$(git ls-remote --tags ${REPO} | grep "refs/tags.*[0-9]$" | awk '{print $2}' | sed 's/refs\/tags\/v//' | sort -V | uniq | tail -1)
 

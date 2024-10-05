@@ -11,3 +11,6 @@
 - bombardier (github.com/codesenberg/bombardier)
 - scc (github.com/boyter/scc)
 - timer (github.com/caarlos0/timer)
+- gdu
+- rainfrog (https://github.com/achristmascarl/rainfrog)
+

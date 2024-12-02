@@ -136,6 +136,12 @@ commands:
       - name: wkhtmltopdf
         help: wkhtmltopdf
         group: Odoo
+      - name: nodejs
+        help: nodejs js engine
+        group: Language
+      - name: deno
+        help: deno js engine
+        group: Language
       - name: zig
         help: zig programming language
         group: Language

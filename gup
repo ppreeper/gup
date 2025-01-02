@@ -64,6 +64,7 @@ gup_install_usage() {
 	printf "  %s   Live reload for Go apps\n" "air              "
 	printf "  %s   Go-blueprint allows users to spin up a quick Go project using a popular framework\n" "go-blueprint     "
 	printf "  %s   CLI tool to create amazing web applications with Go\n" "gowebly          "
+	printf "  %s   github cli\n" "githubcli        "
 	printf "  %s   A simple terminal UI for git commands\n" "lazygit          "
 	printf "  %s   an extremely fast Python linter and code formatter, written in Rust\n" "ruff             "
 	printf "  %s   Generate type-safe code from SQL\n" "sqlc             "
@@ -482,6 +483,27 @@ gup_install_kubectl_usage() {
 	printf "%s\n" "Usage:"
 	printf "  gup install kubectl\n"
 	printf "  gup install kubectl --help | -h\n"
+	echo
+
+	# :command.long_usage
+	if [[ -n "$long_usage" ]]; then
+		printf "%s\n" "Options:"
+
+		# :command.usage_fixed_flags
+		printf "  %s\n" "--help, -h"
+		printf "    Show this help\n"
+		echo
+
+	fi
+}
+
+# :command.usage
+gup_install_githubcli_usage() {
+	printf "gup install githubcli - github cli\n\n"
+
+	printf "%s\n" "Usage:"
+	printf "  gup install githubcli\n"
+	printf "  gup install githubcli --help | -h\n"
 	echo
 
 	# :command.long_usage
@@ -1723,6 +1745,41 @@ gup_install_kubectl_command() {
 }
 
 # :command.function
+gup_install_githubcli_command() {
+
+	# src/install_githubcli_command.sh
+	APP="gh"
+	REPO="https://github.com/cli/cli"
+	vers=$(git ls-remote --tags ${REPO} | grep "refs/tags.*[0-9]$" | awk '{print $2}' | sed 's/refs\/tags\///' | grep "^v" | sort -V | uniq | tail -1)
+
+	IDIR=/usr/local/lib
+	BDIR=/usr/local/bin
+
+	function download() {
+			echo "download $1 version"
+			VERS=$(echo ${vers}| sed 's/^v//')
+			echo "installing ${VERS}"
+			FN=${APP}_${VERS}_linux_amd64.tar.gz
+			rm -f /tmp/${FN}
+			wget -qc ${REPO}/releases/download/${vers}/${FN} -O /tmp/${FN}
+			sudo rm -rf ${IDIR}/${APP}
+			sudo mkdir -p ${IDIR}/${APP}
+			sudo tar -axf /tmp/${FN} --strip-components=1 -C ${IDIR}/${APP}
+			sudo ls ${IDIR}/${APP}/bin | sudo xargs -I {} ln -sf ${IDIR}/${APP}/bin/{} ${BDIR}/{}
+			rm -f /tmp/${FN}
+	}
+
+	if [ -z $(which ${APP}) ]; then
+			download new
+	else
+			VERS=$(echo ${vers}| sed 's/^v//')
+			APPBIN=$(which ${APP})
+			APPVER=$(${APPBIN} version | awk '{print $3}')
+			[ "${APPVER}" = "${VERS}" ] && echo "${APP} version is current" || download ${vers}
+	fi
+}
+
+# :command.function
 gup_install_lazygit_command() {
 
 	# src/install_lazygit_command.sh
@@ -2819,6 +2876,13 @@ gup_install_parse_requirements() {
 			shift $#
 			;;
 
+		githubcli)
+			action="githubcli"
+			shift
+			gup_install_githubcli_parse_requirements "$@"
+			shift $#
+			;;
+
 		lazygit)
 			action="lazygit"
 			shift
@@ -3799,6 +3863,51 @@ gup_install_kubectl_parse_requirements() {
 
 	# :command.command_filter
 	action="install kubectl"
+
+	# :command.parse_requirements_while
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+
+			-?*)
+				printf "invalid option: %s\n" "$key" >&2
+				exit 1
+				;;
+
+			*)
+				# :command.parse_requirements_case
+				# :command.parse_requirements_case_simple
+				printf "invalid argument: %s\n" "$key" >&2
+				exit 1
+
+				;;
+
+		esac
+	done
+
+}
+
+# :command.parse_requirements
+gup_install_githubcli_parse_requirements() {
+	# :command.fixed_flags_filter
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+			--help | -h)
+				long_usage=yes
+				gup_install_githubcli_usage
+				exit
+				;;
+
+			*)
+				break
+				;;
+
+		esac
+	done
+
+	# :command.command_filter
+	action="install githubcli"
 
 	# :command.parse_requirements_while
 	while [[ $# -gt 0 ]]; do
@@ -5519,6 +5628,7 @@ run() {
 		"install hugo") gup_install_hugo_command ;;
 		"install k9s") gup_install_k9s_command ;;
 		"install kubectl") gup_install_kubectl_command ;;
+		"install githubcli") gup_install_githubcli_command ;;
 		"install lazygit") gup_install_lazygit_command ;;
 		"install loki") gup_install_loki_command ;;
 		"install litexl") gup_install_litexl_command ;;

@@ -58,6 +58,9 @@ commands:
       - name: kubectl
         help: kubectl
         group: Kubernetes
+      - name: githubcli
+        help: github cli
+        group: Development
       - name: lazygit
         help: A simple terminal UI for git commands
         group: Development

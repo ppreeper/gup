@@ -111,6 +111,7 @@ gup_install_usage() {
 	printf "  %s   nodejs js engine\n" "nodejs           "
 	printf "  %s   deno js engine\n" "deno             "
 	printf "  %s   zig programming language\n" "zig              "
+	printf "  %s   zig language server\n" "zls              "
 	echo
 	printf "%s\n" "Editor Commands:"
 	printf "  %s   helix text editor\n" "helix            "
@@ -1101,6 +1102,27 @@ gup_install_zig_usage() {
 	printf "%s\n" "Usage:"
 	printf "  gup install zig\n"
 	printf "  gup install zig --help | -h\n"
+	echo
+
+	# :command.long_usage
+	if [[ -n "$long_usage" ]]; then
+		printf "%s\n" "Options:"
+
+		# :command.usage_fixed_flags
+		printf "  %s\n" "--help, -h"
+		printf "    Show this help\n"
+		echo
+
+	fi
+}
+
+# :command.usage
+gup_install_zls_usage() {
+	printf "gup install zls - zig language server\n\n"
+
+	printf "%s\n" "Usage:"
+	printf "  gup install zls\n"
+	printf "  gup install zls --help | -h\n"
 	echo
 
 	# :command.long_usage
@@ -2561,6 +2583,39 @@ gup_install_zig_command() {
 }
 
 # :command.function
+gup_install_zls_command() {
+
+	# src/install_zls_command.sh
+	APP="zls"
+	REPO="https://github.com/ziglang/zig"
+	DLREPO="https://builds.zigtools.org"
+	vers=$(git ls-remote --tags ${REPO} | grep "refs/tags/.*[0-9]$" | grep -v -e rc -e alpha -e beta | awk '{print $2}' | sed 's/refs\/tags\///' | sort -V | uniq | tail -1)
+
+	IDIR=/usr/local/lib
+	BDIR=/usr/local/bin
+
+	function download(){
+			echo "download $1 version"
+			echo "installing $vers"
+			FN=zls-linux-x86_64-$vers.tar.xz
+			rm -f /tmp/${FN}
+			wget -qc ${DLREPO}/${FN} -O /tmp/${FN}
+			sudo rm -f ${BDIR}/zls
+			sudo tar axf /tmp/${FN} -C ${BDIR} zls
+			rm -f /tmp/${FN}
+	}
+
+	if [ -z $(which ${APP}) ]; then
+			download new
+	else
+			APPBIN=$(which ${APP})
+			APPVER=$(${APPBIN} --version)
+			[ "${APPVER}" = "${vers}" ] && echo "${APP} version is current" || download ${vers}
+	fi
+
+}
+
+# :command.function
 gup_install_zfsnap_command() {
 
 	# src/install_zfsnap_command.sh
@@ -3076,6 +3131,13 @@ gup_install_parse_requirements() {
 			action="zig"
 			shift
 			gup_install_zig_parse_requirements "$@"
+			shift $#
+			;;
+
+		zls)
+			action="zls"
+			shift
+			gup_install_zls_parse_requirements "$@"
 			shift $#
 			;;
 
@@ -5217,6 +5279,51 @@ gup_install_zig_parse_requirements() {
 }
 
 # :command.parse_requirements
+gup_install_zls_parse_requirements() {
+	# :command.fixed_flags_filter
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+			--help | -h)
+				long_usage=yes
+				gup_install_zls_usage
+				exit
+				;;
+
+			*)
+				break
+				;;
+
+		esac
+	done
+
+	# :command.command_filter
+	action="install zls"
+
+	# :command.parse_requirements_while
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+
+			-?*)
+				printf "invalid option: %s\n" "$key" >&2
+				exit 1
+				;;
+
+			*)
+				# :command.parse_requirements_case
+				# :command.parse_requirements_case_simple
+				printf "invalid argument: %s\n" "$key" >&2
+				exit 1
+
+				;;
+
+		esac
+	done
+
+}
+
+# :command.parse_requirements
 gup_install_zfsnap_parse_requirements() {
 	# :command.fixed_flags_filter
 	while [[ $# -gt 0 ]]; do
@@ -5657,6 +5764,7 @@ run() {
 		"install nodejs") gup_install_nodejs_command ;;
 		"install deno") gup_install_deno_command ;;
 		"install zig") gup_install_zig_command ;;
+		"install zls") gup_install_zls_command ;;
 		"install zfsnap") gup_install_zfsnap_command ;;
 		"remove") gup_remove_command ;;
 		"remove consul") gup_remove_consul_command ;;

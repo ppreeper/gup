@@ -148,6 +148,9 @@ commands:
       - name: zig
         help: zig programming language
         group: Language
+      - name: zls
+        help: zig language server
+        group: Language
       - name: zfsnap
         help: A portable, performant script to make rolling ZFS snapshots easy
         group: Utilities

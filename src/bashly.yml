@@ -105,7 +105,10 @@ commands:
         help: promtail
         group: Monitoring
       - name: ruff
-        help: an extremely fast Python linter and code formatter, written in Rust
+        help: an extremely fast Python linter and code formatter
+        group: Development
+      - name: uv
+        help: extremely fast Python package installer and resolver
         group: Development
       - name: scc
         help: Sloc Cloc and Code (scc)

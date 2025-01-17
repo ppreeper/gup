@@ -66,7 +66,8 @@ gup_install_usage() {
 	printf "  %s   CLI tool to create amazing web applications with Go\n" "gowebly          "
 	printf "  %s   github cli\n" "githubcli        "
 	printf "  %s   A simple terminal UI for git commands\n" "lazygit          "
-	printf "  %s   an extremely fast Python linter and code formatter, written in Rust\n" "ruff             "
+	printf "  %s   an extremely fast Python linter and code formatter\n" "ruff             "
+	printf "  %s   extremely fast Python package installer and resolver\n" "uv               "
 	printf "  %s   Generate type-safe code from SQL\n" "sqlc             "
 	printf "  %s   Automatically generate RESTful API documentation with Swagger 2.0 for Go\n" "swag             "
 	printf "  %s   build HTML with Go\n" "templ            "
@@ -803,11 +804,32 @@ gup_install_promtail_usage() {
 
 # :command.usage
 gup_install_ruff_usage() {
-	printf "gup install ruff - an extremely fast Python linter and code formatter, written in Rust\n\n"
+	printf "gup install ruff - an extremely fast Python linter and code formatter\n\n"
 
 	printf "%s\n" "Usage:"
 	printf "  gup install ruff\n"
 	printf "  gup install ruff --help | -h\n"
+	echo
+
+	# :command.long_usage
+	if [[ -n "$long_usage" ]]; then
+		printf "%s\n" "Options:"
+
+		# :command.usage_fixed_flags
+		printf "  %s\n" "--help, -h"
+		printf "    Show this help\n"
+		echo
+
+	fi
+}
+
+# :command.usage
+gup_install_uv_usage() {
+	printf "gup install uv - extremely fast Python package installer and resolver\n\n"
+
+	printf "%s\n" "Usage:"
+	printf "  gup install uv\n"
+	printf "  gup install uv --help | -h\n"
 	echo
 
 	# :command.long_usage
@@ -2311,6 +2333,35 @@ gup_install_ruff_command() {
 }
 
 # :command.function
+gup_install_uv_command() {
+
+	# src/install_uv_command.sh
+	APP="uv"
+	REPO="https://github.com/astral-sh/uv"
+	vers=$(git ls-remote --tags ${REPO} | grep "refs/tags.*[0-9]$" | awk '{print $2}' | sed 's/refs\/tags\///' | grep -v "^v" | sort -V | uniq | tail -1)
+
+	BDIR=/usr/local/bin
+
+	function download() {
+			echo "download $1 version"
+			echo "installing ${vers}"
+			FN=${APP}-x86_64-unknown-linux-gnu.tar.gz
+			rm -f /tmp/${FN}
+			wget -qc ${REPO}/releases/download/${vers}/${FN} -O /tmp/${FN}
+			sudo tar -axf /tmp/${FN} --strip-components=1 -C ${BDIR}
+			rm -f /tmp/${FN}
+	}
+
+	if [ -z $(which ${APP}) ]; then
+			download new
+	else
+			APPBIN=$(which ${APP})
+			APPVER=$(${APPBIN} version | awk '{print $2}')
+			[ "${APPVER}" = "${vers}" ] && echo "${APP} version is current" || download ${vers}
+	fi
+}
+
+# :command.function
 gup_install_scc_command() {
 
 	# src/install_scc_command.sh
@@ -3033,6 +3084,13 @@ gup_install_parse_requirements() {
 			action="ruff"
 			shift
 			gup_install_ruff_parse_requirements "$@"
+			shift $#
+			;;
+
+		uv)
+			action="uv"
+			shift
+			gup_install_uv_parse_requirements "$@"
 			shift $#
 			;;
 
@@ -4649,6 +4707,51 @@ gup_install_ruff_parse_requirements() {
 }
 
 # :command.parse_requirements
+gup_install_uv_parse_requirements() {
+	# :command.fixed_flags_filter
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+			--help | -h)
+				long_usage=yes
+				gup_install_uv_usage
+				exit
+				;;
+
+			*)
+				break
+				;;
+
+		esac
+	done
+
+	# :command.command_filter
+	action="install uv"
+
+	# :command.parse_requirements_while
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+
+			-?*)
+				printf "invalid option: %s\n" "$key" >&2
+				exit 1
+				;;
+
+			*)
+				# :command.parse_requirements_case
+				# :command.parse_requirements_case_simple
+				printf "invalid argument: %s\n" "$key" >&2
+				exit 1
+
+				;;
+
+		esac
+	done
+
+}
+
+# :command.parse_requirements
 gup_install_scc_parse_requirements() {
 	# :command.fixed_flags_filter
 	while [[ $# -gt 0 ]]; do
@@ -5750,6 +5853,7 @@ run() {
 		"install prometheus") gup_install_prometheus_command ;;
 		"install promtail") gup_install_promtail_command ;;
 		"install ruff") gup_install_ruff_command ;;
+		"install uv") gup_install_uv_command ;;
 		"install scc") gup_install_scc_command ;;
 		"install snmp_exporter") gup_install_snmp_exporter_command ;;
 		"install sqlc") gup_install_sqlc_command ;;

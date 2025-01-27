@@ -147,6 +147,8 @@ commands:
         group: Language
       - name: deno
         help: deno js engine
+      - name: bun
+        help: bun js engine
         group: Language
       - name: zig
         help: zig programming language

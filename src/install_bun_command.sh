@@ -2,11 +2,7 @@ APP="bun"
 REPO="https://github.com/oven-sh/bun"
 vers=$(git ls-remote --tags ${REPO} | grep "refs/tags/bun-.*[0-9]$" | grep -v -e "build" -e "alpha" -e "beta" | awk '{print $2}' | sed 's/refs\/tags\///g' | sort -V | uniq | tail -1)
 
-if [ $(id -u) == 0 ]; then
-  BDIR="/usr/local/bin"
-else
-  BDIR="${HOME}/.bun/bin"
-fi
+BDIR="${HOME}/.bun"
 
 platform=$(uname -ms)
 target=""
@@ -58,7 +54,7 @@ download() {
   rm -f /tmp/${FN}
   wget -qc ${REPO}/releases/download/${vers}/${FN} -O /tmp/${FN}
   unzip /tmp/${FN} -d /tmp/${APP}-${target}
-  install /tmp/${APP}-${target}/${APP}-${target}/${APP} ${BDIR}/${APP}
+  install /tmp/${APP}-${target}/${APP}-${target}/${APP} ${BDIR}/bin/${APP}
   rm -rf /tmp/${APP}-${target}
   rm -f /tmp/${FN}
 }

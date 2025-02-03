@@ -125,6 +125,9 @@ gup_install_usage() {
 	printf "  %s   odoo admin tool for server\n" "odaserver        "
 	printf "  %s   wkhtmltopdf\n" "wkhtmltopdf      "
 	echo
+	printf "%s\n" "Cloud Commands:"
+	printf "  %s   DigitalOcean cli tool\n" "doctl            "
+	echo
 
 	# :command.long_usage
 	if [[ -n "$long_usage" ]]; then
@@ -1167,6 +1170,27 @@ gup_install_zls_usage() {
 	printf "%s\n" "Usage:"
 	printf "  gup install zls\n"
 	printf "  gup install zls --help | -h\n"
+	echo
+
+	# :command.long_usage
+	if [[ -n "$long_usage" ]]; then
+		printf "%s\n" "Options:"
+
+		# :command.usage_fixed_flags
+		printf "  %s\n" "--help, -h"
+		printf "    Show this help\n"
+		echo
+
+	fi
+}
+
+# :command.usage
+gup_install_doctl_usage() {
+	printf "gup install doctl - DigitalOcean cli tool\n\n"
+
+	printf "%s\n" "Usage:"
+	printf "  gup install doctl\n"
+	printf "  gup install doctl --help | -h\n"
 	echo
 
 	# :command.long_usage
@@ -2765,6 +2789,41 @@ gup_install_zls_command() {
 }
 
 # :command.function
+gup_install_doctl_command() {
+
+	# src/install_doctl_command.sh
+	APP="doctl"
+	REPO="https://github.com/digitalocean/doctl"
+	vers=$(git ls-remote --tags ${REPO} | grep "refs/tags.*[0-9]$" | awk '{print $2}' | sed 's/refs\/tags\///g' | sort -V | uniq | tail -1)
+
+	if [ $(id -u) == 0 ]; then
+		BDIR="/usr/local/bin"
+	else
+		BDIR="${HOME}/.local/bin"
+	fi
+
+	function download() {
+			echo "download $1 version"
+			echo "installing ${vers}"
+			V=$(echo ${vers} | sed 's/^v//')
+			FN=${APP}-${V}-linux-amd64.tar.gz
+			DF=${APP}.tar.gz
+			wget -qc ${REPO}/releases/download/${vers}/${FN} -O /tmp/${DF}
+			tar -axf /tmp/${DF} -C ${BDIR} ${APP}
+			chmod +x ${BDIR}/${APP}
+			rm -f /tmp/${DF}
+	}
+
+	if [ -z $(which ${APP}) ]; then
+			download new
+	else
+			APPBIN=$(which ${APP})
+			APPVER=$(${APPBIN} version | awk '{print $2}' | awk -F'-' '{print $1}')
+			[ "${APPVER}" = "${vers}" ] && echo "${APP} version is current" || download ${vers}
+	fi
+}
+
+# :command.function
 gup_install_zfsnap_command() {
 
 	# src/install_zfsnap_command.sh
@@ -3301,6 +3360,13 @@ gup_install_parse_requirements() {
 			action="zls"
 			shift
 			gup_install_zls_parse_requirements "$@"
+			shift $#
+			;;
+
+		doctl)
+			action="doctl"
+			shift
+			gup_install_doctl_parse_requirements "$@"
 			shift $#
 			;;
 
@@ -5577,6 +5643,51 @@ gup_install_zls_parse_requirements() {
 }
 
 # :command.parse_requirements
+gup_install_doctl_parse_requirements() {
+	# :command.fixed_flags_filter
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+			--help | -h)
+				long_usage=yes
+				gup_install_doctl_usage
+				exit
+				;;
+
+			*)
+				break
+				;;
+
+		esac
+	done
+
+	# :command.command_filter
+	action="install doctl"
+
+	# :command.parse_requirements_while
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+
+			-?*)
+				printf "invalid option: %s\n" "$key" >&2
+				exit 1
+				;;
+
+			*)
+				# :command.parse_requirements_case
+				# :command.parse_requirements_case_simple
+				printf "invalid argument: %s\n" "$key" >&2
+				exit 1
+
+				;;
+
+		esac
+	done
+
+}
+
+# :command.parse_requirements
 gup_install_zfsnap_parse_requirements() {
 	# :command.fixed_flags_filter
 	while [[ $# -gt 0 ]]; do
@@ -6020,6 +6131,7 @@ run() {
 		"install bun") gup_install_bun_command ;;
 		"install zig") gup_install_zig_command ;;
 		"install zls") gup_install_zls_command ;;
+		"install doctl") gup_install_doctl_command ;;
 		"install zfsnap") gup_install_zfsnap_command ;;
 		"remove") gup_remove_command ;;
 		"remove consul") gup_remove_consul_command ;;

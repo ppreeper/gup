@@ -156,6 +156,9 @@ commands:
       - name: zls
         help: zig language server
         group: Language
+      - name: doctl
+        help: DigitalOcean cli tool
+        group: Cloud
       - name: zfsnap
         help: A portable, performant script to make rolling ZFS snapshots easy
         group: Utilities

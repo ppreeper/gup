@@ -70,6 +70,7 @@ gup_install_usage() {
 	printf "  %s   an extremely fast Python linter and code formatter\n" "ruff             "
 	printf "  %s   extremely fast Python package installer and resolver\n" "uv               "
 	printf "  %s   Generate type-safe code from SQL\n" "sqlc             "
+	printf "  %s   Gitea git hosting server binary\n" "gitea            "
 	printf "  %s   Automatically generate RESTful API documentation with Swagger 2.0 for Go\n" "swag             "
 	printf "  %s   build HTML with Go\n" "templ            "
 	printf "  %s   tailwindcss cli\n" "tailwindcss      "
@@ -897,6 +898,27 @@ gup_install_sqlc_usage() {
 	printf "%s\n" "Usage:"
 	printf "  gup install sqlc\n"
 	printf "  gup install sqlc --help | -h\n"
+	echo
+
+	# :command.long_usage
+	if [[ -n "$long_usage" ]]; then
+		printf "%s\n" "Options:"
+
+		# :command.usage_fixed_flags
+		printf "  %s\n" "--help, -h"
+		printf "    Show this help\n"
+		echo
+
+	fi
+}
+
+# :command.usage
+gup_install_gitea_usage() {
+	printf "gup install gitea - Gitea git hosting server binary\n\n"
+
+	printf "%s\n" "Usage:"
+	printf "  gup install gitea\n"
+	printf "  gup install gitea --help | -h\n"
 	echo
 
 	# :command.long_usage
@@ -2457,6 +2479,39 @@ gup_install_sqlc_command() {
 }
 
 # :command.function
+gup_install_gitea_command() {
+
+	# src/install_gitea_command.sh
+	APP="gitea"
+	REPO="https://github.com/go-gitea/gitea"
+	DLREPO="https://dl.gitea.com/gitea"
+	vers=$(git ls-remote --tags ${REPO} | awk '{print $2}' | awk -F'/' '{print $NF}' | grep -v -e "rc" -e "dev" | grep '[0-9]$' | sed 's/^v//' | sort -V | uniq | tail -1)
+
+	if [ "$(id -u)" == 0 ]; then
+		BDIR="/usr/local/bin"
+	else
+		BDIR="${HOME}/.local/bin"
+	fi
+
+	function download() {
+			echo "download $1 version"
+			echo "installing ${vers}"
+			mkdir -p ${BDIR}
+			FN=${APP}-${vers}-linux-amd64
+			wget -qO ${BDIR}/${APP} ${DLREPO}/${vers}/${FN}
+			chmod +x ${BDIR}/${APP}
+	}
+
+	if [ -z "$(which ${APP})" ]; then
+			download new
+	else
+		APPBIN=$(which ${APP})
+		APPVER=$(${APPBIN} --version | awk '{print $3}')
+		[ "${APPVER}" = "${vers}" ] && echo "${APP} version is current" || download "${vers}"
+	fi
+}
+
+# :command.function
 gup_install_swag_command() {
 
 	# src/install_swag_command.sh
@@ -3269,6 +3324,13 @@ gup_install_parse_requirements() {
 			action="sqlc"
 			shift
 			gup_install_sqlc_parse_requirements "$@"
+			shift $#
+			;;
+
+		gitea)
+			action="gitea"
+			shift
+			gup_install_gitea_parse_requirements "$@"
 			shift $#
 			;;
 
@@ -5058,6 +5120,51 @@ gup_install_sqlc_parse_requirements() {
 }
 
 # :command.parse_requirements
+gup_install_gitea_parse_requirements() {
+	# :command.fixed_flags_filter
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+			--help | -h)
+				long_usage=yes
+				gup_install_gitea_usage
+				exit
+				;;
+
+			*)
+				break
+				;;
+
+		esac
+	done
+
+	# :command.command_filter
+	action="install gitea"
+
+	# :command.parse_requirements_while
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+
+			-?*)
+				printf "invalid option: %s\n" "$key" >&2
+				exit 1
+				;;
+
+			*)
+				# :command.parse_requirements_case
+				# :command.parse_requirements_case_simple
+				printf "invalid argument: %s\n" "$key" >&2
+				exit 1
+
+				;;
+
+		esac
+	done
+
+}
+
+# :command.parse_requirements
 gup_install_swag_parse_requirements() {
 	# :command.fixed_flags_filter
 	while [[ $# -gt 0 ]]; do
@@ -6118,6 +6225,7 @@ run() {
 		"install scc") gup_install_scc_command ;;
 		"install snmp_exporter") gup_install_snmp_exporter_command ;;
 		"install sqlc") gup_install_sqlc_command ;;
+		"install gitea") gup_install_gitea_command ;;
 		"install swag") gup_install_swag_command ;;
 		"install templ") gup_install_templ_command ;;
 		"install traefik") gup_install_traefik_command ;;

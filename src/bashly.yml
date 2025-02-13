@@ -119,6 +119,9 @@ commands:
       - name: sqlc
         help: Generate type-safe code from SQL
         group: Development
+      - name: gitea
+        help: Gitea git hosting server binary
+        group: Development
       - name: swag
         help: Automatically generate RESTful API documentation with Swagger 2.0 for Go
         group: Development

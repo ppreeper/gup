@@ -22,6 +22,9 @@ commands:
       - name: sqlc
         help: Generate type-safe code from SQL
         group: Development
+      - name: upx
+        help: Ultimate Packer for eXecutables
+        group: Development
       - name: tailwindcss
         help: tailwindcss cli
         group: Development

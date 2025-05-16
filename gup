@@ -66,6 +66,7 @@ gup_install_usage() {
 	printf "  %s   A simple terminal UI for git commands\n" "lazygit          "
 	printf "  %s   Gitea git hosting server binary\n" "gitea            "
 	printf "  %s   Generate type-safe code from SQL\n" "sqlc             "
+	printf "  %s   Ultimate Packer for eXecutables\n" "upx              "
 	printf "  %s   tailwindcss cli\n" "tailwindcss      "
 	echo
 	printf "%s\n" "Go Development Commands:"
@@ -244,6 +245,27 @@ gup_install_sqlc_usage() {
 	printf "%s\n" "Usage:"
 	printf "  gup install sqlc\n"
 	printf "  gup install sqlc --help | -h\n"
+	echo
+
+	# :command.long_usage
+	if [[ -n "$long_usage" ]]; then
+		printf "%s\n" "Options:"
+
+		# :command.usage_fixed_flags
+		printf "  %s\n" "--help, -h"
+		printf "    Show this help\n"
+		echo
+
+	fi
+}
+
+# :command.usage
+gup_install_upx_usage() {
+	printf "gup install upx - Ultimate Packer for eXecutables\n\n"
+
+	printf "%s\n" "Usage:"
+	printf "  gup install upx\n"
+	printf "  gup install upx --help | -h\n"
 	echo
 
 	# :command.long_usage
@@ -1642,6 +1664,40 @@ gup_install_sqlc_command() {
 
 	# src/install_sqlc_command.sh
 	go install github.com/sqlc-dev/sqlc/cmd/sqlc@latest
+}
+
+# :command.function
+gup_install_upx_command() {
+
+	# src/install_upx_command.sh
+	APP="upx"
+	REPO="https://github.com/upx/upx"
+	vers=$(git ls-remote --tags ${REPO} | grep "refs/tags.*[0-9]$" | awk '{print $2}' | sed 's/refs\/tags\///g' | sort -V | uniq | tail -1)
+
+	BDIR="${HOME}"/.local/bin
+	TMPDIR=$(mktemp -u -d)
+
+	function download() {
+			echo "download $1 version"
+			echo "installing ${vers}"
+			FVER=$(echo "${vers}" | sed 's/v//g')
+			FNAME="upx-${FVER}-amd64_linux.tar.xz"
+			mkdir -p "${BDIR}"
+			mkdir -p "${TMPDIR}"
+			wget -qO /tmp/"${FNAME}" "${REPO}"/releases/download/"${vers}"/"${FNAME}"
+			tar -axf /tmp/"${FNAME}" --strip-components=1 -C "${TMPDIR}"
+			cp -f "${TMPDIR}"/"${APP}" "${BDIR}"/"${APP}"
+			rm -rf "/tmp/${FNAME}"
+			rm -rf "${TMPDIR}"
+	}
+
+	if [ -z "$(which "${APP}")" ]; then
+			download new
+	else
+			APPBIN=$(which ${APP})
+			APPVER=$(${APPBIN} -V | grep -e "^upx" | awk '{print "v"$2}')
+			[ "${APPVER}" = "${vers}" ] && echo "${APP} version is current" || download "${vers}"
+	fi
 }
 
 # :command.function
@@ -3174,6 +3230,13 @@ gup_install_parse_requirements() {
 			shift $#
 			;;
 
+		upx)
+			action="upx"
+			shift
+			gup_install_upx_parse_requirements "$@"
+			shift $#
+			;;
+
 		tailwindcss)
 			action="tailwindcss"
 			shift
@@ -3754,6 +3817,51 @@ gup_install_sqlc_parse_requirements() {
 
 	# :command.command_filter
 	action="install sqlc"
+
+	# :command.parse_requirements_while
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+
+			-?*)
+				printf "invalid option: %s\n" "$key" >&2
+				exit 1
+				;;
+
+			*)
+				# :command.parse_requirements_case
+				# :command.parse_requirements_case_simple
+				printf "invalid argument: %s\n" "$key" >&2
+				exit 1
+
+				;;
+
+		esac
+	done
+
+}
+
+# :command.parse_requirements
+gup_install_upx_parse_requirements() {
+	# :command.fixed_flags_filter
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+			--help | -h)
+				long_usage=yes
+				gup_install_upx_usage
+				exit
+				;;
+
+			*)
+				break
+				;;
+
+		esac
+	done
+
+	# :command.command_filter
+	action="install upx"
 
 	# :command.parse_requirements_while
 	while [[ $# -gt 0 ]]; do
@@ -6362,6 +6470,7 @@ run() {
 		"install lazygit") gup_install_lazygit_command ;;
 		"install gitea") gup_install_gitea_command ;;
 		"install sqlc") gup_install_sqlc_command ;;
+		"install upx") gup_install_upx_command ;;
 		"install tailwindcss") gup_install_tailwindcss_command ;;
 		"install air") gup_install_air_command ;;
 		"install go-blueprint") gup_install_go_blueprint_command ;;

@@ -10,6 +10,7 @@ function download(){
     echo "download $1 version"
     echo "installing $vers"
     FN=zig-linux-x86_64-$vers.tar.xz
+    FN=zig-x86_64-linux-$vers.tar.xz
     rm -f /tmp/${FN}
     wget -qc ${DLREPO}/$vers/${FN} -O /tmp/${FN}
     sudo rm -f ${BDIR}/zig
@@ -27,4 +28,3 @@ else
     APPVER=$(${APPBIN} version)
     [ "${APPVER}" = "${vers}" ] && echo "${APP} version is current" || download ${vers}
 fi
-

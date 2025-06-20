@@ -58,6 +58,9 @@ commands:
       - name: blackbox_exporter
         help: blackbox_exporter
         group: Monitoring
+      - name: btop
+        help: btop
+        group: Monitoring
       - name: caddy2
         help: caddy2 web server
         group: Web

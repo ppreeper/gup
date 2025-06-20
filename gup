@@ -84,6 +84,7 @@ gup_install_usage() {
 	echo
 	printf "%s\n" "Monitoring Commands:"
 	printf "  %s   blackbox_exporter\n" "blackbox_exporter"
+	printf "  %s   btop\n" "btop             "
 	printf "  %s   grafana\n" "grafana          "
 	printf "  %s   loki\n" "loki             "
 	printf "  %s   postgres_exporter\n" "postgres_exporter"
@@ -497,6 +498,27 @@ gup_install_blackbox_exporter_usage() {
 	printf "%s\n" "Usage:"
 	printf "  gup install blackbox_exporter\n"
 	printf "  gup install blackbox_exporter --help | -h\n"
+	echo
+
+	# :command.long_usage
+	if [[ -n "$long_usage" ]]; then
+		printf "%s\n" "Options:"
+
+		# :command.usage_fixed_flags
+		printf "  %s\n" "--help, -h"
+		printf "    Show this help\n"
+		echo
+
+	fi
+}
+
+# :command.usage
+gup_install_btop_usage() {
+	printf "gup install btop - btop\n\n"
+
+	printf "%s\n" "Usage:"
+	printf "  gup install btop\n"
+	printf "  gup install btop --help | -h\n"
 	echo
 
 	# :command.long_usage
@@ -1872,6 +1894,68 @@ gup_install_blackbox_exporter_command() {
 			APPBIN=$(which ${APP})
 			APPVER=$(${APPBIN} --version 2>&1 | grep -i "^${APP}" | awk '{print $2}')
 			[ "${APPVER}" = "${vers}" ] && echo "${APP} version is current" || download ${vers}
+	fi
+}
+
+# :command.function
+gup_install_btop_command() {
+
+	# src/install_btop_command.sh
+	APP="btop"
+	REPO="https://github.com/aristocratos/btop"
+	vers=$(git ls-remote --tags "${REPO}" | grep "refs/tags.*[0-9]$" | awk '{print $2}' | sed 's/refs\/tags\///g' | sort -V | uniq | tail -1)
+
+	PREFIX="/usr/local"
+
+	function download() {
+			echo "download $1 version"
+			echo "installing ${vers}"
+			FN="${APP}-x86_64-linux-musl.tbz"
+
+			rm -f /tmp/btop.tbz
+			wget -qc "${REPO}/releases/download/${vers}/${FN}" -O /tmp/btop.tbz
+
+			rm -rf /tmp/btop
+			mkdir -p /tmp/btop
+			tar -xjf /tmp/btop.tbz -C /tmp/btop --strip-components=2
+
+			# required directories
+			mkdir -p "${PREFIX}/bin"
+			mkdir -p "${PREFIX}/share/${APP}"
+			mkdir -p "${PREFIX}/share/${APP}/themes"
+			mkdir -p "${PREFIX}/share/applications"
+			mkdir -p "${PREFIX}/share/icons/hicolor/48x48/apps"
+			mkdir -p "${PREFIX}/share/icons/hicolor/scalable/apps"
+
+			# btop binary
+			mkdir -p "${PREFIX}/bin"
+			cp /tmp/btop/bin/btop "${PREFIX}/bin/"
+
+			# doc
+			cp /tmp/btop/README.md "${PREFIX}/share/${APP}/README.md"
+
+			# Themes
+			cp /tmp/btop/themes/* "${PREFIX}/share/${APP}/themes/"
+
+			# desktop file
+			cp /tmp/btop/btop.desktop "${PREFIX}/share/applications/btop.desktop"
+
+			# icons
+			cp /tmp/btop/Img/icon.png "${PREFIX}/share/icons/hicolor/48x48/apps/btop.png"
+			cp /tmp/btop/Img/icon.svg "${PREFIX}/share/icons/hicolor/scalable/apps/btop.svg"
+
+			# cleanup
+			rm -rf /tmp/btop
+			rm -f /tmp/btop.tbz
+	}
+
+	if [ -z $(which "${APP}") ]; then
+			download new
+	else
+			APPBIN=$(which "${APP}")
+			APPVER=$(${APPBIN} --version | grep "^btop version:" | awk -F':' '{print $2}' | sed -E 's/\x1B\[[0-9;]*[a-zA-Z]//g' | awk '{$1=$1; print}')
+			version=$(echo "${vers}" | sed 's/^v//')
+			[ "${APPVER}" = "${version}" ] && echo "${APP} version is current" || download "${vers}"
 	fi
 }
 
@@ -3315,6 +3399,13 @@ gup_install_parse_requirements() {
 			shift $#
 			;;
 
+		btop)
+			action="btop"
+			shift
+			gup_install_btop_parse_requirements "$@"
+			shift $#
+			;;
+
 		caddy2)
 			action="caddy2"
 			shift
@@ -4358,6 +4449,51 @@ gup_install_blackbox_exporter_parse_requirements() {
 
 	# :command.command_filter
 	action="install blackbox_exporter"
+
+	# :command.parse_requirements_while
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+
+			-?*)
+				printf "invalid option: %s\n" "$key" >&2
+				exit 1
+				;;
+
+			*)
+				# :command.parse_requirements_case
+				# :command.parse_requirements_case_simple
+				printf "invalid argument: %s\n" "$key" >&2
+				exit 1
+
+				;;
+
+		esac
+	done
+
+}
+
+# :command.parse_requirements
+gup_install_btop_parse_requirements() {
+	# :command.fixed_flags_filter
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+			--help | -h)
+				long_usage=yes
+				gup_install_btop_usage
+				exit
+				;;
+
+			*)
+				break
+				;;
+
+		esac
+	done
+
+	# :command.command_filter
+	action="install btop"
 
 	# :command.parse_requirements_while
 	while [[ $# -gt 0 ]]; do
@@ -6483,6 +6619,7 @@ run() {
 		"install ruff") gup_install_ruff_command ;;
 		"install uv") gup_install_uv_command ;;
 		"install blackbox_exporter") gup_install_blackbox_exporter_command ;;
+		"install btop") gup_install_btop_command ;;
 		"install caddy2") gup_install_caddy2_command ;;
 		"install consul") gup_install_consul_command ;;
 		"install docker-compose") gup_install_docker_compose_command ;;

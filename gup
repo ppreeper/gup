@@ -138,6 +138,7 @@ gup_install_usage() {
 	echo
 	printf "%s\n" "Kubernetes Commands:"
 	printf "  %s   consul\n" "consul           "
+	printf "  %s   etcd\n" "etcd             "
 	printf "  %s   Kubernetes CLI\n" "k9s              "
 	printf "  %s   kubectl\n" "kubectl          "
 	printf "  %s   minikube\n" "minikube         "
@@ -1336,6 +1337,27 @@ gup_install_consul_usage() {
 	printf "%s\n" "Usage:"
 	printf "  gup install consul\n"
 	printf "  gup install consul --help | -h\n"
+	echo
+
+	# :command.long_usage
+	if [[ -n "$long_usage" ]]; then
+		printf "%s\n" "Options:"
+
+		# :command.usage_fixed_flags
+		printf "  %s\n" "--help, -h"
+		printf "    Show this help\n"
+		echo
+
+	fi
+}
+
+# :command.usage
+gup_install_etcd_usage() {
+	printf "gup install etcd - etcd\n\n"
+
+	printf "%s\n" "Usage:"
+	printf "  gup install etcd\n"
+	printf "  gup install etcd --help | -h\n"
 	echo
 
 	# :command.long_usage
@@ -3162,6 +3184,41 @@ gup_install_consul_command() {
 }
 
 # :command.function
+gup_install_etcd_command() {
+
+	# src/install_etcd_command.sh
+	APP="etcd"
+	REPO="https://github.com/etcd-io/etcd"
+	DURL="https://github.com/etcd-io/etcd/releases/download"
+
+	vers=$(git ls-remote --tags ${REPO} | grep "refs/tags.*[0-9]$" | grep -v -e "rc" -e "alpha" -e "beta" | awk '{print $2}' | sed 's/refs\/tags\///g' | sort -V | uniq | tail -1)
+
+	BDIR="/usr/local/bin"
+
+	download() {
+			echo "download $1 version"
+			echo "installing ${vers}"
+			FN="${APP}-${vers}-linux-amd64.tar.gz"
+			rm -rf /tmp/etcd
+			wget -qc "${DURL}/${vers}/${FN}" -O "/tmp/${FN}"
+			mkdir -p /tmp/etcd
+			tar -axf "/tmp/${FN}" -C /tmp/etcd --strip-components=1
+			sudo mv /tmp/etcd/etcd* "${BDIR}"/.
+			sudo chmod +x "${BDIR}"/etcd*
+			rm -rf /tmp/etcd
+			rm -f "/tmp/${FN}"
+	}
+
+	if [ -z "$(which ${APP})" ]; then
+			download new
+	else
+			APPVER=$(etcd --version | grep "etcd.*Version" | awk '{print $3}' | sed 's/^v//')
+			[ "${APPVER}" = "${vers}" ] && echo "${APP} version is current" || download "${vers}"
+	fi
+
+}
+
+# :command.function
 gup_install_k9s_command() {
 
 	# src/install_k9s_command.sh
@@ -3870,6 +3927,13 @@ gup_install_parse_requirements() {
 			action="consul"
 			shift
 			gup_install_consul_parse_requirements "$@"
+			shift $#
+			;;
+
+		etcd)
+			action="etcd"
+			shift
+			gup_install_etcd_parse_requirements "$@"
 			shift $#
 			;;
 
@@ -6496,6 +6560,51 @@ gup_install_consul_parse_requirements() {
 }
 
 # :command.parse_requirements
+gup_install_etcd_parse_requirements() {
+	# :command.fixed_flags_filter
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+			--help | -h)
+				long_usage=yes
+				gup_install_etcd_usage
+				exit
+				;;
+
+			*)
+				break
+				;;
+
+		esac
+	done
+
+	# :command.command_filter
+	action="install etcd"
+
+	# :command.parse_requirements_while
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+
+			-?*)
+				printf "invalid option: %s\n" "$key" >&2
+				exit 1
+				;;
+
+			*)
+				# :command.parse_requirements_case
+				# :command.parse_requirements_case_simple
+				printf "invalid argument: %s\n" "$key" >&2
+				exit 1
+
+				;;
+
+		esac
+	done
+
+}
+
+# :command.parse_requirements
 gup_install_k9s_parse_requirements() {
 	# :command.fixed_flags_filter
 	while [[ $# -gt 0 ]]; do
@@ -7171,6 +7280,7 @@ run() {
 		"install podman") gup_install_podman_command ;;
 		"install vagrant") gup_install_vagrant_command ;;
 		"install consul") gup_install_consul_command ;;
+		"install etcd") gup_install_etcd_command ;;
 		"install k9s") gup_install_k9s_command ;;
 		"install kubectl") gup_install_kubectl_command ;;
 		"install minikube") gup_install_minikube_command ;;

@@ -192,6 +192,9 @@ commands:
       - name: consul
         help: consul
         group: Kubernetes
+      - name: etcd
+        help: etcd
+        group: Kubernetes
       - name: k9s
         help: Kubernetes CLI
         group: Kubernetes

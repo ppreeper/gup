@@ -172,6 +172,9 @@ commands:
       - name: gdu
         help: Fast disk usage analyzer with console interface written in Go
         group: Utilities
+      - name: marp
+        help: Marp CLI is a Markdown presentation tool
+        group: Utilities
       - name: task
         help: A task runner / simpler Make alternative written in Go
         group: Utilities

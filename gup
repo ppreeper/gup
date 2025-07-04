@@ -128,6 +128,7 @@ gup_install_usage() {
 	printf "%s\n" "Utilities Commands:"
 	printf "  %s   Disk Usage/Free Utility\n" "duf              "
 	printf "  %s   Fast disk usage analyzer with console interface written in Go\n" "gdu              "
+	printf "  %s   Marp CLI is a Markdown presentation tool\n" "marp             "
 	printf "  %s   A task runner / simpler Make alternative written in Go\n" "task             "
 	printf "  %s   A portable, performant script to make rolling ZFS snapshots easy\n" "zfsnap           "
 	echo
@@ -1211,6 +1212,27 @@ gup_install_gdu_usage() {
 	printf "%s\n" "Usage:"
 	printf "  gup install gdu\n"
 	printf "  gup install gdu --help | -h\n"
+	echo
+
+	# :command.long_usage
+	if [[ -n "$long_usage" ]]; then
+		printf "%s\n" "Options:"
+
+		# :command.usage_fixed_flags
+		printf "  %s\n" "--help, -h"
+		printf "    Show this help\n"
+		echo
+
+	fi
+}
+
+# :command.usage
+gup_install_marp_usage() {
+	printf "gup install marp - Marp CLI is a Markdown presentation tool\n\n"
+
+	printf "%s\n" "Usage:"
+	printf "  gup install marp\n"
+	printf "  gup install marp --help | -h\n"
 	echo
 
 	# :command.long_usage
@@ -3038,6 +3060,37 @@ gup_install_gdu_command() {
 }
 
 # :command.function
+gup_install_marp_command() {
+
+	# src/install_marp_command.sh
+	APP="marp"
+	REPO="https://github.com/marp-team/marp-cli"
+	DURL="https://github.com/marp-team/marp-cli/releases/download"
+
+	vers=$(git ls-remote --tags ${REPO} | grep "refs/tags.*[0-9]$" | grep -v -e "rc" -e "alpha" -e "beta" | awk '{print $2}' | sed 's/refs\/tags\///g' | sort -V | uniq | tail -1)
+
+	BDIR="/usr/local/bin"
+
+	download() {
+			echo "download $1 version"
+			echo "installing ${vers}"
+			FN="marp-cli-${vers}-linux.tar.gz"
+			wget -qc "${DURL}/${vers}/${FN}" -O "/tmp/${FN}"
+			sudo tar axf "/tmp/${FN}" -C "${BDIR}" "${APP}"
+			sudo chmod +x "${BDIR}/${APP}"
+			rm -f "/tmp/${FN}"
+	}
+
+	if [ -z "$(which ${APP})" ]; then
+			download new
+	else
+			APPVER=$(marp --version | grep marp-cli | awk '{print $2}')
+			[ "${APPVER}" = "${vers}" ] && echo "${APP} version is current" || download "${vers}"
+	fi
+
+}
+
+# :command.function
 gup_install_task_command() {
 
 	# src/install_task_command.sh
@@ -3885,6 +3938,13 @@ gup_install_parse_requirements() {
 			action="gdu"
 			shift
 			gup_install_gdu_parse_requirements "$@"
+			shift $#
+			;;
+
+		marp)
+			action="marp"
+			shift
+			gup_install_marp_parse_requirements "$@"
 			shift $#
 			;;
 
@@ -6290,6 +6350,51 @@ gup_install_gdu_parse_requirements() {
 }
 
 # :command.parse_requirements
+gup_install_marp_parse_requirements() {
+	# :command.fixed_flags_filter
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+			--help | -h)
+				long_usage=yes
+				gup_install_marp_usage
+				exit
+				;;
+
+			*)
+				break
+				;;
+
+		esac
+	done
+
+	# :command.command_filter
+	action="install marp"
+
+	# :command.parse_requirements_while
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+
+			-?*)
+				printf "invalid option: %s\n" "$key" >&2
+				exit 1
+				;;
+
+			*)
+				# :command.parse_requirements_case
+				# :command.parse_requirements_case_simple
+				printf "invalid argument: %s\n" "$key" >&2
+				exit 1
+
+				;;
+
+		esac
+	done
+
+}
+
+# :command.parse_requirements
 gup_install_task_parse_requirements() {
 	# :command.fixed_flags_filter
 	while [[ $# -gt 0 ]]; do
@@ -7274,6 +7379,7 @@ run() {
 		"install hugo") gup_install_hugo_command ;;
 		"install duf") gup_install_duf_command ;;
 		"install gdu") gup_install_gdu_command ;;
+		"install marp") gup_install_marp_command ;;
 		"install task") gup_install_task_command ;;
 		"install zfsnap") gup_install_zfsnap_command ;;
 		"install docker-compose") gup_install_docker_compose_command ;;

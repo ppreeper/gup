@@ -1,1 +1,1 @@
-wget -qO https://sh.rustup.rs | sh
+wget -qO- https://sh.rustup.rs | sh

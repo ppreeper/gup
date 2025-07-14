@@ -2442,7 +2442,7 @@ gup_install_uv_command() {
 gup_install_rust_command() {
 
 	# src/install_rust_command.sh
-	wget -qO https://sh.rustup.rs | sh
+	wget -qO- https://sh.rustup.rs | sh
 
 }
 

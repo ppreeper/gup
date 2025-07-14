@@ -99,6 +99,9 @@ gup_install_usage() {
 	printf "  %s   an extremely fast Python linter and code formatter\n" "ruff             "
 	printf "  %s   extremely fast Python package installer and resolver\n" "uv               "
 	echo
+	printf "%s\n" "Rust Development Commands:"
+	printf "  %s   rust programming language\n" "rust             "
+	echo
 	printf "%s\n" "Zig Development Commands:"
 	printf "  %s   zig programming language\n" "zig              "
 	printf "  %s   zig language server\n" "zls              "
@@ -835,6 +838,27 @@ gup_install_uv_usage() {
 	printf "%s\n" "Usage:"
 	printf "  gup install uv\n"
 	printf "  gup install uv --help | -h\n"
+	echo
+
+	# :command.long_usage
+	if [[ -n "$long_usage" ]]; then
+		printf "%s\n" "Options:"
+
+		# :command.usage_fixed_flags
+		printf "  %s\n" "--help, -h"
+		printf "    Show this help\n"
+		echo
+
+	fi
+}
+
+# :command.usage
+gup_install_rust_usage() {
+	printf "gup install rust - rust programming language\n\n"
+
+	printf "%s\n" "Usage:"
+	printf "  gup install rust\n"
+	printf "  gup install rust --help | -h\n"
 	echo
 
 	# :command.long_usage
@@ -2415,6 +2439,14 @@ gup_install_uv_command() {
 }
 
 # :command.function
+gup_install_rust_command() {
+
+	# src/install_rust_command.sh
+	wget -qO https://sh.rustup.rs | sh
+
+}
+
+# :command.function
 gup_install_zig_command() {
 
 	# src/install_zig_command.sh
@@ -3846,6 +3878,13 @@ gup_install_parse_requirements() {
 			action="uv"
 			shift
 			gup_install_uv_parse_requirements "$@"
+			shift $#
+			;;
+
+		rust)
+			action="rust"
+			shift
+			gup_install_rust_parse_requirements "$@"
 			shift $#
 			;;
 
@@ -5556,6 +5595,51 @@ gup_install_uv_parse_requirements() {
 
 	# :command.command_filter
 	action="install uv"
+
+	# :command.parse_requirements_while
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+
+			-?*)
+				printf "invalid option: %s\n" "$key" >&2
+				exit 1
+				;;
+
+			*)
+				# :command.parse_requirements_case
+				# :command.parse_requirements_case_simple
+				printf "invalid argument: %s\n" "$key" >&2
+				exit 1
+
+				;;
+
+		esac
+	done
+
+}
+
+# :command.parse_requirements
+gup_install_rust_parse_requirements() {
+	# :command.fixed_flags_filter
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+			--help | -h)
+				long_usage=yes
+				gup_install_rust_usage
+				exit
+				;;
+
+			*)
+				break
+				;;
+
+		esac
+	done
+
+	# :command.command_filter
+	action="install rust"
 
 	# :command.parse_requirements_while
 	while [[ $# -gt 0 ]]; do
@@ -7447,6 +7531,7 @@ run() {
 		"install bun") gup_install_bun_command ;;
 		"install ruff") gup_install_ruff_command ;;
 		"install uv") gup_install_uv_command ;;
+		"install rust") gup_install_rust_command ;;
 		"install zig") gup_install_zig_command ;;
 		"install zls") gup_install_zls_command ;;
 		"install oda") gup_install_oda_command ;;

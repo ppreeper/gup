@@ -112,6 +112,10 @@ commands:
       - name: uv
         help: extremely fast Python package installer and resolver
         group: Python Development
+      # Rust Development
+      - name: rust
+        help: rust programming language
+        group: Rust Development
       # Zig Development
       - name: zig
         help: zig programming language

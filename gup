@@ -63,6 +63,9 @@ gup_install_usage() {
 	printf "%s\n" "Cloud Commands:"
 	printf "  %s   DigitalOcean cli tool\n" "doctl            "
 	echo
+	printf "%s\n" "Infrastructure Commands:"
+	printf "  %s   Terraform is an open-source infrastructure as code software tool\n" "terraform        "
+	echo
 	printf "%s\n" "Development Commands:"
 	printf "  %s   github cli\n" "githubcli        "
 	printf "  %s   A simple terminal UI for git commands\n" "lazygit          "
@@ -250,6 +253,27 @@ gup_install_doctl_usage() {
 	printf "%s\n" "Usage:"
 	printf "  gup install doctl\n"
 	printf "  gup install doctl --help | -h\n"
+	echo
+
+	# :command.long_usage
+	if [[ -n "$long_usage" ]]; then
+		printf "%s\n" "Options:"
+
+		# :command.usage_fixed_flags
+		printf "  %s\n" "--help, -h"
+		printf "    Show this help\n"
+		echo
+
+	fi
+}
+
+# :command.usage
+gup_install_terraform_usage() {
+	printf "gup install terraform - Terraform is an open-source infrastructure as code software tool\n\n"
+
+	printf "%s\n" "Usage:"
+	printf "  gup install terraform\n"
+	printf "  gup install terraform --help | -h\n"
 	echo
 
 	# :command.long_usage
@@ -1875,6 +1899,38 @@ gup_install_doctl_command() {
 			APPBIN=$(which ${APP})
 			APPVER=$(${APPBIN} version | awk '{print $2}' | awk -F'-' '{print $1}')
 			[ "${APPVER}" = "${vers}" ] && echo "${APP} version is current" || download ${vers}
+	fi
+}
+
+# :command.function
+gup_install_terraform_command() {
+
+	# src/install_terraform_command.sh
+	APP="terraform"
+	REPO="https://github.com/hashicorp/terraform"
+	DLREPO="https://releases.hashicorp.com/terraform"
+	vers=$(git ls-remote --tags ${REPO} | grep "refs/tags.*[0-9]$" | awk '{print $2}' | sed 's/refs\/tags\///' | grep -v -e "[rc|beta|alpha]" | sort -V | uniq | tail -1)
+
+	BDIR=/usr/local/bin
+
+	function download() {
+			echo "download $1 version"
+			echo "installing ${vers}"
+			VERS=$(echo "${vers}" | sed 's/^v//')
+			FN=${APP}_${VERS}_linux_amd64.zip
+			DLURL="${DLREPO}/${VERS}/${FN}"
+			rm -f /tmp/"${FN}"
+			wget -qc "${DLURL}" -O /tmp/"${FN}"
+			sudo unzip -q /tmp/"${FN}" "${APP}" -d "${BDIR}"
+			rm -f /tmp/"${FN}"
+	}
+
+	if [ -z "$(which ${APP})" ]; then
+			download new
+	else
+			APPBIN=$(which ${APP})
+			APPVER=$(${APPBIN} version | grep ^Terraform | awk '{print $2}')
+			[ "${APPVER}" = "${vers}" ] && echo "${APP} version is current" || download "${vers}"
 	fi
 }
 
@@ -3694,6 +3750,13 @@ gup_install_parse_requirements() {
 			shift $#
 			;;
 
+		terraform)
+			action="terraform"
+			shift
+			gup_install_terraform_parse_requirements "$@"
+			shift $#
+			;;
+
 		githubcli)
 			action="githubcli"
 			shift
@@ -4344,6 +4407,51 @@ gup_install_doctl_parse_requirements() {
 
 	# :command.command_filter
 	action="install doctl"
+
+	# :command.parse_requirements_while
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+
+			-?*)
+				printf "invalid option: %s\n" "$key" >&2
+				exit 1
+				;;
+
+			*)
+				# :command.parse_requirements_case
+				# :command.parse_requirements_case_simple
+				printf "invalid argument: %s\n" "$key" >&2
+				exit 1
+
+				;;
+
+		esac
+	done
+
+}
+
+# :command.parse_requirements
+gup_install_terraform_parse_requirements() {
+	# :command.fixed_flags_filter
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+			--help | -h)
+				long_usage=yes
+				gup_install_terraform_usage
+				exit
+				;;
+
+			*)
+				break
+				;;
+
+		esac
+	done
+
+	# :command.command_filter
+	action="install terraform"
 
 	# :command.parse_requirements_while
 	while [[ $# -gt 0 ]]; do
@@ -7512,6 +7620,7 @@ run() {
 		"install update") gup_install_update_command ;;
 		"install nerdfonts") gup_install_nerdfonts_command ;;
 		"install doctl") gup_install_doctl_command ;;
+		"install terraform") gup_install_terraform_command ;;
 		"install githubcli") gup_install_githubcli_command ;;
 		"install lazygit") gup_install_lazygit_command ;;
 		"install gitea") gup_install_gitea_command ;;

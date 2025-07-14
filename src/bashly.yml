@@ -24,6 +24,10 @@ commands:
       - name: doctl
         help: DigitalOcean cli tool
         group: Cloud
+      # Infrastructure
+      - name: terraform
+        help: Terraform is an open-source infrastructure as code software tool
+        group: Infrastructure
       # Development
       - name: githubcli
         help: github cli

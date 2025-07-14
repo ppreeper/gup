@@ -93,6 +93,9 @@ commands:
         help: An HTML templating language for Go that has great developer tooling
         group: Go Development
       # JavaScript Development
+      - name: nvm
+        help: Node Version Manager
+        group: JavaScript Development
       - name: nodejs
         help: nodejs js engine
         group: JavaScript Development

@@ -90,6 +90,7 @@ gup_install_usage() {
 	printf "  %s   An HTML templating language for Go that has great developer tooling\n" "templ            "
 	echo
 	printf "%s\n" "JavaScript Development Commands:"
+	printf "  %s   Node Version Manager\n" "nvm              "
 	printf "  %s   nodejs js engine\n" "nodejs           "
 	printf "  %s   deno js engine\n" "deno             "
 	printf "  %s   bun js engine\n" "bun              "
@@ -708,6 +709,27 @@ gup_install_templ_usage() {
 	printf "%s\n" "Usage:"
 	printf "  gup install templ\n"
 	printf "  gup install templ --help | -h\n"
+	echo
+
+	# :command.long_usage
+	if [[ -n "$long_usage" ]]; then
+		printf "%s\n" "Options:"
+
+		# :command.usage_fixed_flags
+		printf "  %s\n" "--help, -h"
+		printf "    Show this help\n"
+		echo
+
+	fi
+}
+
+# :command.usage
+gup_install_nvm_usage() {
+	printf "gup install nvm - Node Version Manager\n\n"
+
+	printf "%s\n" "Usage:"
+	printf "  gup install nvm\n"
+	printf "  gup install nvm --help | -h\n"
 	echo
 
 	# :command.long_usage
@@ -2198,6 +2220,18 @@ gup_install_templ_command() {
 
 	# src/install_templ_command.sh
 	go install github.com/a-h/templ/cmd/templ@latest
+
+}
+
+# :command.function
+gup_install_nvm_command() {
+
+	# src/install_nvm_command.sh
+	REPO="https://github.com/nvm-sh/nvm"
+	DLREPO="https://raw.githubusercontent.com/nvm-sh/nvm"
+	vers=$(git ls-remote --tags ${REPO} | grep "refs/tags.*[0-9]$" | awk '{print $2}' | sed 's/refs\/tags\///g' | sort -V | uniq | tail -1)
+
+	wget -qO- "${DLREPO}/${vers}/install.sh" | bash
 
 }
 
@@ -3773,6 +3807,13 @@ gup_install_parse_requirements() {
 			shift $#
 			;;
 
+		nvm)
+			action="nvm"
+			shift
+			gup_install_nvm_parse_requirements "$@"
+			shift $#
+			;;
+
 		nodejs)
 			action="nodejs"
 			shift
@@ -5245,6 +5286,51 @@ gup_install_templ_parse_requirements() {
 
 	# :command.command_filter
 	action="install templ"
+
+	# :command.parse_requirements_while
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+
+			-?*)
+				printf "invalid option: %s\n" "$key" >&2
+				exit 1
+				;;
+
+			*)
+				# :command.parse_requirements_case
+				# :command.parse_requirements_case_simple
+				printf "invalid argument: %s\n" "$key" >&2
+				exit 1
+
+				;;
+
+		esac
+	done
+
+}
+
+# :command.parse_requirements
+gup_install_nvm_parse_requirements() {
+	# :command.fixed_flags_filter
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+			--help | -h)
+				long_usage=yes
+				gup_install_nvm_usage
+				exit
+				;;
+
+			*)
+				break
+				;;
+
+		esac
+	done
+
+	# :command.command_filter
+	action="install nvm"
 
 	# :command.parse_requirements_while
 	while [[ $# -gt 0 ]]; do
@@ -7355,6 +7441,7 @@ run() {
 		"install staticcheck") gup_install_staticcheck_command ;;
 		"install swag") gup_install_swag_command ;;
 		"install templ") gup_install_templ_command ;;
+		"install nvm") gup_install_nvm_command ;;
 		"install nodejs") gup_install_nodejs_command ;;
 		"install deno") gup_install_deno_command ;;
 		"install bun") gup_install_bun_command ;;

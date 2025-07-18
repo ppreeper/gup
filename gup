@@ -77,6 +77,7 @@ gup_install_usage() {
 	echo
 	printf "%s\n" "Go Development Commands:"
 	printf "  %s   go programming language\n" "go               "
+	printf "  %s   tinygo is a Go compiler for small places\n" "tinygo           "
 	printf "  %s   go development helpers (gopls,gotests,gomodifytags,impl,goplay,dlv,staticcheck)\n" "godevenv         "
 	printf "  %s   Live reload for Go apps\n" "air              "
 	printf "  %s   Delve is a source level debugger for Go programs\n" "dlv              "
@@ -442,6 +443,27 @@ gup_install_go_usage() {
 	printf "%s\n" "Usage:"
 	printf "  gup install go\n"
 	printf "  gup install go --help | -h\n"
+	echo
+
+	# :command.long_usage
+	if [[ -n "$long_usage" ]]; then
+		printf "%s\n" "Options:"
+
+		# :command.usage_fixed_flags
+		printf "  %s\n" "--help, -h"
+		printf "    Show this help\n"
+		echo
+
+	fi
+}
+
+# :command.usage
+gup_install_tinygo_usage() {
+	printf "gup install tinygo - tinygo is a Go compiler for small places\n\n"
+
+	printf "%s\n" "Usage:"
+	printf "  gup install tinygo\n"
+	printf "  gup install tinygo --help | -h\n"
 	echo
 
 	# :command.long_usage
@@ -2153,6 +2175,48 @@ gup_install_go_command() {
 }
 
 # :command.function
+gup_install_tinygo_command() {
+
+	# src/install_tinygo_command.sh
+	APP="tinygo"
+	REPO="https://github.com/tinygo-org/tinygo"
+	DLREPO="https://github.com/tinygo-org/tinygo/releases/download"
+	vers=$(git ls-remote --tags ${REPO} | grep "refs/tags.*[0-9]$" | awk '{print $2}' | sed 's/refs\/tags\///' | grep -v -e "[rc|beta|alpha]" | sort -V | uniq | tail -1)
+
+	IDIR=/usr/local/lib
+	BDIR=/usr/local/bin
+
+	function download() {
+			echo "download $1 version"
+			echo "installing ${vers}"
+			VERS=$(echo "${vers}" | sed 's/^v//')
+			FN=${APP}${VERS}.linux-amd64.tar.gz
+			DLURL="${DLREPO}/${vers}/${FN}"
+			rm -f /tmp/"${FN}"
+			wget -qc "${DLURL}" -O /tmp/"${FN}"
+			sudo rm -rf "${IDIR}/tinygo"
+			sudo mkdir -p "${IDIR}/tinygo"
+			sudo tar -axf /tmp/"${FN}" -C "${IDIR}/tinygo" --strip-components=1
+			sudo ls ${IDIR}/tinygo/bin 2>/dev/null | sudo xargs -I {} rm -f ${BDIR}/{}
+			sudo ls ${IDIR}/tinygo/bin 2>/dev/null | sudo xargs -I {} ln -s ${IDIR}/tinygo/bin/{} ${BDIR}/{}
+			rm -f /tmp/"${FN}"
+	}
+
+	if [ -z "$(which ${APP})" ]; then
+			download new
+	else
+			APPBIN=$(which ${APP})
+			APPVER=$(${APPBIN} version | grep version | awk '{print $3}')
+			if [ "v${APPVER}" = "${vers}" ]; then
+					echo "${APP} version is current"
+					exit 0
+			else
+					download "${vers}"
+			fi
+	fi
+}
+
+# :command.function
 gup_install_godevenv_command() {
 
 	# src/install_godevenv_command.sh
@@ -3813,6 +3877,13 @@ gup_install_parse_requirements() {
 			shift $#
 			;;
 
+		tinygo)
+			action="tinygo"
+			shift
+			gup_install_tinygo_parse_requirements "$@"
+			shift $#
+			;;
+
 		godevenv)
 			action="godevenv"
 			shift
@@ -4812,6 +4883,51 @@ gup_install_go_parse_requirements() {
 
 	# :command.command_filter
 	action="install go"
+
+	# :command.parse_requirements_while
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+
+			-?*)
+				printf "invalid option: %s\n" "$key" >&2
+				exit 1
+				;;
+
+			*)
+				# :command.parse_requirements_case
+				# :command.parse_requirements_case_simple
+				printf "invalid argument: %s\n" "$key" >&2
+				exit 1
+
+				;;
+
+		esac
+	done
+
+}
+
+# :command.parse_requirements
+gup_install_tinygo_parse_requirements() {
+	# :command.fixed_flags_filter
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+			--help | -h)
+				long_usage=yes
+				gup_install_tinygo_usage
+				exit
+				;;
+
+			*)
+				break
+				;;
+
+		esac
+	done
+
+	# :command.command_filter
+	action="install tinygo"
 
 	# :command.parse_requirements_while
 	while [[ $# -gt 0 ]]; do
@@ -7629,6 +7745,7 @@ run() {
 		"install upx") gup_install_upx_command ;;
 		"install tailwindcss") gup_install_tailwindcss_command ;;
 		"install go") gup_install_go_command ;;
+		"install tinygo") gup_install_tinygo_command ;;
 		"install godevenv") gup_install_godevenv_command ;;
 		"install air") gup_install_air_command ;;
 		"install dlv") gup_install_dlv_command ;;

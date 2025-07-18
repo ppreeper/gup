@@ -54,6 +54,9 @@ commands:
       - name: go
         help: go programming language
         group: Go Development
+      - name: tinygo
+        help: tinygo is a Go compiler for small places
+        group: Go Development
       - name: godevenv
         help: go development helpers (gopls,gotests,gomodifytags,impl,goplay,dlv,staticcheck)
         group: Go Development

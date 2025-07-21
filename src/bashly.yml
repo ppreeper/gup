@@ -38,6 +38,9 @@ commands:
       - name: gitea
         help: Gitea git hosting server binary
         group: Development
+      - name: mkcert
+        help: mkcert is a simple tool for making locally-trusted development certificates
+        group: Development
       - name: scc
         help: Sloc Cloc and Code (scc)
         group: Development

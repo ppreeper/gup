@@ -70,6 +70,7 @@ gup_install_usage() {
 	printf "  %s   github cli\n" "githubcli        "
 	printf "  %s   A simple terminal UI for git commands\n" "lazygit          "
 	printf "  %s   Gitea git hosting server binary\n" "gitea            "
+	printf "  %s   mkcert is a simple tool for making locally-trusted development certificates\n" "mkcert           "
 	printf "  %s   Sloc Cloc and Code (scc)\n" "scc              "
 	printf "  %s   Generate type-safe code from SQL\n" "sqlc             "
 	printf "  %s   Ultimate Packer for eXecutables\n" "upx              "
@@ -338,6 +339,27 @@ gup_install_gitea_usage() {
 	printf "%s\n" "Usage:"
 	printf "  gup install gitea\n"
 	printf "  gup install gitea --help | -h\n"
+	echo
+
+	# :command.long_usage
+	if [[ -n "$long_usage" ]]; then
+		printf "%s\n" "Options:"
+
+		# :command.usage_fixed_flags
+		printf "  %s\n" "--help, -h"
+		printf "    Show this help\n"
+		echo
+
+	fi
+}
+
+# :command.usage
+gup_install_mkcert_usage() {
+	printf "gup install mkcert - mkcert is a simple tool for making locally-trusted development certificates\n\n"
+
+	printf "%s\n" "Usage:"
+	printf "  gup install mkcert\n"
+	printf "  gup install mkcert --help | -h\n"
 	echo
 
 	# :command.long_usage
@@ -2058,6 +2080,17 @@ gup_install_gitea_command() {
 		APPVER=$(${APPBIN} --version | awk '{print $3}')
 		[ "${APPVER}" = "${vers}" ] && echo "${APP} version is current" || download "${vers}"
 	fi
+}
+
+# :command.function
+gup_install_mkcert_command() {
+
+	# src/install_mkcert_command.sh
+	APP="mkcert"
+
+	sudo wget -O "/usr/local/bin/${APP}" "https://dl.filippo.io/mkcert/latest?for=linux/amd64"
+	sudo "/usr/local/bin/${APP}"
+
 }
 
 # :command.function
@@ -3842,6 +3875,13 @@ gup_install_parse_requirements() {
 			shift $#
 			;;
 
+		mkcert)
+			action="mkcert"
+			shift
+			gup_install_mkcert_parse_requirements "$@"
+			shift $#
+			;;
+
 		scc)
 			action="scc"
 			shift
@@ -4658,6 +4698,51 @@ gup_install_gitea_parse_requirements() {
 
 	# :command.command_filter
 	action="install gitea"
+
+	# :command.parse_requirements_while
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+
+			-?*)
+				printf "invalid option: %s\n" "$key" >&2
+				exit 1
+				;;
+
+			*)
+				# :command.parse_requirements_case
+				# :command.parse_requirements_case_simple
+				printf "invalid argument: %s\n" "$key" >&2
+				exit 1
+
+				;;
+
+		esac
+	done
+
+}
+
+# :command.parse_requirements
+gup_install_mkcert_parse_requirements() {
+	# :command.fixed_flags_filter
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+			--help | -h)
+				long_usage=yes
+				gup_install_mkcert_usage
+				exit
+				;;
+
+			*)
+				break
+				;;
+
+		esac
+	done
+
+	# :command.command_filter
+	action="install mkcert"
 
 	# :command.parse_requirements_while
 	while [[ $# -gt 0 ]]; do
@@ -7740,6 +7825,7 @@ run() {
 		"install githubcli") gup_install_githubcli_command ;;
 		"install lazygit") gup_install_lazygit_command ;;
 		"install gitea") gup_install_gitea_command ;;
+		"install mkcert") gup_install_mkcert_command ;;
 		"install scc") gup_install_scc_command ;;
 		"install sqlc") gup_install_sqlc_command ;;
 		"install upx") gup_install_upx_command ;;

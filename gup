@@ -124,6 +124,7 @@ gup_install_usage() {
 	printf "  %s   blackbox_exporter\n" "blackbox_exporter"
 	printf "  %s   grafana\n" "grafana          "
 	printf "  %s   loki\n" "loki             "
+	printf "  %s   node_exporter\n" "node_exporter    "
 	printf "  %s   postgres_exporter\n" "postgres_exporter"
 	printf "  %s   prometheus\n" "prometheus       "
 	printf "  %s   promtail\n" "promtail         "
@@ -1137,6 +1138,27 @@ gup_install_loki_usage() {
 	printf "%s\n" "Usage:"
 	printf "  gup install loki\n"
 	printf "  gup install loki --help | -h\n"
+	echo
+
+	# :command.long_usage
+	if [[ -n "$long_usage" ]]; then
+		printf "%s\n" "Options:"
+
+		# :command.usage_fixed_flags
+		printf "  %s\n" "--help, -h"
+		printf "    Show this help\n"
+		echo
+
+	fi
+}
+
+# :command.usage
+gup_install_node_exporter_usage() {
+	printf "gup install node_exporter - node_exporter\n\n"
+
+	printf "%s\n" "Usage:"
+	printf "  gup install node_exporter\n"
+	printf "  gup install node_exporter --help | -h\n"
 	echo
 
 	# :command.long_usage
@@ -2986,6 +3008,40 @@ _EOF_
 }
 
 # :command.function
+gup_install_node_exporter_command() {
+
+	# src/install_node_exporter_command.sh
+	APP="node_exporter"
+	REPO="https://github.com/prometheus/node_exporter"
+	vers=$(git ls-remote --tags ${REPO} | grep "refs/tags.*[0-9]$" | grep -v -e rc -e alpha -e beta | awk '{print $2}' | sed 's/refs\/tags\///' | sort -V | uniq | tail -1)
+
+	BDIR="/usr/local/bin"
+
+	download() {
+			echo "download $1 version"
+			echo "installing ${vers}"
+			V=$(echo "$vers" | sed 's/v//')
+			FN=${APP}-${V}.linux-amd64.tar.gz
+			rm -f /tmp/"${FN}"
+			wget -qc ${REPO}/releases/download/"${vers}"/"${FN}" -O /tmp/"${FN}"
+			rm -f ${BDIR}/${APP}
+			mkdir -p /tmp/${APP}_"${vers}"
+			tar axf /tmp/"${FN}" -C /tmp/${APP}_"${vers}" --strip-components=1
+			sudo install /tmp/${APP}_"${vers}"/${APP} ${BDIR}/${APP}
+			rm -rf /tmp/${APP}_"${vers}" /tmp/"${FN}"
+	}
+
+	if [ -z "$(which ${APP})" ]; then
+			download new
+	else
+			APPBIN=$(which ${APP})
+			APPVER=$(${APPBIN} --version 2>&1 | grep -i ^${APP} | awk '{print $3}')
+			[ "${APPVER}" = "$(echo "$vers" | sed 's/^v//')" ] && echo "${CMD} version is current" || download "${vers}"
+	fi
+
+}
+
+# :command.function
 gup_install_postgres_exporter_command() {
 
 	# src/install_postgres_exporter_command.sh
@@ -4140,6 +4196,13 @@ gup_install_parse_requirements() {
 			action="loki"
 			shift
 			gup_install_loki_parse_requirements "$@"
+			shift $#
+			;;
+
+		node_exporter)
+			action="node_exporter"
+			shift
+			gup_install_node_exporter_parse_requirements "$@"
 			shift $#
 			;;
 
@@ -6435,6 +6498,51 @@ gup_install_loki_parse_requirements() {
 }
 
 # :command.parse_requirements
+gup_install_node_exporter_parse_requirements() {
+	# :command.fixed_flags_filter
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+			--help | -h)
+				long_usage=yes
+				gup_install_node_exporter_usage
+				exit
+				;;
+
+			*)
+				break
+				;;
+
+		esac
+	done
+
+	# :command.command_filter
+	action="install node_exporter"
+
+	# :command.parse_requirements_while
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+
+			-?*)
+				printf "invalid option: %s\n" "$key" >&2
+				exit 1
+				;;
+
+			*)
+				# :command.parse_requirements_case
+				# :command.parse_requirements_case_simple
+				printf "invalid argument: %s\n" "$key" >&2
+				exit 1
+
+				;;
+
+		esac
+	done
+
+}
+
+# :command.parse_requirements
 gup_install_postgres_exporter_parse_requirements() {
 	# :command.fixed_flags_filter
 	while [[ $# -gt 0 ]]; do
@@ -7865,6 +7973,7 @@ run() {
 		"install blackbox_exporter") gup_install_blackbox_exporter_command ;;
 		"install grafana") gup_install_grafana_command ;;
 		"install loki") gup_install_loki_command ;;
+		"install node_exporter") gup_install_node_exporter_command ;;
 		"install postgres_exporter") gup_install_postgres_exporter_command ;;
 		"install prometheus") gup_install_prometheus_command ;;
 		"install promtail") gup_install_promtail_command ;;

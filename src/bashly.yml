@@ -160,6 +160,9 @@ commands:
       - name: loki
         help: loki
         group: Prometheus
+      - name: node_exporter
+        help: node_exporter
+        group: Prometheus
       - name: postgres_exporter
         help: postgres_exporter
         group: Prometheus

@@ -4,22 +4,24 @@ vers=$(git ls-remote --tags ${REPO} | grep "refs/tags.*[0-9]$" | awk '{print $2}
 
 IDIR=${HOME}/.local/nvim
 BDIR=${HOME}/.local/bin
+ARCH="linux-x86_64"
 
 function download() {
     echo "download $1 version"
     echo "installing ${vers}"
-    wget -qc ${REPO}/releases/download/${vers}/nvim-linux64.tar.gz
-    mkdir -p ${IDIR}
-    rm -rf ${IDIR}/*
-    tar -zxf nvim-linux64.tar.gz --strip-components=1 -C ${IDIR}
-    ln -sf ${IDIR}/bin/nvim ${BDIR}/nvim
-    rm -f nvim-linux64.tar.gz
+    fname="nvim-${ARCH}.tar.gz"
+    wget -qc "${REPO}/releases/download/${vers}/${fname}"
+    rm -rf "${IDIR:?}"
+    mkdir -p "${IDIR}"
+    tar -zxf "${fname}" --strip-components=1 -C "${IDIR}"
+    ln -sf "${IDIR}/bin/nvim" "${BDIR}/nvim"
+    rm -f "${fname}"
 }
 
-if [ -z $(which ${APP}) ]; then
+if [ -z "$(which ${APP})" ]; then
     download new
 else
-    APPBIN=$(which ${APP})
-    APPVER=$(${APPBIN} --version | grep -i "^${APP}" | awk '{print $2}')
-    [ "${APPVER}" = "${vers}" ] && echo "${APP} version is current" || download ${vers}
+    APPBIN=$(which "${APP}")
+    APPVER=$("${APPBIN}" --version | grep -i "^${APP}" | awk '{print $2}')
+    [ "${APPVER}" = "${vers}" ] && echo "${APP} version is current" || download "${vers}"
 fi

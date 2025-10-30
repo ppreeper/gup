@@ -1,30 +1,36 @@
 APP="lazygit"
-REPO="https://github.com/jesseduffield/lazygit"
-vers=$(git ls-remote --tags ${REPO} | grep "refs/tags.*[0-9]$" | awk '{print $2}' | sed 's/refs\/tags\///' | sort -V | uniq | tail -1 | sed 's/^v//')
-
-IDIR="${HOME}/.local/bin"
-
-if [ $(id -u) == 0 ]; then
-  IDIR="/usr/local/bin"
-fi
+REPO="jesseduffield/lazygit"
+RURL="https://api.github.com/repos/${REPO}/releases/latest"
+vers=$(wget -qO- "${RURL}" | jq .tag_name | tr -d '"' | tr -d 'v')
+DL=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains("linux_x86_64")) | .browser_download_url' | tr -d '"')
+FN=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains("linux_x86_64")) | .name' | tr -d '"')
 
 function download() {
     echo "download $1 version"
     echo "installing ${vers}"
-    mkdir -p ${IDIR}
-    FN=lazygit_${vers}_Linux_x86_64.tar.gz
-    rm -rf /tmp/lazygit /tmp/${FN}
-    wget -qc ${REPO}/releases/download/v${vers}/${FN} -O /tmp/${FN}
-    tar axf /tmp/${FN} lazygit
-    install lazygit $IDIR
-    rm -rf lazygit /tmp/${FN}
+    rm -rf /tmp/lazygit /tmp/"${FN}"
+    wget -qc "${DL}" -O /tmp/"${FN}"
+    tar axf /tmp/"${FN}" lazygit
+    if [ "$(id -u)" == 0 ]; then
+        IDIR="/usr/local/bin"
+        sudo mkdir -p "${IDIR}"
+        sudo install lazygit "${IDIR}"
+    else
+        IDIR="${HOME}/.local/bin"
+        mkdir -p "${IDIR}"
+        install lazygit "${IDIR}"
+    fi
+    rm -rf lazygit /tmp/"${FN}"
 }
 
 
-if [ -z $(which ${APP}) ]; then
+if [ -z "$(which ${APP})" ]; then
     download new
 else
-  APPBIN=$(which ${APP})
-  APPVER=$(${APPBIN} --version | awk '{print $6}' | sed 's/,//g' | awk -F'=' '{print $2}')
-  [ "${APPVER}" = "${vers}" ] && echo "${APP} version is current" || download ${vers}
+  APPVER=$($(which ${APP}) --version | awk '{print $6}' | sed 's/,//g' | awk -F'=' '{print $2}')
+  if [ "${APPVER}" = "${vers}" ]; then
+      echo "${APP} version is current"
+  else
+      download "${vers}"
+  fi
 fi

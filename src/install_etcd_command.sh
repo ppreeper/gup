@@ -1,21 +1,20 @@
 APP="etcd"
-REPO="https://github.com/etcd-io/etcd"
-DURL="https://github.com/etcd-io/etcd/releases/download"
-
-vers=$(git ls-remote --tags ${REPO} | grep "refs/tags.*[0-9]$" | grep -v -e "rc" -e "alpha" -e "beta" | awk '{print $2}' | sed 's/refs\/tags\///g' | sort -V | uniq | tail -1)
+REPO="etcd-io/etcd"
+RURL="https://api.github.com/repos/${REPO}/releases/latest"
+vers=$(wget -qO- "${RURL}" | jq .tag_name | tr -d '"' | tr -d 'v')
 
 BDIR="/usr/local/bin"
 
 download() {
     echo "download $1 version"
     echo "installing ${vers}"
-    FN="${APP}-${vers}-linux-amd64.tar.gz"
+    DL=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains ("linux-amd64")) | .browser_download_url' | tr -d '"')
+    FN=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains ("linux-amd64")) | .name' | tr -d '"')
     rm -rf /tmp/etcd
-    wget -qc "${DURL}/${vers}/${FN}" -O "/tmp/${FN}"
+    wget -qc "${DL}" -O "/tmp/${FN}"
     mkdir -p /tmp/etcd
     tar -axf "/tmp/${FN}" -C /tmp/etcd --strip-components=1
-    sudo mv /tmp/etcd/etcd* "${BDIR}"/.
-    sudo chmod +x "${BDIR}"/etcd*
+    sudo install /tmp/etcd/etcd* "${BDIR}"/.
     rm -rf /tmp/etcd
     rm -f "/tmp/${FN}"
 }
@@ -23,6 +22,6 @@ download() {
 if [ -z "$(which ${APP})" ]; then
     download new
 else
-    APPVER=$(etcd --version | grep "etcd.*Version" | awk '{print $3}' | sed 's/^v//')
+    APPVER=$($(which ${APP}) --version | grep "etcd.*Version" | awk '{print $3}' | sed 's/^v//')
     [ "${APPVER}" = "${vers}" ] && echo "${APP} version is current" || download "${vers}"
 fi

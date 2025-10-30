@@ -1,56 +1,57 @@
 APP="btop"
-REPO="https://github.com/aristocratos/btop"
-vers=$(git ls-remote --tags "${REPO}" | grep "refs/tags.*[0-9]$" | awk '{print $2}' | sed 's/refs\/tags\///g' | sort -V | uniq | tail -1)
+REPO="aristocratos/btop"
+RURL="https://api.github.com/repos/${REPO}/releases/latest"
+vers=$(wget -qO- "${RURL}" | jq .tag_name | tr -d '"')
+DL=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains ("x86_64-linux")) | .browser_download_url' | tr -d '"')
+FN=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains ("x86_64-linux")) | .name' | tr -d '"')
 
 PREFIX="/usr/local"
 
 function download() {
     echo "download $1 version"
     echo "installing ${vers}"
-    FN="${APP}-x86_64-linux-musl.tbz"
 
-    rm -f /tmp/btop.tbz
-    wget -qc "${REPO}/releases/download/${vers}/${FN}" -O /tmp/btop.tbz
+    rm -f /tmp/"${FN}"
+    wget -qO /tmp/"${FN}" "${DL}"
 
     rm -rf /tmp/btop
     mkdir -p /tmp/btop
-    tar -xjf /tmp/btop.tbz -C /tmp/btop --strip-components=2
+    tar -xjf /tmp/"${FN}" -C /tmp/btop --strip-components=2
 
     # required directories
-    mkdir -p "${PREFIX}/bin"
-    mkdir -p "${PREFIX}/share/${APP}"
-    mkdir -p "${PREFIX}/share/${APP}/themes"
-    mkdir -p "${PREFIX}/share/applications"
-    mkdir -p "${PREFIX}/share/icons/hicolor/48x48/apps"
-    mkdir -p "${PREFIX}/share/icons/hicolor/scalable/apps"
+    sudo mkdir -p "${PREFIX}/bin"
+    sudo mkdir -p "${PREFIX}/share/${APP}"
+    sudo mkdir -p "${PREFIX}/share/${APP}/themes"
+    sudo mkdir -p "${PREFIX}/share/applications"
+    sudo mkdir -p "${PREFIX}/share/icons/hicolor/48x48/apps"
+    sudo mkdir -p "${PREFIX}/share/icons/hicolor/scalable/apps"
 
     # btop binary
-    mkdir -p "${PREFIX}/bin"
-    cp /tmp/btop/bin/btop "${PREFIX}/bin/"
+    sudo mkdir -p "${PREFIX}/bin"
+    sudo cp /tmp/btop/bin/btop "${PREFIX}/bin/"
 
     # doc
-    cp /tmp/btop/README.md "${PREFIX}/share/${APP}/README.md"
+    sudo cp /tmp/btop/README.md "${PREFIX}/share/${APP}/README.md"
 
     # Themes
-    cp /tmp/btop/themes/* "${PREFIX}/share/${APP}/themes/"
+    sudo cp /tmp/btop/themes/* "${PREFIX}/share/${APP}/themes/"
 
     # desktop file
-    cp /tmp/btop/btop.desktop "${PREFIX}/share/applications/btop.desktop"
+    sudo cp /tmp/btop/btop.desktop "${PREFIX}/share/applications/btop.desktop"
 
     # icons
-    cp /tmp/btop/Img/icon.png "${PREFIX}/share/icons/hicolor/48x48/apps/btop.png"
-    cp /tmp/btop/Img/icon.svg "${PREFIX}/share/icons/hicolor/scalable/apps/btop.svg"
+    sudo cp /tmp/btop/Img/icon.png "${PREFIX}/share/icons/hicolor/48x48/apps/btop.png"
+    sudo cp /tmp/btop/Img/icon.svg "${PREFIX}/share/icons/hicolor/scalable/apps/btop.svg"
 
     # cleanup
     rm -rf /tmp/btop
-    rm -f /tmp/btop.tbz
+    rm -f /tmp/"${FN}"
 }
 
-if [ -z $(which "${APP}") ]; then
+if [ -z "$(which ${APP})" ]; then
     download new
 else
-    APPBIN=$(which "${APP}")
-    APPVER=$(${APPBIN} --version | grep "^btop version:" | awk -F':' '{print $2}' | sed -E 's/\x1B\[[0-9;]*[a-zA-Z]//g' | awk '{$1=$1; print}')
+    APPVER=$($(which ${APP}) --version | grep "^btop version:" | awk -F':' '{print $2}' | sed -E 's/\x1B\[[0-9;]*[a-zA-Z]//g' | awk '{$1=$1; print}')
     version=$(echo "${vers}" | sed 's/^v//')
     [ "${APPVER}" = "${version}" ] && echo "${APP} version is current" || download "${vers}"
 fi

@@ -35,9 +35,6 @@ commands:
       - name: lazygit
         help: A simple terminal UI for git commands
         group: Development
-      - name: gitea
-        help: Gitea git hosting server binary
-        group: Development
       - name: mkcert
         help: mkcert is a simple tool for making locally-trusted development certificates
         group: Development
@@ -202,9 +199,6 @@ commands:
         help: A portable, performant script to make rolling ZFS snapshots easy
         group: Utilities
       # Containers
-      - name: docker-compose
-        help: docker-compose
-        group: Containers
       - name: podman
         help: podman container
         group: Containers
@@ -212,9 +206,6 @@ commands:
         help: HashiCorp Vagrant
         group: Containers
       # Kubernetes
-      - name: consul
-        help: consul
-        group: Kubernetes
       - name: etcd
         help: etcd
         group: Kubernetes
@@ -233,9 +224,6 @@ commands:
         group: Editors
       - name: helix
         help: helix text editor
-        group: Editors
-      - name: litexl
-        help: A lightweight text editor written in Lua
         group: Editors
       # end
   - name: remove

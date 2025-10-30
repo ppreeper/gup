@@ -10,13 +10,20 @@ BDIR="/usr/local/bin"
 download() {
     echo "download $1 version"
     echo "installing ${vers}"
-    sudo rm -rf /tmp/${APP}_"${vers}" /tmp/"${FN}"
+    rm -rf /tmp/${APP}_"${vers}" /tmp/"${FN}"
     wget -qc "${DL}" -O /tmp/"${FN}"
-    sudo rm -f ${BDIR}/${APP}
-    sudo mkdir -p /tmp/${APP}_"${vers}"
-    sudo tar axf /tmp/"${FN}" -C /tmp/${APP}_"${vers}" --strip-components=1
-    sudo install /tmp/${APP}_"${vers}"/${APP} ${BDIR}/${APP}
-    sudo rm -rf /tmp/${APP}_"${vers}" /tmp/"${FN}"
+    mkdir -p /tmp/${APP}_"${vers}"
+    tar axf /tmp/"${FN}" -C /tmp/${APP}_"${vers}" --strip-components=1
+    if [ "$(id -u)" == 0 ]; then
+        BDIR="/usr/local/bin"
+        sudo rm -f ${BDIR}/${APP}
+        sudo install /tmp/"${APP}_${vers}"/"${APP}" "${BDIR}/${APP}"
+    else
+        BDIR="${HOME}/.local/bin"
+        rm -f ${BDIR}/${APP}
+        install /tmp/"${APP}_${vers}"/"${APP}" "${BDIR}/${APP}"
+    fi
+    rm -rf /tmp/${APP}_"${vers}" /tmp/"${FN}"
 }
 
 if [ -z "$(which ${APP})" ]; then

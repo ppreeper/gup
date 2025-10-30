@@ -1,29 +1,34 @@
 APP="snmp_exporter"
-REPO="https://github.com/prometheus/${APP}"
-vers=$(git ls-remote --tags ${REPO} | grep "refs/tags.*[0-9]$" | grep -v -e "rc" -e "alpha" -e "beta" | awk '{print $2}' | sed 's/refs\/tags\///g' | sort -V | uniq | tail -1)
-
-BDIR=/usr/local/bin
-BDIR=${HOME}/.local/bin
-IDIR=${HOME}/.local/$APP
+REPO="prometheus/${APP}"
+RURL="https://api.github.com/repos/${REPO}/releases/latest"
+vers=$(wget -qO- "${RURL}" | jq .tag_name | tr -d '"' | tr -d 'v')
+DL=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains ("linux-amd64.tar.gz")) | .browser_download_url' | tr -d '"')
+FN=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains ("linux-amd64.tar.gz")) | .name' | tr -d '"')
 
 function download() {
     echo "download $1 version"
     echo "installing ${vers}"
-    V=$(echo $vers | sed 's/^v//')
-    FN=${APP}-${V}.linux-amd64.tar.gz
-    rm -f /tmp/${FN}
-    wget -qc ${REPO}/releases/download/${vers}/${FN} -O /tmp/${FN}
-    mkdir -p ${IDIR}
-    rm -rf ${IDIR}/*
-    tar -zxf /tmp/${FN} --strip-components=1 -C ${IDIR}
-    ln -sf ${IDIR}/$APP ${BDIR}/$APP
-    rm -f /tmp/${FN}
+    rm -rf /tmp/"${FN}" /tmp/"${APP}_${vers}"
+    wget -qc "${DL}" -O /tmp/"${FN}"
+    mkdir -p /tmp/"${APP}_${vers}"
+    tar -axf /tmp/"${FN}" -C /tmp/"${APP}_${vers}" --strip-components=1
+    if [ "$(id -u)" == 0 ]; then
+        BDIR="/usr/local/bin"
+        sudo install /tmp/"${APP}_${vers}"/"${APP}" "${BDIR}/${APP}"
+    else
+        BDIR="${HOME}/.local/bin"
+        install /tmp/"${APP}_${vers}"/"${APP}" "${BDIR}/${APP}"
+    fi
+    rm -rf /tmp/"${FN}" /tmp/"${APP}_${vers}"
 }
 
-if [ -z $(which ${APP}) ]; then
+if [ -z "$(which ${APP})" ]; then
     download new
 else
-    APPBIN=$(which ${APP})
-    APPVER=$(${APPBIN} --version 2>&1 | grep -i "^${APP}" | awk '{print $2}')
-    [ "${APPVER}" = "${vers}" ] && echo "${APP} version is current" || download ${vers}
+    APPVER=$($(which ${APP}) --version 2>&1 | grep -i "^${APP}" | awk '{print $3}')
+    if [ "${APPVER}" = "${vers}" ]; then
+        echo "${APP} version is current"
+    else
+        download "${vers}"
+    fi
 fi

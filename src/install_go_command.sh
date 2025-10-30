@@ -1,5 +1,5 @@
 APP="go"
-REPO="https://github.com/golang/go"
+REPO="https://go.googlesource.com/go"
 DLREPO="https://dl.google.com/go"
 vers=$(git ls-remote --tags ${REPO} | grep -E 'refs/tags/go[0-9]+\.[0-9]+(\.[0-9]+)?$' | awk '{print $2}' | sed 's/refs\/tags\///' | sort -V | uniq | tail -1)
 

@@ -1,26 +1,36 @@
 APP="terraform"
-REPO="https://github.com/hashicorp/terraform"
-DLREPO="https://releases.hashicorp.com/terraform"
-vers=$(git ls-remote --tags ${REPO} | grep "refs/tags.*[0-9]$" | awk '{print $2}' | sed 's/refs\/tags\///' | grep -v -e "[rc|beta|alpha]" | sort -V | uniq | tail -1)
+REPO="hashicorp/terraform"
+RURL="https://api.github.com/repos/${REPO}/releases/latest"
+vers=$(wget -qO- "${RURL}" | jq .tag_name | tr -d '"' | tr -d 'v')
 
-BDIR=/usr/local/bin
+DLREPO="https://releases.hashicorp.com/terraform"
+FN="${APP}_${vers}_linux_amd64.zip"
+DL="${DLREPO}/${vers}/${FN}"
 
 function download() {
     echo "download $1 version"
     echo "installing ${vers}"
-    VERS=$(echo "${vers}" | sed 's/^v//')
-    FN=${APP}_${VERS}_linux_amd64.zip
-    DLURL="${DLREPO}/${VERS}/${FN}"
-    rm -f /tmp/"${FN}"
-    wget -qc "${DLURL}" -O /tmp/"${FN}"
-    sudo unzip -q /tmp/"${FN}" "${APP}" -d "${BDIR}"
-    rm -f /tmp/"${FN}"
+    rm -rf /tmp/"${FN}" /tmp/"${APP}_${vers}"
+    wget -qc "${DL}" -O /tmp/"${FN}"
+    mkdir -p /tmp/"${APP}_${vers}"
+    unzip /tmp/"${FN}" -d /tmp/"${APP}_${vers}"
+    if [ "$(id -u)" == 0 ]; then
+        BDIR="/usr/local/bin"
+        sudo install /tmp/"${APP}_${vers}"/"${APP}" "${BDIR}/${APP}"
+    else
+        BDIR="${HOME}/.local/bin"
+        install /tmp/"${APP}_${vers}"/"${APP}" "${BDIR}/${APP}"
+    fi
+    rm -rf /tmp/"${FN}"
 }
 
 if [ -z "$(which ${APP})" ]; then
     download new
 else
-    APPBIN=$(which ${APP})
-    APPVER=$(${APPBIN} version | grep ^Terraform | awk '{print $2}')
-    [ "${APPVER}" = "${vers}" ] && echo "${APP} version is current" || download "${vers}"
+    APPVER=$($(which ${APP}) version 2>&1 | grep -i "^${APP}" | awk '{print $2}' | tr -d 'v')
+    if [ "${APPVER}" = "${vers}" ]; then
+        echo "${APP} version is current"
+    else
+        download "${vers}"
+    fi
 fi

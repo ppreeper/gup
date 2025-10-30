@@ -45,7 +45,7 @@ target="linux-x64"
 # esac
 
 setup() {
-    mkdir -p ${BDIR}
+    mkdir -p "${BDIR}"
     grep "export BUN_INSTALL" ${HOME}/.bashrc >/dev/null || echo "export BUN_INSTALL=${BDIR}" >>${HOME}/.bashrc
     grep 'export PATH=$BUN_INSTALL/bin:$PATH' ~/.bashrc >/dev/null || echo 'export PATH=$BUN_INSTALL/bin:$PATH' >>${HOME}/.bashrc
     echo "setup done"
@@ -67,7 +67,10 @@ download() {
 if [ -z "$(which ${APP})" ]; then
     download new
 else
-    APPVER=$($(which ${APP}) --version)
-    GITVER=$(echo $vers | sed 's/^bun-v//')
-    [ "${APPVER}" = "${GITVER}" ] && echo "${APP} version is current" || download "${vers}"
+    APPVER=$($(which ${APP}) --version 2>&1)
+    if [ "${APPVER}" = "${vers}" ]; then
+        echo "${APP} version is current"
+    else
+        download "${vers}"
+    fi
 fi

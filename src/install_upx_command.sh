@@ -1,28 +1,36 @@
 APP="upx"
-REPO="https://github.com/upx/upx"
-vers=$(git ls-remote --tags ${REPO} | grep "refs/tags.*[0-9]$" | awk '{print $2}' | sed 's/refs\/tags\///g' | sort -V | uniq | tail -1)
-
-BDIR="${HOME}"/.local/bin
-TMPDIR=$(mktemp -u -d)
+REPO="upx/upx"
+RURL="https://api.github.com/repos/${REPO}/releases/latest"
+vers=$(wget -qO- "${RURL}" | jq .tag_name | tr -d '"' | tr -d 'v')
+DL=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | (contains("sha256") | not) and contains("amd64_linux.tar.xz")) | .browser_download_url' | tr -d '"')
+FN=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | (contains("sha256") | not) and contains("amd64_linux.tar.xz")) | .name' | tr -d '"')
 
 function download() {
     echo "download $1 version"
     echo "installing ${vers}"
-    FVER=$(echo "${vers}" | sed 's/v//g')
-    FNAME="upx-${FVER}-amd64_linux.tar.xz"
-    mkdir -p "${BDIR}"
-    mkdir -p "${TMPDIR}"
-    wget -qO /tmp/"${FNAME}" "${REPO}"/releases/download/"${vers}"/"${FNAME}"
-    tar -axf /tmp/"${FNAME}" --strip-components=1 -C "${TMPDIR}"
-    cp -f "${TMPDIR}"/"${APP}" "${BDIR}"/"${APP}"
-    rm -rf "/tmp/${FNAME}"
-    rm -rf "${TMPDIR}"
+    rm -rf /tmp/"${FN}" /tmp/"${APP}_${vers}"
+    wget -qc "${DL}" -O /tmp/"${FN}"
+    mkdir -p /tmp/"${APP}_${vers}"
+    tar -axf /tmp/"${FN}" -C /tmp/"${APP}_${vers}" --strip-components=1
+    if [ "$(id -u)" == 0 ]; then
+        BDIR="/usr/local/bin"
+        sudo rm -f "${BDIR}/${APP}"
+        sudo install /tmp/"${APP}_${vers}/${APP}" "${BDIR}/${APP}"
+    else
+        BDIR="${HOME}/.local/bin"
+        rm -f "${BDIR}/${APP}"
+        install /tmp/"${APP}_${vers}/${APP}" "${BDIR}/${APP}"
+    fi
+    rm -rf /tmp/"${FN}" /tmp/"${APP}_${vers}"
 }
 
 if [ -z "$(which "${APP}")" ]; then
     download new
 else
-    APPBIN=$(which ${APP})
-    APPVER=$(${APPBIN} -V | grep -e "^upx" | awk '{print "v"$2}')
-    [ "${APPVER}" = "${vers}" ] && echo "${APP} version is current" || download "${vers}"
+    APPVER=$($(which "${APP}") -V 2>&1 | grep -e "^${APP}" | awk '{print $2}')
+    if [ "${APPVER}" = "${vers}" ]; then
+        echo "${APP} version is current"
+    else
+        download "${vers}"
+    fi
 fi

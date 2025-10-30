@@ -22,6 +22,10 @@ download() {
 if [ -z "$(which ${APP})" ]; then
     download new
 else
-    APPVER=$($(which ${APP}) --version | grep "etcd.*Version" | awk '{print $3}' | sed 's/^v//')
-    [ "${APPVER}" = "${vers}" ] && echo "${APP} version is current" || download "${vers}"
+    APPVER=$($(which ${APP}) --version 2>&1 | grep "etcd.*Version" | awk '{print $3}' | sed 's/^v//')
+    if [ "${APPVER}" = "${vers}" ]; then
+        echo "${APP} version is current"
+    else
+        download "${vers}"
+    fi
 fi

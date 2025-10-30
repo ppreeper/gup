@@ -1,5 +1,6 @@
-REPO="https://github.com/nvm-sh/nvm"
-DLREPO="https://raw.githubusercontent.com/nvm-sh/nvm"
-vers=$(git ls-remote --tags ${REPO} | grep "refs/tags.*[0-9]$" | awk '{print $2}' | sed 's/refs\/tags\///g' | sort -V | uniq | tail -1)
+REPO="nvm-sh/nvm"
+RURL="https://api.github.com/repos/${REPO}/releases/latest"
+vers=$(wget -qO- "${RURL}" | jq .tag_name | tr -d '"' | tr -d 'v')
 
+DLREPO="https://raw.githubusercontent.com/nvm-sh/nvm"
 wget -qO- "${DLREPO}/${vers}/install.sh" | bash

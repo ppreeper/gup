@@ -130,16 +130,6 @@ commands:
       - name: zls
         help: zig language server
         group: Zig Development
-      # Odoo Development
-      - name: oda
-        help: odoo admin tool for client
-        group: Odoo Development
-      - name: odaserver
-        help: odoo admin tool for server
-        group: Odoo Development
-      - name: wkhtmltopdf
-        help: wkhtmltopdf
-        group: Odoo Development
       # Monitoring
       - name: btop
         help: btop
@@ -165,9 +155,6 @@ commands:
         group: Prometheus
       - name: prometheus
         help: prometheus
-        group: Prometheus
-      - name: promtail
-        help: promtail
         group: Prometheus
       - name: snmp_exporter
         help: snmp_exporter
@@ -199,9 +186,6 @@ commands:
         help: A portable, performant script to make rolling ZFS snapshots easy
         group: Utilities
       # Containers
-      - name: podman
-        help: podman container
-        group: Containers
       - name: vagrant
         help: HashiCorp Vagrant
         group: Containers
@@ -231,8 +215,6 @@ commands:
     examples:
       - gup remove neovim
     commands:
-      - name: consul
-        help: consul
       - name: neovim
         help: NeoVIM
   - name: systemd

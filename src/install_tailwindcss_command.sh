@@ -1,25 +1,34 @@
 APP="tailwindcss"
-REPO="https://github.com/tailwindlabs/tailwindcss"
-vers=$(git ls-remote --tags ${REPO} | grep "refs/tags.*[0-9]$" | grep -v -e alpha -e beta -e canary | awk '{print $2}' | sed 's/refs\/tags\///' | sort -V | uniq | tail -1)
+REPO="tailwindlabs/tailwindcss"
+RURL="https://api.github.com/repos/${REPO}/releases/latest"
+vers=$(wget -qO- "${RURL}" | jq .tag_name | tr -d '"' | tr -d 'v')
+DL=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains("linux-x64") and (contains("musl") | not)) | .browser_download_url' | tr -d '"')
+FN=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains("linux-x64") and (contains("musl") | not)) | .name' | tr -d '"')
 
-if [ $(id -u) == 0 ]; then
-  BDIR="/usr/local/bin"
-else
-  BDIR="${HOME}/.local/bin"
-fi
-
-function download() {
+download() {
     echo "download $1 version"
     echo "installing ${vers}"
-    FN=${APP}-linux-x64
-    wget -q ${REPO}/releases/download/${vers}/${FN} -O ${BDIR}/${APP}
-    chmod +x ${BDIR}/${APP}
+    rm -rf /tmp/"${FN}"
+    wget -qc "${DL}" -O /tmp/"${FN}"
+    if [ "$(id -u)" == 0 ]; then
+        BDIR="/usr/local/bin"
+        sudo rm -f "${BDIR}/${APP}"
+        sudo install /tmp/"${FN}" "${BDIR}/${APP}"
+    else
+        BDIR="${HOME}/.local/bin"
+        rm -f "${BDIR}/${APP}"
+        install /tmp/"${FN}" "${BDIR}/${APP}"
+    fi
+    rm -rf /tmp/"${FN}"
 }
 
-if [ -z $(which ${APP}) ]; then
+if [ -z "$(which ${APP})" ]; then
     download new
 else
-    APPBIN=$(which ${APP})
-    APPVER=$(${APPBIN} --help 2>&1 | grep "${APP}.*v" | awk '{print $3}')
-    [ "${APPVER}" = "${vers}" ] && echo "${APP} version is current" || download ${vers}
+    APPVER=$($(which ${APP}) --help 2>&1 | grep "${APP}.*v" | awk '{print $3}' | tr -d 'v')
+    if [ "${APPVER}" = "${vers}" ]; then
+        echo "${APP} version is current"
+    else
+        download "${vers}"
+    fi
 fi

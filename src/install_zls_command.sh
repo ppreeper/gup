@@ -1,27 +1,30 @@
 APP="zls"
-REPO="https://github.com/ziglang/zig"
-DLREPO="https://builds.zigtools.org"
-vers=$(git ls-remote --tags ${REPO} | grep "refs/tags/.*[0-9]$" | grep -v -e rc -e alpha -e beta | awk '{print $2}' | sed 's/refs\/tags\///' | sort -V | uniq | tail -1)
-
-IDIR=/usr/local/lib
-BDIR=/usr/local/bin
+REPO="zigtools/zls"
+RURL="https://api.github.com/repos/${REPO}/releases/latest"
+vers=$(wget -qO- "${RURL}" | jq .tag_name | tr -d '"' | tr -d 'v')
+DL=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | (contains("minisig") | not) and contains("x86_64-linux")) | .browser_download_url' | tr -d '"')
+FN=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | (contains("minisig") | not) and contains("x86_64-linux")) | .name' | tr -d '"')
 
 function download(){
     echo "download $1 version"
     echo "installing $vers"
-    FN=zls-linux-x86_64-$vers.tar.xz
-    rm -f /tmp/${FN}
-    wget -qc ${DLREPO}/${FN} -O /tmp/${FN}
-    sudo rm -f ${BDIR}/zls
-    sudo tar axf /tmp/${FN} -C ${BDIR} zls
-    rm -f /tmp/${FN}
+    rm -rf /tmp/"${FN}" /tmp/"${APP}_${vers}"
+    wget -qc "${DL}" -O /tmp/"${FN}"
+    mkdir -p /tmp/"${APP}_${vers}"
+    tar axf /tmp/"${FN}" -C /tmp/"${APP}_${vers}"
+    BDIR=/usr/local/bin
+    sudo rm -f "${BDIR}"/zls
+    sudo install /tmp/"${APP}_${vers}"/zls "${BDIR}"/zls
+    rm -rf /tmp/"${FN}" /tmp/"${APP}_${vers}"
 }
 
-if [ -z $(which ${APP}) ]; then
+if [ -z "$(which ${APP})" ]; then
     download new
 else
-    APPBIN=$(which ${APP})
-    APPVER=$(${APPBIN} --version)
-    [ "${APPVER}" = "${vers}" ] && echo "${APP} version is current" || download ${vers}
+    APPVER=$($(which ${APP}) version 2>&1)
+    if [ "${APPVER}" = "${vers}" ]; then
+        echo "${APP} version is current"
+    else
+        download "${vers}"
+    fi
 fi
-

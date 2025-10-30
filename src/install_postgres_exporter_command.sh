@@ -1,30 +1,36 @@
 APP="postgres_exporter"
-REPO="https://github.com/prometheus-community/postgres_exporter"
-vers=$(git ls-remote --tags ${REPO} | grep "refs/tags.*[0-9]$" | grep -v -e rc -e alpha -e beta | awk '{print $2}' | sed 's/refs\/tags\///' | sort -V | uniq | tail -1)
-
-if [ $(id -u) == 0 ]; then
-  BDIR="/usr/local/bin"
-else
-  BDIR="${HOME}/.local/bin"
-fi
+REPO="prometheus-community/postgres_exporter"
+RURL="https://api.github.com/repos/${REPO}/releases/latest"
+vers=$(wget -qO- "${RURL}" | jq .tag_name | tr -d '"' | tr -d 'v')
+DL=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains("linux-amd64.tar.gz")) | .browser_download_url' | tr -d '"')
+FN=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains("linux-amd64.tar.gz")) | .name' | tr -d '"')
 
 download() {
     echo "download $1 version"
     echo "installing ${vers}"
-    fn="${APP}-$(echo $vers | sed 's/^v//').linux-amd64.tar.gz"
-    rm -f /tmp/${fn}
-    wget -qc ${REPO}/releases/download/${vers}/${fn} -O /tmp/${fn}
-    rm -f ${BDIR}/${APP}
-    mkdir -p /tmp/${APP}_${vers}
-    tar axf /tmp/${fn} -C /tmp/${APP}_${vers} --strip-components=1
-    install /tmp/${APP}_${vers}/${APP} ${BDIR}/${APP}
-    rm -rf /tmp/${APP}_${vers} /tmp/${fn}
+    rm -rf /tmp/"${FN}" /tmp/"${APP}_${vers}"
+    wget -qc "${DL}" -O /tmp/"${FN}"
+    mkdir -p /tmp/"${APP}_${vers}"
+    tar axf /tmp/"${FN}" -C /tmp/"${APP}_${vers}" --strip-components=1
+    if [ "$(id -u)" == 0 ]; then
+        BDIR="/usr/local/bin"
+        sudo rm -f "${BDIR}/${APP}"
+        sudo install /tmp/"${APP}_${vers}"/"${APP}" "${BDIR}/${APP}"
+    else
+        BDIR="${HOME}/.local/bin"
+        rm -f "${BDIR}/${APP}"
+        install /tmp/"${APP}_${vers}"/"${APP}" "${BDIR}/${APP}"
+    fi
+    rm -rf /tmp/"${FN}" /tmp/"${APP}_${vers}"
 }
 
 if [ -z "$(which ${APP})" ]; then
-  download new
+    download new
 else
-  APPBIN=$(which ${APP})
-  APPVER=$(${APPBIN} --version 2>&1 |grep -i ^${APP} | awk '{print $3}')
-  [ "${APPVER}" = "$(echo $vers | sed 's/^v//')" ] && echo "${APP} version is current" || download ${vers}
+    APPVER=$($(which ${APP}) --version 2>&1 | grep -i ^${APP} | awk '{print $3}')
+    if [ "${APPVER}" = "${vers}" ]; then
+        echo "${APP} version is current"
+    else
+        download "${vers}"
+    fi
 fi

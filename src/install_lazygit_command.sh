@@ -27,7 +27,7 @@ function download() {
 if [ -z "$(which ${APP})" ]; then
     download new
 else
-  APPVER=$($(which ${APP}) --version | awk '{print $6}' | sed 's/,//g' | awk -F'=' '{print $2}')
+  APPVER=$($(which ${APP}) --version 2>&1 | awk '{print $6}' | sed 's/,//g' | awk -F'=' '{print $2}')
   if [ "${APPVER}" = "${vers}" ]; then
       echo "${APP} version is current"
   else

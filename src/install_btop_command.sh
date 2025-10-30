@@ -53,5 +53,9 @@ if [ -z "$(which ${APP})" ]; then
 else
     APPVER=$($(which ${APP}) --version | grep "^btop version:" | awk -F':' '{print $2}' | sed -E 's/\x1B\[[0-9;]*[a-zA-Z]//g' | awk '{$1=$1; print}')
     version=$(echo "${vers}" | sed 's/^v//')
-    [ "${APPVER}" = "${version}" ] && echo "${APP} version is current" || download "${vers}"
+    if [ "${APPVER}" = "${version}" ]; then
+        echo "${APP} version is current"
+    else
+        download "${vers}"
+    fi
 fi

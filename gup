@@ -110,11 +110,6 @@ gup_install_usage() {
 	printf "  %s   zig programming language\n" "zig              "
 	printf "  %s   zig language server\n" "zls              "
 	echo
-	printf "%s\n" "Odoo Development Commands:"
-	printf "  %s   odoo admin tool for client\n" "oda              "
-	printf "  %s   odoo admin tool for server\n" "odaserver        "
-	printf "  %s   wkhtmltopdf\n" "wkhtmltopdf      "
-	echo
 	printf "%s\n" "Monitoring Commands:"
 	printf "  %s   btop\n" "btop             "
 	printf "  %s   gotop terminal based graphical activity monitor\n" "gotop            "
@@ -126,7 +121,6 @@ gup_install_usage() {
 	printf "  %s   node_exporter\n" "node_exporter    "
 	printf "  %s   postgres_exporter\n" "postgres_exporter"
 	printf "  %s   prometheus\n" "prometheus       "
-	printf "  %s   promtail\n" "promtail         "
 	printf "  %s   snmp_exporter\n" "snmp_exporter    "
 	echo
 	printf "%s\n" "Web Server Commands:"
@@ -142,7 +136,6 @@ gup_install_usage() {
 	printf "  %s   A portable, performant script to make rolling ZFS snapshots easy\n" "zfsnap           "
 	echo
 	printf "%s\n" "Containers Commands:"
-	printf "  %s   podman container\n" "podman           "
 	printf "  %s   HashiCorp Vagrant\n" "vagrant          "
 	echo
 	printf "%s\n" "Kubernetes Commands:"
@@ -960,69 +953,6 @@ gup_install_zls_usage() {
 }
 
 # :command.usage
-gup_install_oda_usage() {
-	printf "gup install oda - odoo admin tool for client\n\n"
-
-	printf "%s\n" "Usage:"
-	printf "  gup install oda\n"
-	printf "  gup install oda --help | -h\n"
-	echo
-
-	# :command.long_usage
-	if [[ -n "$long_usage" ]]; then
-		printf "%s\n" "Options:"
-
-		# :command.usage_fixed_flags
-		printf "  %s\n" "--help, -h"
-		printf "    Show this help\n"
-		echo
-
-	fi
-}
-
-# :command.usage
-gup_install_odaserver_usage() {
-	printf "gup install odaserver - odoo admin tool for server\n\n"
-
-	printf "%s\n" "Usage:"
-	printf "  gup install odaserver\n"
-	printf "  gup install odaserver --help | -h\n"
-	echo
-
-	# :command.long_usage
-	if [[ -n "$long_usage" ]]; then
-		printf "%s\n" "Options:"
-
-		# :command.usage_fixed_flags
-		printf "  %s\n" "--help, -h"
-		printf "    Show this help\n"
-		echo
-
-	fi
-}
-
-# :command.usage
-gup_install_wkhtmltopdf_usage() {
-	printf "gup install wkhtmltopdf - wkhtmltopdf\n\n"
-
-	printf "%s\n" "Usage:"
-	printf "  gup install wkhtmltopdf\n"
-	printf "  gup install wkhtmltopdf --help | -h\n"
-	echo
-
-	# :command.long_usage
-	if [[ -n "$long_usage" ]]; then
-		printf "%s\n" "Options:"
-
-		# :command.usage_fixed_flags
-		printf "  %s\n" "--help, -h"
-		printf "    Show this help\n"
-		echo
-
-	fi
-}
-
-# :command.usage
 gup_install_btop_usage() {
 	printf "gup install btop - btop\n\n"
 
@@ -1176,27 +1106,6 @@ gup_install_prometheus_usage() {
 	printf "%s\n" "Usage:"
 	printf "  gup install prometheus\n"
 	printf "  gup install prometheus --help | -h\n"
-	echo
-
-	# :command.long_usage
-	if [[ -n "$long_usage" ]]; then
-		printf "%s\n" "Options:"
-
-		# :command.usage_fixed_flags
-		printf "  %s\n" "--help, -h"
-		printf "    Show this help\n"
-		echo
-
-	fi
-}
-
-# :command.usage
-gup_install_promtail_usage() {
-	printf "gup install promtail - promtail\n\n"
-
-	printf "%s\n" "Usage:"
-	printf "  gup install promtail\n"
-	printf "  gup install promtail --help | -h\n"
 	echo
 
 	# :command.long_usage
@@ -1401,27 +1310,6 @@ gup_install_zfsnap_usage() {
 }
 
 # :command.usage
-gup_install_podman_usage() {
-	printf "gup install podman - podman container\n\n"
-
-	printf "%s\n" "Usage:"
-	printf "  gup install podman\n"
-	printf "  gup install podman --help | -h\n"
-	echo
-
-	# :command.long_usage
-	if [[ -n "$long_usage" ]]; then
-		printf "%s\n" "Options:"
-
-		# :command.usage_fixed_flags
-		printf "  %s\n" "--help, -h"
-		printf "    Show this help\n"
-		echo
-
-	fi
-}
-
-# :command.usage
 gup_install_vagrant_usage() {
 	printf "gup install vagrant - HashiCorp Vagrant\n\n"
 
@@ -1578,7 +1466,6 @@ gup_remove_usage() {
 	echo
 	# :command.usage_commands
 	printf "%s\n" "Commands:"
-	printf "  %s   consul\n" "consul"
 	printf "  %s   NeoVIM\n" "neovim"
 	echo
 
@@ -1594,27 +1481,6 @@ gup_remove_usage() {
 		# :command.usage_examples
 		printf "%s\n" "Examples:"
 		printf "  gup remove neovim\n"
-		echo
-
-	fi
-}
-
-# :command.usage
-gup_remove_consul_usage() {
-	printf "gup remove consul - consul\n\n"
-
-	printf "%s\n" "Usage:"
-	printf "  gup remove consul\n"
-	printf "  gup remove consul --help | -h\n"
-	echo
-
-	# :command.long_usage
-	if [[ -n "$long_usage" ]]; then
-		printf "%s\n" "Options:"
-
-		# :command.usage_fixed_flags
-		printf "  %s\n" "--help, -h"
-		printf "    Show this help\n"
 		echo
 
 	fi
@@ -1794,7 +1660,7 @@ gup_install_gup_command() {
 	# src/install_gup_command.sh
 	REPO="https://raw.githubusercontent.com/ppreeper/gup"
 
-	if [ $(id -u) == 0 ]; then
+	if [ "$(id -u)" == 0 ]; then
 			IDIR="/usr/local/bin"
 			sudo wget -q "${REPO}/main/gup" -O "${IDIR}/gup"
 			chmod +x "${IDIR}/gup"
@@ -1887,30 +1753,40 @@ gup_install_terraform_command() {
 
 	# src/install_terraform_command.sh
 	APP="terraform"
-	REPO="https://github.com/hashicorp/terraform"
-	DLREPO="https://releases.hashicorp.com/terraform"
-	vers=$(git ls-remote --tags ${REPO} | grep "refs/tags.*[0-9]$" | awk '{print $2}' | sed 's/refs\/tags\///' | grep -v -e "[rc|beta|alpha]" | sort -V | uniq | tail -1)
+	REPO="hashicorp/terraform"
+	RURL="https://api.github.com/repos/${REPO}/releases/latest"
+	vers=$(wget -qO- "${RURL}" | jq .tag_name | tr -d '"' | tr -d 'v')
 
-	BDIR=/usr/local/bin
+	DLREPO="https://releases.hashicorp.com/terraform"
+	FN="${APP}_${vers}_linux_amd64.zip"
+	DL="${DLREPO}/${vers}/${FN}"
 
 	function download() {
 			echo "download $1 version"
 			echo "installing ${vers}"
-			VERS=$(echo "${vers}" | sed 's/^v//')
-			FN=${APP}_${VERS}_linux_amd64.zip
-			DLURL="${DLREPO}/${VERS}/${FN}"
-			rm -f /tmp/"${FN}"
-			wget -qc "${DLURL}" -O /tmp/"${FN}"
-			sudo unzip -q /tmp/"${FN}" "${APP}" -d "${BDIR}"
-			rm -f /tmp/"${FN}"
+			rm -rf /tmp/"${FN}" /tmp/"${APP}_${vers}"
+			wget -qc "${DL}" -O /tmp/"${FN}"
+			mkdir -p /tmp/"${APP}_${vers}"
+			unzip /tmp/"${FN}" -d /tmp/"${APP}_${vers}"
+			if [ "$(id -u)" == 0 ]; then
+					BDIR="/usr/local/bin"
+					sudo install /tmp/"${APP}_${vers}"/"${APP}" "${BDIR}/${APP}"
+			else
+					BDIR="${HOME}/.local/bin"
+					install /tmp/"${APP}_${vers}"/"${APP}" "${BDIR}/${APP}"
+			fi
+			rm -rf /tmp/"${FN}"
 	}
 
 	if [ -z "$(which ${APP})" ]; then
 			download new
 	else
-			APPBIN=$(which ${APP})
-			APPVER=$(${APPBIN} version | grep ^Terraform | awk '{print $2}')
-			[ "${APPVER}" = "${vers}" ] && echo "${APP} version is current" || download "${vers}"
+			APPVER=$($(which ${APP}) version 2>&1 | grep -i "^${APP}" | awk '{print $2}' | tr -d 'v')
+			if [ "${APPVER}" = "${vers}" ]; then
+					echo "${APP} version is current"
+			else
+					download "${vers}"
+			fi
 	fi
 }
 
@@ -1984,7 +1860,7 @@ gup_install_lazygit_command() {
 	if [ -z "$(which ${APP})" ]; then
 			download new
 	else
-		APPVER=$($(which ${APP}) --version | awk '{print $6}' | sed 's/,//g' | awk -F'=' '{print $2}')
+		APPVER=$($(which ${APP}) --version 2>&1 | awk '{print $6}' | sed 's/,//g' | awk -F'=' '{print $2}')
 		if [ "${APPVER}" = "${vers}" ]; then
 				echo "${APP} version is current"
 		else
@@ -2026,32 +1902,40 @@ gup_install_upx_command() {
 
 	# src/install_upx_command.sh
 	APP="upx"
-	REPO="https://github.com/upx/upx"
-	vers=$(git ls-remote --tags ${REPO} | grep "refs/tags.*[0-9]$" | awk '{print $2}' | sed 's/refs\/tags\///g' | sort -V | uniq | tail -1)
-
-	BDIR="${HOME}"/.local/bin
-	TMPDIR=$(mktemp -u -d)
+	REPO="upx/upx"
+	RURL="https://api.github.com/repos/${REPO}/releases/latest"
+	vers=$(wget -qO- "${RURL}" | jq .tag_name | tr -d '"' | tr -d 'v')
+	DL=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | (contains("sha256") | not) and contains("amd64_linux.tar.xz")) | .browser_download_url' | tr -d '"')
+	FN=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | (contains("sha256") | not) and contains("amd64_linux.tar.xz")) | .name' | tr -d '"')
 
 	function download() {
 			echo "download $1 version"
 			echo "installing ${vers}"
-			FVER=$(echo "${vers}" | sed 's/v//g')
-			FNAME="upx-${FVER}-amd64_linux.tar.xz"
-			mkdir -p "${BDIR}"
-			mkdir -p "${TMPDIR}"
-			wget -qO /tmp/"${FNAME}" "${REPO}"/releases/download/"${vers}"/"${FNAME}"
-			tar -axf /tmp/"${FNAME}" --strip-components=1 -C "${TMPDIR}"
-			cp -f "${TMPDIR}"/"${APP}" "${BDIR}"/"${APP}"
-			rm -rf "/tmp/${FNAME}"
-			rm -rf "${TMPDIR}"
+			rm -rf /tmp/"${FN}" /tmp/"${APP}_${vers}"
+			wget -qc "${DL}" -O /tmp/"${FN}"
+			mkdir -p /tmp/"${APP}_${vers}"
+			tar -axf /tmp/"${FN}" -C /tmp/"${APP}_${vers}" --strip-components=1
+			if [ "$(id -u)" == 0 ]; then
+					BDIR="/usr/local/bin"
+					sudo rm -f "${BDIR}/${APP}"
+					sudo install /tmp/"${APP}_${vers}/${APP}" "${BDIR}/${APP}"
+			else
+					BDIR="${HOME}/.local/bin"
+					rm -f "${BDIR}/${APP}"
+					install /tmp/"${APP}_${vers}/${APP}" "${BDIR}/${APP}"
+			fi
+			rm -rf /tmp/"${FN}" /tmp/"${APP}_${vers}"
 	}
 
 	if [ -z "$(which "${APP}")" ]; then
 			download new
 	else
-			APPBIN=$(which ${APP})
-			APPVER=$(${APPBIN} -V | grep -e "^upx" | awk '{print "v"$2}')
-			[ "${APPVER}" = "${vers}" ] && echo "${APP} version is current" || download "${vers}"
+			APPVER=$($(which "${APP}") -V 2>&1 | grep -e "^${APP}" | awk '{print $2}')
+			if [ "${APPVER}" = "${vers}" ]; then
+					echo "${APP} version is current"
+			else
+					download "${vers}"
+			fi
 	fi
 }
 
@@ -2060,30 +1944,40 @@ gup_install_tailwindcss_command() {
 
 	# src/install_tailwindcss_command.sh
 	APP="tailwindcss"
-	REPO="https://github.com/tailwindlabs/tailwindcss"
-	vers=$(git ls-remote --tags ${REPO} | grep "refs/tags.*[0-9]$" | grep -v -e alpha -e beta -e canary | awk '{print $2}' | sed 's/refs\/tags\///' | sort -V | uniq | tail -1)
+	REPO="tailwindlabs/tailwindcss"
+	RURL="https://api.github.com/repos/${REPO}/releases/latest"
+	vers=$(wget -qO- "${RURL}" | jq .tag_name | tr -d '"' | tr -d 'v')
+	DL=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains("linux-x64") and (contains("musl") | not)) | .browser_download_url' | tr -d '"')
+	FN=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains("linux-x64") and (contains("musl") | not)) | .name' | tr -d '"')
 
-	if [ $(id -u) == 0 ]; then
-		BDIR="/usr/local/bin"
-	else
-		BDIR="${HOME}/.local/bin"
-	fi
-
-	function download() {
+	download() {
 			echo "download $1 version"
 			echo "installing ${vers}"
-			FN=${APP}-linux-x64
-			wget -q ${REPO}/releases/download/${vers}/${FN} -O ${BDIR}/${APP}
-			chmod +x ${BDIR}/${APP}
+			rm -rf /tmp/"${FN}"
+			wget -qc "${DL}" -O /tmp/"${FN}"
+			if [ "$(id -u)" == 0 ]; then
+					BDIR="/usr/local/bin"
+					sudo rm -f "${BDIR}/${APP}"
+					sudo install /tmp/"${FN}" "${BDIR}/${APP}"
+			else
+					BDIR="${HOME}/.local/bin"
+					rm -f "${BDIR}/${APP}"
+					install /tmp/"${FN}" "${BDIR}/${APP}"
+			fi
+			rm -rf /tmp/"${FN}"
 	}
 
-	if [ -z $(which ${APP}) ]; then
+	if [ -z "$(which ${APP})" ]; then
 			download new
 	else
-			APPBIN=$(which ${APP})
-			APPVER=$(${APPBIN} --help 2>&1 | grep "${APP}.*v" | awk '{print $3}')
-			[ "${APPVER}" = "${vers}" ] && echo "${APP} version is current" || download ${vers}
+			APPVER=$($(which ${APP}) --help 2>&1 | grep "${APP}.*v" | awk '{print $3}' | tr -d 'v')
+			if [ "${APPVER}" = "${vers}" ]; then
+					echo "${APP} version is current"
+			else
+					download "${vers}"
+			fi
 	fi
+
 }
 
 # :command.function
@@ -2093,7 +1987,7 @@ gup_install_go_command() {
 	APP="go"
 	REPO="https://github.com/golang/go"
 	DLREPO="https://dl.google.com/go"
-	vers=$(git ls-remote --tags ${REPO} | grep "refs/tags/go.*[0-9]$" | grep -v -e rc -e alpha -e beta | awk '{print $2}' | sed 's/refs\/tags\///' | sort -V | uniq | tail -1)
+	vers=$(git ls-remote --tags ${REPO} | grep -E 'refs/tags/go[0-9]+\.[0-9]+(\.[0-9]+)?$' | awk '{print $2}' | sed 's/refs\/tags\///' | sort -V | uniq | tail -1)
 
 	IDIR=/usr/local/lib
 	BDIR=/usr/local/bin
@@ -2102,21 +1996,24 @@ gup_install_go_command() {
 			echo "download $1 version"
 			echo "installing $vers"
 			FN=$vers.linux-amd64.tar.gz
-			rm -f /tmp/${FN}
-			wget -qc ${DLREPO}/${FN} -O /tmp/${FN}
+			rm -f /tmp/"${FN}"
+			wget -qc "${DLREPO}/${FN}" -O /tmp/"${FN}"
 			sudo ls ${IDIR}/go/bin 2>/dev/null | sudo xargs -I {} rm -f ${BDIR}/{}
 			sudo rm -rf ${IDIR}/go
-			sudo tar axf /tmp/${FN} -C ${IDIR}
+			sudo tar axf /tmp/"${FN}" -C ${IDIR}
 			sudo ls ${IDIR}/go/bin | sudo xargs -I {} ln -sf ${IDIR}/go/bin/{} ${BDIR}/{}
-			rm -f /tmp/${FN}
+			rm -f /tmp/"${FN}"
 	}
 
-	if [ -z $(which ${APP}) ]; then
+	if [ -z "$(which ${APP})" ]; then
 			download new
 	else
-			APPBIN=$(which ${APP})
-			APPVER=$(${APPBIN} version | awk '{print $3}')
-			[ "${APPVER}" = "${vers}" ] && echo "${APP} version is current" || download ${vers}
+			APPVER=$($(which ${APP}) version 2>&1 | awk '{print $3}')
+			if [ "${APPVER}" = "${vers}" ]; then
+					echo "${APP} version is current"
+			else
+					download "${vers}"
+			fi
 	fi
 
 }
@@ -2126,34 +2023,47 @@ gup_install_tinygo_command() {
 
 	# src/install_tinygo_command.sh
 	APP="tinygo"
-	REPO="https://github.com/tinygo-org/tinygo"
-	DLREPO="https://github.com/tinygo-org/tinygo/releases/download"
-	vers=$(git ls-remote --tags ${REPO} | grep "refs/tags.*[0-9]$" | awk '{print $2}' | sed 's/refs\/tags\///' | grep -v -e "[rc|beta|alpha]" | sort -V | uniq | tail -1)
-
-	IDIR=/usr/local/lib
-	BDIR=/usr/local/bin
+	REPO="tinygo-org/tinygo"
+	RURL="https://api.github.com/repos/${REPO}/releases/latest"
+	vers=$(wget -qO- "${RURL}" | jq .tag_name | tr -d '"' | tr -d 'v')
+	DL=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | (contains("sha256") | not) and contains("linux-amd64.tar.gz")) | .browser_download_url' | tr -d '"')
+	FN=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | (contains("sha256") | not) and contains("linux-amd64.tar.gz")) | .name' | tr -d '"')
 
 	function download() {
 			echo "download $1 version"
 			echo "installing ${vers}"
-			VERS=$(echo "${vers}" | sed 's/^v//')
-			FN=${APP}${VERS}.linux-amd64.tar.gz
-			DLURL="${DLREPO}/${vers}/${FN}"
-			rm -f /tmp/"${FN}"
-			wget -qc "${DLURL}" -O /tmp/"${FN}"
-			sudo rm -rf "${IDIR}/tinygo"
-			sudo mkdir -p "${IDIR}/tinygo"
-			sudo tar -axf /tmp/"${FN}" -C "${IDIR}/tinygo" --strip-components=1
-			sudo ls ${IDIR}/tinygo/bin 2>/dev/null | sudo xargs -I {} rm -f ${BDIR}/{}
-			sudo ls ${IDIR}/tinygo/bin 2>/dev/null | sudo xargs -I {} ln -s ${IDIR}/tinygo/bin/{} ${BDIR}/{}
-			rm -f /tmp/"${FN}"
+			rm -rf /tmp/"${FN}" /tmp/"${APP}_${vers}"
+			wget -qc "${DL}" -O /tmp/"${FN}"
+			if [ "$(id -u)" == 0 ]; then
+					BDIR="/usr/local/bin"
+					IDIR="/usr/local/lib"
+					sudo rm -rf "${IDIR}/tinygo"
+					sudo mkdir -p "${IDIR}/tinygo"
+					sudo tar axf /tmp/"${FN}" -C "${IDIR}/tinygo/" --strip-components=1
+					for f in $(find "${IDIR}"/tinygo/bin/ -type f); do
+							fname=$(basename "${f}")
+							sudo rm -f "${BDIR}/${fname}"
+							sudo ln -s "${IDIR}"/tinygo/bin/"${fname}" "${BDIR}/${fname}"
+					done
+			else
+					BDIR="${HOME}/.local/bin"
+					IDIR="${HOME}/.local/share"
+					rm -rf "${IDIR}/tinygo"
+					mkdir -p "${IDIR}/tinygo"
+					tar axf /tmp/"${FN}" -C "${IDIR}/tinygo/" --strip-components=1
+					for f in $(find "${IDIR}"/tinygo/bin/ -type f); do
+							fname=$(basename "${f}")
+							rm -f "${BDIR}/${fname}"
+							ln -s "${IDIR}"/tinygo/bin/"${fname}" "${BDIR}/${fname}"
+					done
+			fi
+			rm -rf /tmp/"${FN}" /tmp/"${APP}_${vers}"
 	}
 
 	if [ -z "$(which ${APP})" ]; then
 			download new
 	else
-			APPBIN=$(which ${APP})
-			APPVER=$(${APPBIN} version | grep version | awk '{print $3}')
+			APPVER=$($(which ${APP}) version 2>&1 | awk '{print $3}')
 			if [ "v${APPVER}" = "${vers}" ]; then
 					echo "${APP} version is current"
 					exit 0
@@ -2318,10 +2228,11 @@ gup_install_templ_command() {
 gup_install_nvm_command() {
 
 	# src/install_nvm_command.sh
-	REPO="https://github.com/nvm-sh/nvm"
-	DLREPO="https://raw.githubusercontent.com/nvm-sh/nvm"
-	vers=$(git ls-remote --tags ${REPO} | grep "refs/tags.*[0-9]$" | awk '{print $2}' | sed 's/refs\/tags\///g' | sort -V | uniq | tail -1)
+	REPO="nvm-sh/nvm"
+	RURL="https://api.github.com/repos/${REPO}/releases/latest"
+	vers=$(wget -qO- "${RURL}" | jq .tag_name | tr -d '"' | tr -d 'v')
 
+	DLREPO="https://raw.githubusercontent.com/nvm-sh/nvm"
 	wget -qO- "${DLREPO}/${vers}/install.sh" | bash
 
 }
@@ -2422,7 +2333,7 @@ gup_install_bun_command() {
 	# esac
 
 	setup() {
-			mkdir -p ${BDIR}
+			mkdir -p "${BDIR}"
 			grep "export BUN_INSTALL" ${HOME}/.bashrc >/dev/null || echo "export BUN_INSTALL=${BDIR}" >>${HOME}/.bashrc
 			grep 'export PATH=$BUN_INSTALL/bin:$PATH' ~/.bashrc >/dev/null || echo 'export PATH=$BUN_INSTALL/bin:$PATH' >>${HOME}/.bashrc
 			echo "setup done"
@@ -2444,9 +2355,12 @@ gup_install_bun_command() {
 	if [ -z "$(which ${APP})" ]; then
 			download new
 	else
-			APPVER=$($(which ${APP}) --version)
-			GITVER=$(echo $vers | sed 's/^bun-v//')
-			[ "${APPVER}" = "${GITVER}" ] && echo "${APP} version is current" || download "${vers}"
+			APPVER=$($(which ${APP}) --version 2>&1)
+			if [ "${APPVER}" = "${vers}" ]; then
+					echo "${APP} version is current"
+			else
+					download "${vers}"
+			fi
 	fi
 
 }
@@ -2456,27 +2370,40 @@ gup_install_ruff_command() {
 
 	# src/install_ruff_command.sh
 	APP="ruff"
-	REPO="https://github.com/astral-sh/ruff"
-	vers=$(git ls-remote --tags ${REPO} | grep "refs/tags.*[0-9]$" | awk '{print $2}' | sed 's/refs\/tags\///' | grep -v "^v" | sort -V | uniq | tail -1)
-
-	BDIR=/usr/local/bin
+	REPO="astral-sh/ruff"
+	RURL="https://api.github.com/repos/${REPO}/releases/latest"
+	vers=$(wget -qO- "${RURL}" | jq .tag_name | tr -d '"' | tr -d 'v')
+	DL=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | (contains("sha256") | not) and contains("x86_64-unknown-linux-gnu.tar.gz")) | .browser_download_url' | tr -d '"')
+	FN=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | (contains("sha256") | not) and contains("x86_64-unknown-linux-gnu.tar.gz")) | .name' | tr -d '"')
 
 	function download() {
 			echo "download $1 version"
 			echo "installing ${vers}"
-			FN=${APP}-x86_64-unknown-linux-gnu.tar.gz
-			rm -f /tmp/${FN}
-			wget -qc ${REPO}/releases/download/${vers}/${FN} -O /tmp/${FN}
-			sudo tar -axf /tmp/${FN} --strip-components=1 -C ${BDIR}
-			rm -f /tmp/${FN}
+			rm -rf /tmp/"${FN}" /tmp/"${APP}_${vers}"
+			wget -qc "${DL}" -O /tmp/"${FN}"
+			mkdir -p /tmp/"${APP}_${vers}"
+			tar -axf /tmp/"${FN}" -C /tmp/"${APP}_${vers}" --strip-components=1
+			if [ "$(id -u)" == 0 ]; then
+					BDIR="/usr/local/bin"
+					sudo rm -f "${BDIR}/${APP}"
+					sudo install /tmp/"${APP}_${vers}"/"${APP}" "${BDIR}/${APP}"
+			else
+					BDIR="${HOME}/.local/bin"
+					rm -f "${BDIR}/${APP}"
+					install /tmp/"${APP}_${vers}"/"${APP}" "${BDIR}/${APP}"
+			fi
+			rm -rf /tmp/"${FN}" /tmp/"${APP}_${vers}"
 	}
 
-	if [ -z $(which ${APP}) ]; then
+	if [ -z "$(which ${APP})" ]; then
 			download new
 	else
-			APPBIN=$(which ${APP})
-			APPVER=$(${APPBIN} version | awk '{print $2}')
-			[ "${APPVER}" = "${vers}" ] && echo "${APP} version is current" || download ${vers}
+			APPVER=$($(which ${APP}) --version 2>&1 | grep "^${APP}" | awk '{print $2}')
+			if [ "${APPVER}" = "${vers}" ]; then
+					echo "${APP} version is current"
+			else
+					download "${vers}"
+			fi
 	fi
 }
 
@@ -2485,27 +2412,44 @@ gup_install_uv_command() {
 
 	# src/install_uv_command.sh
 	APP="uv"
-	REPO="https://github.com/astral-sh/uv"
-	vers=$(git ls-remote --tags ${REPO} | grep "refs/tags.*[0-9]$" | awk '{print $2}' | sed 's/refs\/tags\///' | grep -v "^v" | sort -V | uniq | tail -1)
-
-	BDIR=/usr/local/bin
+	REPO="astral-sh/uv"
+	RURL="https://api.github.com/repos/${REPO}/releases/latest"
+	vers=$(wget -qO- "${RURL}" | jq .tag_name | tr -d '"' | tr -d 'v')
+	DL=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | (contains("sha256") | not) and contains("x86_64-unknown-linux-gnu.tar.gz")) | .browser_download_url' | tr -d '"')
+	FN=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | (contains("sha256") | not) and contains("x86_64-unknown-linux-gnu.tar.gz")) | .name' | tr -d '"')
 
 	function download() {
 			echo "download $1 version"
 			echo "installing ${vers}"
-			FN=${APP}-x86_64-unknown-linux-gnu.tar.gz
-			rm -f /tmp/${FN}
-			wget -qc ${REPO}/releases/download/${vers}/${FN} -O /tmp/${FN}
-			sudo tar -axf /tmp/${FN} --strip-components=1 -C ${BDIR}
-			rm -f /tmp/${FN}
+			rm -rf /tmp/"${FN}" /tmp/"${APP}_${vers}"
+			wget -qc "${DL}" -O /tmp/"${FN}"
+			mkdir -p /tmp/"${APP}_${vers}"
+			tar -axf /tmp/"${FN}" -C /tmp/"${APP}_${vers}" --strip-components=1
+			if [ "$(id -u)" == 0 ]; then
+					BDIR="/usr/local/bin"
+					sudo rm -f "${BDIR}/${APP}"
+					sudo rm -f "${BDIR}/${APP}x"
+					sudo install /tmp/"${APP}_${vers}"/"${APP}" "${BDIR}/${APP}"
+					sudo install /tmp/"${APP}_${vers}"/"${APP}x" "${BDIR}/${APP}x"
+			else
+					BDIR="${HOME}/.local/bin"
+					rm -f "${BDIR}/${APP}"
+					rm -f "${BDIR}/${APP}x"
+					install /tmp/"${APP}_${vers}"/"${APP}" "${BDIR}/${APP}"
+					install /tmp/"${APP}_${vers}"/"${APP}x" "${BDIR}/${APP}x"
+			fi
+			rm -rf /tmp/"${FN}" /tmp/"${APP}_${vers}"
 	}
 
-	if [ -z $(which ${APP}) ]; then
+	if [ -z "$(which ${APP})" ]; then
 			download new
 	else
-			APPBIN=$(which ${APP})
-			APPVER=$(${APPBIN} version | awk '{print $2}')
-			[ "${APPVER}" = "${vers}" ] && echo "${APP} version is current" || download ${vers}
+			APPVER=$($(which ${APP}) --version 2>&1 | grep "^${APP}" | awk '{print $2}')
+			if [ "${APPVER}" = "${vers}" ]; then
+					echo "${APP} version is current"
+			else
+					download "${vers}"
+			fi
 	fi
 }
 
@@ -2531,9 +2475,13 @@ gup_install_zig_command() {
 
 	# src/install_zig_command.sh
 	APP="zig"
-	REPO="https://github.com/ziglang/zig"
+	REPO="ziglang/zig"
+	RURL="https://api.github.com/repos/${REPO}/releases/latest"
+	vers=$(wget -qO- "${RURL}" | jq .tag_name | tr -d '"' | tr -d 'v')
+
 	DLREPO="https://ziglang.org/download"
-	vers=$(git ls-remote --tags ${REPO} | grep "refs/tags/.*[0-9]$" | grep -v -e rc -e alpha -e beta | awk '{print $2}' | sed 's/refs\/tags\///' | sort -V | uniq | tail -1)
+	FN="zig-x86_64-linux-$vers.tar.xz"
+	DL="${DLREPO}/$vers/${FN}"
 
 	IDIR=/usr/local/lib
 	BDIR=/usr/local/bin
@@ -2541,24 +2489,25 @@ gup_install_zig_command() {
 	function download(){
 			echo "download $1 version"
 			echo "installing $vers"
-			FN=zig-linux-x86_64-$vers.tar.xz
-			FN=zig-x86_64-linux-$vers.tar.xz
-			rm -f /tmp/${FN}
-			wget -qc ${DLREPO}/$vers/${FN} -O /tmp/${FN}
-			sudo rm -f ${BDIR}/zig
-			sudo rm -rf ${IDIR}/zig
-			sudo mkdir -p ${IDIR}/zig
-			sudo tar axf /tmp/${FN} --strip-components=1 -C ${IDIR}/zig
-			sudo ln -sf ${IDIR}/zig/zig ${BDIR}/zig
-			rm -f /tmp/${FN}
+			rm -f /tmp/"${FN}"
+			wget -qc "${DL}" -O /tmp/"${FN}"
+			sudo rm -f "${BDIR}"/zig
+			sudo rm -rf "${IDIR}"/zig
+			sudo mkdir -p "${IDIR}"/zig
+			sudo tar axf /tmp/"${FN}" -C "${IDIR}"/zig  --strip-components=1
+			sudo ln -sf "${IDIR}"/zig/zig "${BDIR}"/zig
+			rm -f /tmp/"${FN}"
 	}
 
-	if [ -z $(which ${APP}) ]; then
+	if [ -z "$(which ${APP})" ]; then
 			download new
 	else
-			APPBIN=$(which ${APP})
-			APPVER=$(${APPBIN} version)
-			[ "${APPVER}" = "${vers}" ] && echo "${APP} version is current" || download ${vers}
+			APPVER=$($(which ${APP}) version 2>&1)
+			if [ "${APPVER}" = "${vers}" ]; then
+					echo "${APP} version is current"
+			else
+					download "${vers}"
+			fi
 	fi
 
 }
@@ -2568,107 +2517,36 @@ gup_install_zls_command() {
 
 	# src/install_zls_command.sh
 	APP="zls"
-	REPO="https://github.com/ziglang/zig"
-	DLREPO="https://builds.zigtools.org"
-	vers=$(git ls-remote --tags ${REPO} | grep "refs/tags/.*[0-9]$" | grep -v -e rc -e alpha -e beta | awk '{print $2}' | sed 's/refs\/tags\///' | sort -V | uniq | tail -1)
-
-	IDIR=/usr/local/lib
-	BDIR=/usr/local/bin
+	REPO="zigtools/zls"
+	RURL="https://api.github.com/repos/${REPO}/releases/latest"
+	vers=$(wget -qO- "${RURL}" | jq .tag_name | tr -d '"' | tr -d 'v')
+	DL=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | (contains("minisig") | not) and contains("x86_64-linux")) | .browser_download_url' | tr -d '"')
+	FN=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | (contains("minisig") | not) and contains("x86_64-linux")) | .name' | tr -d '"')
 
 	function download(){
 			echo "download $1 version"
 			echo "installing $vers"
-			FN=zls-linux-x86_64-$vers.tar.xz
-			rm -f /tmp/${FN}
-			wget -qc ${DLREPO}/${FN} -O /tmp/${FN}
-			sudo rm -f ${BDIR}/zls
-			sudo tar axf /tmp/${FN} -C ${BDIR} zls
-			rm -f /tmp/${FN}
+			rm -rf /tmp/"${FN}" /tmp/"${APP}_${vers}"
+			wget -qc "${DL}" -O /tmp/"${FN}"
+			mkdir -p /tmp/"${APP}_${vers}"
+			tar axf /tmp/"${FN}" -C /tmp/"${APP}_${vers}"
+			BDIR=/usr/local/bin
+			sudo rm -f "${BDIR}"/zls
+			sudo install /tmp/"${APP}_${vers}"/zls "${BDIR}"/zls
+			rm -rf /tmp/"${FN}" /tmp/"${APP}_${vers}"
 	}
 
-	if [ -z $(which ${APP}) ]; then
+	if [ -z "$(which ${APP})" ]; then
 			download new
 	else
-			APPBIN=$(which ${APP})
-			APPVER=$(${APPBIN} --version)
-			[ "${APPVER}" = "${vers}" ] && echo "${APP} version is current" || download ${vers}
+			APPVER=$($(which ${APP}) version 2>&1)
+			if [ "${APPVER}" = "${vers}" ]; then
+					echo "${APP} version is current"
+			else
+					download "${vers}"
+			fi
 	fi
 
-}
-
-# :command.function
-gup_install_oda_command() {
-
-	# src/install_oda_command.sh
-	APP="odacli"
-	REPO="https://github.com/ppreeper/oda"
-	vers=$(git ls-remote --tags ${REPO} | grep "refs/tags.*[0-9]$" | awk '{print $2}' | sed 's/refs\/tags\/v//' | sort -V | uniq | tail -1)
-
-	function download() {
-			echo "download $1 version"
-			echo "installing ${vers}"
-			FN=${APP}_${vers}_amd64.deb
-			rm -f /tmp/${FN}
-			wget -qc ${REPO}/releases/download/v${vers}/${FN} -O /tmp/${FN}
-			sudo apt install /tmp/${FN}
-			rm -f /tmp/${FN}
-	}
-
-	download new
-}
-
-# :command.function
-gup_install_odaserver_command() {
-
-	# src/install_odaserver_command.sh
-	APP="odaserver"
-	REPO="https://github.com/ppreeper/oda"
-	vers=$(git ls-remote --tags ${REPO} | grep "refs/tags.*[0-9]$" | awk '{print $2}' | sed 's/refs\/tags\/v//' | sort -V | uniq | tail -1)
-
-	function download() {
-			echo "download $1 version"
-			echo "installing ${vers}"
-			FN=${APP}_${vers}_amd64.deb
-			rm -f /tmp/${FN}
-			wget -qc ${REPO}/releases/download/v${vers}/${FN} -O /tmp/${FN}
-			sudo apt install /tmp/${FN}
-			rm -f /tmp/${FN}
-	}
-
-	download new
-
-}
-
-# :command.function
-gup_install_wkhtmltopdf_command() {
-
-	# src/install_wkhtmltopdf_command.sh
-	APP="wkhtmltopdf"
-	REPO="https://github.com/wkhtmltopdf/packaging"
-	vers=$(git ls-remote --tags ${REPO} | grep "refs/tags.*[0-9]$" | awk '{print $2}' | sed 's/refs\/tags\///' | sort -V | uniq | tail -1)
-
-	function download() {
-			echo "download $1 version"
-			echo "installing ${vers}"
-			VC=$(grep ^VERSION_CODENAME /etc/os-release | awk -F'=' '{print $2}')
-			UC=$(grep ^UBUNTU_CODENAME /etc/os-release | awk -F'=' '{print $2}')
-			CN=''
-			[ -n "$UC" ] && CN=$UC || CN=$VC
-			FN="wkhtmltox_${vers}.${CN}_amd64.deb"
-			sudo rm -f /tmp/${FN}
-			wget -qc ${REPO}/releases/download/${vers}/${FN} -O /tmp/${FN}
-			sudo apt install -y /tmp/${FN}
-			sudo rm -f /tmp/${FN}
-	}
-
-	if [ -z $(which ${APP}) ]; then
-			download new
-	else
-			APPBIN=$(which ${APP})
-			APPVER=$(${APPBIN} --version | awk '{print $2}')
-			echo $APPVER $vers
-			[ "${APPVER}" = "${vers}" ] && echo "${APP} version is current" || download ${vers}
-	fi
 }
 
 # :command.function
@@ -2730,7 +2608,11 @@ gup_install_btop_command() {
 	else
 			APPVER=$($(which ${APP}) --version | grep "^btop version:" | awk -F':' '{print $2}' | sed -E 's/\x1B\[[0-9;]*[a-zA-Z]//g' | awk '{$1=$1; print}')
 			version=$(echo "${vers}" | sed 's/^v//')
-			[ "${APPVER}" = "${version}" ] && echo "${APP} version is current" || download "${vers}"
+			if [ "${APPVER}" = "${version}" ]; then
+					echo "${APP} version is current"
+			else
+					download "${vers}"
+			fi
 	fi
 }
 
@@ -2778,41 +2660,40 @@ gup_install_blackbox_exporter_command() {
 
 	# src/install_blackbox_exporter_command.sh
 	APP="blackbox_exporter"
-	REPO="https://github.com/prometheus/${APP}"
-	vers=$(git ls-remote --tags ${REPO} | grep "refs/tags.*[0-9]$" | grep -v -e "rc" -e "alpha" -e "beta" | awk '{print $2}' | sed 's/refs\/tags\///g' | sort -V | uniq | tail -1)
-
-	# > wget -qO- https://api.github.com/repos/prometheus/blackbox_exporter/releases/latest | jq .tag_name
-	# "v0.27.0"
-
-	# wget -qO- https://api.github.com/repos/prometheus/blackbox_exporter/releases/latest | jq '.assets[] | select(.name | contains ("linux-amd64"))'
-
-	# > wget -qO- https://api.github.com/repos/prometheus/blackbox_exporter/releases/latest | jq '.assets[] | select(.name | contains ("linux-amd64")) | .browser_download_url'
-	# "https://github.com/prometheus/blackbox_exporter/releases/download/v0.27.0/blackbox_exporter-0.27.0.linux-amd64.tar.gz"
-
-	BDIR=/usr/local/bin
-	BDIR=${HOME}/.local/bin
-	IDIR=${HOME}/.local/$APP
+	REPO="prometheus/blackbox_exporter"
+	RURL="https://api.github.com/repos/${REPO}/releases/latest"
+	vers=$(wget -qO- "${RURL}" | jq .tag_name | tr -d '"' | tr -d 'v')
+	DL=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | (contains("sha256") | not) and contains("linux-amd64.tar.gz")) | .browser_download_url' | tr -d '"')
+	FN=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | (contains("sha256") | not) and contains("linux-amd64.tar.gz")) | .name' | tr -d '"')
 
 	function download() {
 			echo "download $1 version"
 			echo "installing ${vers}"
-			V=$(echo $vers | sed 's/^v//')
-			FN=${APP}-${V}.linux-amd64.tar.gz
-			rm -f /tmp/${FN}
-			wget -qc ${REPO}/releases/download/${vers}/${FN} -O /tmp/${FN}
-			mkdir -p ${IDIR}
-			rm -rf ${IDIR}/*
-			tar -zxf /tmp/${FN} --strip-components=1 -C ${IDIR}
-			ln -sf ${IDIR}/$APP ${BDIR}/$APP
-			rm -f /tmp/${FN}
+			rm -rf /tmp/"${FN}" /tmp/"${APP}_${vers}"
+			wget -qc "${DL}" -O /tmp/"${FN}"
+			mkdir -p /tmp/"${APP}_${vers}"
+			tar axf /tmp/"${FN}" -C /tmp/"${APP}_${vers}" --strip-components=1
+			if [ "$(id -u)" == 0 ]; then
+					BDIR="/usr/local/bin"
+					sudo rm -f "${BDIR}/${APP}"
+					sudo install /tmp/"${APP}_${vers}"/"${APP}" "${BDIR}/${APP}"
+			else
+					BDIR="${HOME}/.local/bin"
+					rm -f "${BDIR}/${APP}"
+					install /tmp/"${APP}_${vers}"/"${APP}" "${BDIR}/${APP}"
+			fi
+			rm -rf /tmp/"${FN}" /tmp/"${APP}_${vers}"
 	}
 
-	if [ -z $(which ${APP}) ]; then
+	if [ -z "$(which ${APP})" ]; then
 			download new
 	else
-			APPBIN=$(which ${APP})
-			APPVER=$(${APPBIN} --version 2>&1 | grep -i "^${APP}" | awk '{print $2}')
-			[ "${APPVER}" = "${vers}" ] && echo "${APP} version is current" || download ${vers}
+			APPVER=$($(which ${APP}) --version 2>&1 | grep -i "^${APP}" | awk '{print $3}')
+			if [ "${APPVER}" = "${vers}" ]; then
+					echo "${APP} version is current"
+			else
+					download "${vers}"
+			fi
 	fi
 }
 
@@ -2830,87 +2711,41 @@ gup_install_loki_command() {
 
 	# src/install_loki_command.sh
 	APP="loki"
-	REPO="https://github.com/grafana/loki"
-	vers=$(git ls-remote --tags ${REPO} | grep "refs/tags.*[0-9]$" | grep -v -e "helm" | awk '{print $2}' | sed 's/refs\/tags\///' | sort -V | uniq | tail -1)
-
-	if [ $(id -u) == 0 ]; then
-		BDIR="/usr/local/bin"
-	else
-		BDIR="${HOME}/.local/bin"
-	fi
+	REPO="grafana/loki"
+	RURL="https://api.github.com/repos/${REPO}/releases/latest"
+	vers=$(wget -qO- "${RURL}" | jq .tag_name | tr -d '"' | tr -d 'v')
+	DL=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains("loki-linux-amd64")) | .browser_download_url' | tr -d '"')
+	FN=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains("loki-linux-amd64")) | .name' | tr -d '"')
 
 	download() {
 			echo "download $1 version"
 			echo "installing ${vers}"
-			FN=${APP}-linux-amd64.zip
-			rm -rf /tmp/${APP}_${vers} /tmp/${FN}
-			wget -qc ${REPO}/releases/download/${vers}/${FN} -O /tmp/${FN}
-			mkdir -p /tmp/${APP}_${vers}
-			unzip /tmp/${FN} -d /tmp/${APP}_${vers}
-			rm -f ${BDIR}/${APP}
-			install /tmp/${APP}_${vers}/${APP}-linux-amd64 ${BDIR}/${APP}
-			rm -rf /tmp/${APP}_${vers} /tmp/${FN}
+			rm -rf /tmp/"${FN}" /tmp/"${APP}_${vers}"
+			wget -qc "${DL}" -O /tmp/"${FN}"
+			mkdir -p /tmp/"${APP}_${vers}"
+			unzip /tmp/"${FN}" -d /tmp/"${APP}_${vers}"
+
+			if [ "$(id -u)" == 0 ]; then
+					BDIR="/usr/local/bin"
+					sudo rm -f "${BDIR}/${APP}"
+					sudo install "/tmp/${APP}_${vers}/${APP}-linux-amd64" "${BDIR}/${APP}"
+			else
+					BDIR="${HOME}/.local/bin"
+					rm -f "${BDIR}/${APP}"
+					install "/tmp/${APP}_${vers}/${APP}-linux-amd64" "${BDIR}/${APP}"
+			fi
+			rm -rf /tmp/"${FN}" /tmp/"${APP}_${vers}"
 	}
 
-	config() {
-		sudo mkdir /etc/loki
-	cat <<-_EOF_ | sudo tee /etc/loki/loki-config.yml > /dev/null
-auth_enabled: false
-server:
-	http_listen_port: 3100
-ingester:
-	lifecycler:
-		address: 127.0.0.1
-		ring:
-			kvstore:
-				store: inmemory
-			replication_factor: 1
-		final_sleep: 0s
-	chunk_idle_period: 5m
-	chunk_retain_period: 30s
-schema_config:
-	configs:
-	- from: 2020-05-15
-		store: boltdb
-		object_store: filesystem
-		schema: v11
-		index:
-			prefix: index_
-			period: 168h
-storage_config:
-	boltdb:
-		directory: /tmp/loki/index
-	filesystem:
-		directory: /tmp/loki/chunks
-limits_config:
-	enforce_metric_name: false
-	reject_old_samples: true
-	reject_old_samples_max_age: 168h
-	max_entries_limit_per_query: 500000
-# By default, Loki will send anonymous, but uniquely-identifiable usage and configuration
-# analytics to Grafana Labs. These statistics are sent to https://stats.grafana.org/
-#
-# Statistics help us better understand how Loki is used, and they show us performance
-# levels for most users. This helps us prioritize features and documentation.
-# For more information on what's sent, look at
-# https://github.com/grafana/loki/blob/main/pkg/usagestats/stats.go
-# Refer to the buildReport method to see what goes into a report.
-#
-# If you would like to disable reporting, uncomment the following lines:
-#analytics:
-#  reporting_enabled: false
-_EOF_
-	}
-
-	# download new
-	if [ -z $(which ${APP}) ]; then
-		download new
-		config
+	if [ -z "$(which ${APP})" ]; then
+			download new
 	else
-		APPBIN=$(which ${APP})
-		APPVER=$(${APPBIN} --version | grep -i ^${APP} | awk '{print $3}')
-		[ "${APPVER}" = "$(echo $vers | sed 's/^v//')" ] && echo "${APP} version is current" || download ${vers}
-		config
+			APPVER=$($(which ${APP}) --version 2>&1 | grep -i ^${APP} | awk '{print $3}')
+			if [ "${APPVER}" = "${vers}" ]; then
+					echo "${APP} version is current"
+			else
+					download "${vers}"
+			fi
 	fi
 
 }
@@ -2926,8 +2761,6 @@ gup_install_node_exporter_command() {
 	DL=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains("linux-amd64")) | .browser_download_url' | tr -d '"')
 	FN=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains("linux-amd64")) | .name' | tr -d '"')
 
-	BDIR="/usr/local/bin"
-
 	download() {
 			echo "download $1 version"
 			echo "installing ${vers}"
@@ -2937,11 +2770,11 @@ gup_install_node_exporter_command() {
 			tar axf /tmp/"${FN}" -C /tmp/${APP}_"${vers}" --strip-components=1
 			if [ "$(id -u)" == 0 ]; then
 					BDIR="/usr/local/bin"
-					sudo rm -f ${BDIR}/${APP}
+					sudo rm -f "${BDIR}/${APP}"
 					sudo install /tmp/"${APP}_${vers}"/"${APP}" "${BDIR}/${APP}"
 			else
 					BDIR="${HOME}/.local/bin"
-					rm -f ${BDIR}/${APP}
+					rm -f "${BDIR}/${APP}"
 					install /tmp/"${APP}_${vers}"/"${APP}" "${BDIR}/${APP}"
 			fi
 			rm -rf /tmp/${APP}_"${vers}" /tmp/"${FN}"
@@ -2965,35 +2798,42 @@ gup_install_postgres_exporter_command() {
 
 	# src/install_postgres_exporter_command.sh
 	APP="postgres_exporter"
-	REPO="https://github.com/prometheus-community/postgres_exporter"
-	vers=$(git ls-remote --tags ${REPO} | grep "refs/tags.*[0-9]$" | grep -v -e rc -e alpha -e beta | awk '{print $2}' | sed 's/refs\/tags\///' | sort -V | uniq | tail -1)
-
-	if [ $(id -u) == 0 ]; then
-		BDIR="/usr/local/bin"
-	else
-		BDIR="${HOME}/.local/bin"
-	fi
+	REPO="prometheus-community/postgres_exporter"
+	RURL="https://api.github.com/repos/${REPO}/releases/latest"
+	vers=$(wget -qO- "${RURL}" | jq .tag_name | tr -d '"' | tr -d 'v')
+	DL=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains("linux-amd64.tar.gz")) | .browser_download_url' | tr -d '"')
+	FN=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains("linux-amd64.tar.gz")) | .name' | tr -d '"')
 
 	download() {
 			echo "download $1 version"
 			echo "installing ${vers}"
-			fn="${APP}-$(echo $vers | sed 's/^v//').linux-amd64.tar.gz"
-			rm -f /tmp/${fn}
-			wget -qc ${REPO}/releases/download/${vers}/${fn} -O /tmp/${fn}
-			rm -f ${BDIR}/${APP}
-			mkdir -p /tmp/${APP}_${vers}
-			tar axf /tmp/${fn} -C /tmp/${APP}_${vers} --strip-components=1
-			install /tmp/${APP}_${vers}/${APP} ${BDIR}/${APP}
-			rm -rf /tmp/${APP}_${vers} /tmp/${fn}
+			rm -rf /tmp/"${FN}" /tmp/"${APP}_${vers}"
+			wget -qc "${DL}" -O /tmp/"${FN}"
+			mkdir -p /tmp/"${APP}_${vers}"
+			tar axf /tmp/"${FN}" -C /tmp/"${APP}_${vers}" --strip-components=1
+			if [ "$(id -u)" == 0 ]; then
+					BDIR="/usr/local/bin"
+					sudo rm -f "${BDIR}/${APP}"
+					sudo install /tmp/"${APP}_${vers}"/"${APP}" "${BDIR}/${APP}"
+			else
+					BDIR="${HOME}/.local/bin"
+					rm -f "${BDIR}/${APP}"
+					install /tmp/"${APP}_${vers}"/"${APP}" "${BDIR}/${APP}"
+			fi
+			rm -rf /tmp/"${FN}" /tmp/"${APP}_${vers}"
 	}
 
 	if [ -z "$(which ${APP})" ]; then
-		download new
+			download new
 	else
-		APPBIN=$(which ${APP})
-		APPVER=$(${APPBIN} --version 2>&1 |grep -i ^${APP} | awk '{print $3}')
-		[ "${APPVER}" = "$(echo $vers | sed 's/^v//')" ] && echo "${APP} version is current" || download ${vers}
+			APPVER=$($(which ${APP}) --version 2>&1 | grep -i ^${APP} | awk '{print $3}')
+			if [ "${APPVER}" = "${vers}" ]; then
+					echo "${APP} version is current"
+			else
+					download "${vers}"
+			fi
 	fi
+
 }
 
 # :command.function
@@ -3001,109 +2841,44 @@ gup_install_prometheus_command() {
 
 	# src/install_prometheus_command.sh
 	APP="prometheus"
-	REPO="https://github.com/prometheus/prometheus"
-	vers=$(git ls-remote --tags ${REPO} | grep "refs/tags.*[0-9]$" | grep -v -e rc -e alpha -e beta | awk '{print $2}' | sed 's/refs\/tags\///' | sort -V | uniq | tail -1)
-
-	if [ $(id -u) == 0 ]; then
-		BDIR="/usr/local/bin"
-	else
-		BDIR="${HOME}/.local/bin"
-	fi
+	REPO="prometheus/prometheus"
+	RURL="https://api.github.com/repos/${REPO}/releases/latest"
+	vers=$(wget -qO- "${RURL}" | jq .tag_name | tr -d '"' | tr -d 'v')
+	DL=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains("linux-amd64.tar.gz")) | .browser_download_url' | tr -d '"')
+	FN=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains("linux-amd64.tar.gz")) | .name' | tr -d '"')
 
 	download() {
 			echo "download $1 version"
 			echo "installing ${vers}"
-			V=$(echo $vers | sed 's/v//')
-			FN=${APP}-${V}.linux-amd64.tar.gz
-			rm -f /tmp/${FN}
-			wget -qc ${REPO}/releases/download/${vers}/${FN} -O /tmp/${FN}
-			rm -f ${BDIR}/${APP}
-			rm -f ${BDIR}/promtool
-			mkdir -p /tmp/${APP}_${vers}
-			tar axf /tmp/${FN} -C /tmp/${APP}_${vers} --strip-components=1
-			install /tmp/${APP}_${vers}/${APP} ${BDIR}/${APP}
-			install /tmp/${APP}_${vers}/promtool ${BDIR}/promtool
-			rm -rf /tmp/${APP}_${vers} /tmp/${FN}
+			rm -rf /tmp/"${FN}" /tmp/"${APP}_${vers}"
+			wget -qc "${DL}" -O /tmp/"${FN}"
+			mkdir -p /tmp/"${APP}_${vers}"
+			tar axf /tmp/"${FN}" -C /tmp/"${APP}_${vers}" --strip-components=1
+			if [ "$(id -u)" == 0 ]; then
+					BDIR="/usr/local/bin"
+					sudo rm -f "${BDIR}/${APP}"
+					sudo rm -f "${BDIR}/promtool"
+					sudo install /tmp/"${APP}_${vers}"/"${APP}" "${BDIR}/${APP}"
+					sudo install /tmp/"${APP}_${vers}"/promtool "${BDIR}/promtool"
+			else
+					BDIR="${HOME}/.local/bin"
+					rm -f "${BDIR}/${APP}"
+					rm -f "${BDIR}/promtool"
+					install /tmp/"${APP}_${vers}"/"${APP}" "${BDIR}/${APP}"
+					install /tmp/"${APP}_${vers}"/promtool "${BDIR}/promtool"
+			fi
+			rm -rf /tmp/"${FN}" /tmp/"${APP}_${vers}"
 	}
 
 	if [ -z "$(which ${APP})" ]; then
-		download new
+			download new
 	else
-		APPBIN=$(which ${APP})
-		APPVER=$(${APPBIN} --version 2>&1 | grep -i ^${APP} | awk '{print $3}')
-		[ "${APPVER}" = "$(echo $vers | sed 's/^v//')" ] && echo "${CMD} version is current" || download ${vers}
-	fi
-
-}
-
-# :command.function
-gup_install_promtail_command() {
-
-	# src/install_promtail_command.sh
-	APP="promtail"
-	REPO="https://github.com/grafana/loki"
-	vers=$(git ls-remote --tags ${REPO} | grep "refs/tags.*[0-9]$" | grep -v -e "helm" | awk '{print $2}' | sed 's/refs\/tags\///' | sort -V | uniq | tail -1)
-
-	if [ $(id -u) == 0 ]; then
-		BDIR="/usr/local/bin"
-	else
-		BDIR="${HOME}/.local/bin"
-	fi
-
-	download() {
-			echo "download $1 version"
-			echo "installing ${vers}"
-			FN=${APP}-linux-amd64.zip
-			rm -rf /tmp/${APP}_${vers} /tmp/${FN}
-			wget -qc ${REPO}/releases/download/${vers}/${FN} -O /tmp/${FN}
-			mkdir -p /tmp/${APP}_${vers}
-			unzip /tmp/${FN} -d /tmp/${APP}_${vers}
-			rm -f ${BDIR}/${APP}
-			install /tmp/${APP}_${vers}/${APP}-linux-amd64 ${BDIR}/${APP}
-			rm -rf /tmp/${APP}_${vers} /tmp/${FN}
-	}
-
-	config() {
-		sudo mkdir /etc/promtail
-	cat <<-_EOF_ | sudo tee /etc/promtail/promtail-config.yml > /dev/null
-server:
-	http_listen_port: 9080
-	grpc_listen_port: 0
-positions:
-	filename: /tmp/positions.yaml
-clients:
-	- url: http://localhost:3100/loki/api/v1/push
-scrape_configs:
-	- job_name: syslog
-		syslog:
-			listen_address: 0.0.0.0:1514
-			labels:
-				job: syslog
-		relabel_configs:
-			- source_labels: [__syslog_message_hostname]
-				target_label: host
-			- source_labels: [__syslog_message_hostname]
-				target_label: hostname
-			- source_labels: [__syslog_message_severity]
-				target_label: level
-			- source_labels: [__syslog_message_app_name]
-				target_label: application
-			- source_labels: [__syslog_message_facility]
-				target_label: facility
-			- source_labels: [__syslog_connection_hostname]
-				target_label: connection_hostname
-_EOF_
-	}
-
-	# download new
-	if [ -z $(which ${APP}) ]; then
-		download new
-		config
-	else
-		APPBIN=$(which ${APP})
-		APPVER=$(${APPBIN} --version | grep -i ^${APP} | awk '{print $3}')
-		[ "${APPVER}" = "$(echo $vers | sed 's/^v//')" ] && echo "${APP} version is current" || download ${vers}
-		config
+			APPVER=$($(which ${APP}) --version 2>&1 | grep -i ^${APP} | awk '{print $3}')
+			if [ "${APPVER}" = "${vers}" ]; then
+					echo "${APP} version is current"
+			else
+					download "${vers}"
+			fi
 	fi
 
 }
@@ -3355,42 +3130,6 @@ gup_install_zfsnap_command() {
 }
 
 # :command.function
-gup_install_podman_command() {
-
-	# src/install_podman_command.sh
-	KEYDIR="/etc/apt/trusted.gpg.d"
-	ID=$(grep -e "^ID=" /etc/os-release | cut -d "=" -f 2)
-	VERSION_CODENAME=$(grep ^VERSION_CODENAME /etc/os-release | cut -d "=" -f 2)
-	VERSION_ID=$(grep ^VERSION_ID /etc/os-release | cut -d "=" -f 2)
-	DEBIAN_CODENAME=$(grep ^DEBIAN_CODENAME /etc/os-release | cut -d "=" -f 2)
-	UBUNTU_CODENAME=$(grep ^UBUNTU_CODENAME /etc/os-release | cut -d "=" -f 2)
-	RELEASE=""
-
-	if [ "${ID}" == "linuxmint" ]; then
-		if [ "${DEBIAN_CODENAME}" == "bookworm" ]; then
-			RELEASE="Debian_Testing"
-		elif [ "${UBUNTU_CODENAME}" == "jammy" ]; then
-			RELEASE="xUbuntu_22.04"
-		fi
-	elif [ "${ID}" == "debian" ]; then
-		RELEASE="Debian_Testing"
-	elif [ "${ID}" == "ubuntu" ]; then
-		RELEASE="xUbuntu_22.04"
-	fi
-
-	RELEASE_KEY="https://download.opensuse.org/repositories/devel:kubic:libcontainers:unstable/${RELEASE}/Release.key"
-
-	# Install Podman Repo
-	curl -fsSL "${RELEASE_KEY}" | gpg --dearmor | sudo tee ${KEYDIR}/devel_kubic_libcontainers_unstable.gpg > /dev/null
-	echo "deb [arch=$(dpkg --print-architecture) signed-by=${KEYDIR}/devel_kubic_libcontainers_unstable.gpg] https://download.opensuse.org/repositories/devel:kubic:libcontainers:unstable/${RELEASE}/ /" \
-		| sudo tee /etc/apt/sources.list.d/devel:kubic:libcontainers:unstable.list > /dev/null
-
-	# Install Podman
-	sudo bash -c "apt-get update -y && sudo apt-get install -y podman"
-
-}
-
-# :command.function
 gup_install_vagrant_command() {
 
 	# src/install_vagrant_command.sh
@@ -3428,8 +3167,12 @@ gup_install_etcd_command() {
 	if [ -z "$(which ${APP})" ]; then
 			download new
 	else
-			APPVER=$($(which ${APP}) --version | grep "etcd.*Version" | awk '{print $3}' | sed 's/^v//')
-			[ "${APPVER}" = "${vers}" ] && echo "${APP} version is current" || download "${vers}"
+			APPVER=$($(which ${APP}) --version 2>&1 | grep "etcd.*Version" | awk '{print $3}' | sed 's/^v//')
+			if [ "${APPVER}" = "${vers}" ]; then
+					echo "${APP} version is current"
+			else
+					download "${vers}"
+			fi
 	fi
 
 }
@@ -3525,7 +3268,7 @@ gup_install_neovim_command() {
 	if [ -z "$(which ${APP})" ]; then
 			download new
 	else
-			APPVER=$($(which "${APP}") --version | grep -i "^${APP}" | awk '{print $2}' | tr -d 'v')
+			APPVER=$($(which "${APP}") --version 2>&1 | grep -i "^${APP}" | awk '{print $2}' | tr -d 'v')
 			if [ "${APPVER}" = "${vers}" ]; then
 					echo "${APP} version is current"
 			else
@@ -3573,14 +3316,6 @@ gup_install_helix_command() {
 			fi
 	fi
 
-}
-
-# :command.function
-gup_remove_consul_command() {
-
-	# src/remove_consul_command.sh
-	APP=$(which consul)
-	rm -rf ${APP}
 }
 
 # :command.function
@@ -4009,27 +3744,6 @@ gup_install_parse_requirements() {
 			shift $#
 			;;
 
-		oda)
-			action="oda"
-			shift
-			gup_install_oda_parse_requirements "$@"
-			shift $#
-			;;
-
-		odaserver)
-			action="odaserver"
-			shift
-			gup_install_odaserver_parse_requirements "$@"
-			shift $#
-			;;
-
-		wkhtmltopdf)
-			action="wkhtmltopdf"
-			shift
-			gup_install_wkhtmltopdf_parse_requirements "$@"
-			shift $#
-			;;
-
 		btop)
 			action="btop"
 			shift
@@ -4083,13 +3797,6 @@ gup_install_parse_requirements() {
 			action="prometheus"
 			shift
 			gup_install_prometheus_parse_requirements "$@"
-			shift $#
-			;;
-
-		promtail)
-			action="promtail"
-			shift
-			gup_install_promtail_parse_requirements "$@"
 			shift $#
 			;;
 
@@ -4153,13 +3860,6 @@ gup_install_parse_requirements() {
 			action="zfsnap"
 			shift
 			gup_install_zfsnap_parse_requirements "$@"
-			shift $#
-			;;
-
-		podman)
-			action="podman"
-			shift
-			gup_install_podman_parse_requirements "$@"
 			shift $#
 			;;
 
@@ -5938,141 +5638,6 @@ gup_install_zls_parse_requirements() {
 }
 
 # :command.parse_requirements
-gup_install_oda_parse_requirements() {
-	# :command.fixed_flags_filter
-	while [[ $# -gt 0 ]]; do
-		key="$1"
-		case "$key" in
-			--help | -h)
-				long_usage=yes
-				gup_install_oda_usage
-				exit
-				;;
-
-			*)
-				break
-				;;
-
-		esac
-	done
-
-	# :command.command_filter
-	action="install oda"
-
-	# :command.parse_requirements_while
-	while [[ $# -gt 0 ]]; do
-		key="$1"
-		case "$key" in
-
-			-?*)
-				printf "invalid option: %s\n" "$key" >&2
-				exit 1
-				;;
-
-			*)
-				# :command.parse_requirements_case
-				# :command.parse_requirements_case_simple
-				printf "invalid argument: %s\n" "$key" >&2
-				exit 1
-
-				;;
-
-		esac
-	done
-
-}
-
-# :command.parse_requirements
-gup_install_odaserver_parse_requirements() {
-	# :command.fixed_flags_filter
-	while [[ $# -gt 0 ]]; do
-		key="$1"
-		case "$key" in
-			--help | -h)
-				long_usage=yes
-				gup_install_odaserver_usage
-				exit
-				;;
-
-			*)
-				break
-				;;
-
-		esac
-	done
-
-	# :command.command_filter
-	action="install odaserver"
-
-	# :command.parse_requirements_while
-	while [[ $# -gt 0 ]]; do
-		key="$1"
-		case "$key" in
-
-			-?*)
-				printf "invalid option: %s\n" "$key" >&2
-				exit 1
-				;;
-
-			*)
-				# :command.parse_requirements_case
-				# :command.parse_requirements_case_simple
-				printf "invalid argument: %s\n" "$key" >&2
-				exit 1
-
-				;;
-
-		esac
-	done
-
-}
-
-# :command.parse_requirements
-gup_install_wkhtmltopdf_parse_requirements() {
-	# :command.fixed_flags_filter
-	while [[ $# -gt 0 ]]; do
-		key="$1"
-		case "$key" in
-			--help | -h)
-				long_usage=yes
-				gup_install_wkhtmltopdf_usage
-				exit
-				;;
-
-			*)
-				break
-				;;
-
-		esac
-	done
-
-	# :command.command_filter
-	action="install wkhtmltopdf"
-
-	# :command.parse_requirements_while
-	while [[ $# -gt 0 ]]; do
-		key="$1"
-		case "$key" in
-
-			-?*)
-				printf "invalid option: %s\n" "$key" >&2
-				exit 1
-				;;
-
-			*)
-				# :command.parse_requirements_case
-				# :command.parse_requirements_case_simple
-				printf "invalid argument: %s\n" "$key" >&2
-				exit 1
-
-				;;
-
-		esac
-	done
-
-}
-
-# :command.parse_requirements
 gup_install_btop_parse_requirements() {
 	# :command.fixed_flags_filter
 	while [[ $# -gt 0 ]]; do
@@ -6408,51 +5973,6 @@ gup_install_prometheus_parse_requirements() {
 
 	# :command.command_filter
 	action="install prometheus"
-
-	# :command.parse_requirements_while
-	while [[ $# -gt 0 ]]; do
-		key="$1"
-		case "$key" in
-
-			-?*)
-				printf "invalid option: %s\n" "$key" >&2
-				exit 1
-				;;
-
-			*)
-				# :command.parse_requirements_case
-				# :command.parse_requirements_case_simple
-				printf "invalid argument: %s\n" "$key" >&2
-				exit 1
-
-				;;
-
-		esac
-	done
-
-}
-
-# :command.parse_requirements
-gup_install_promtail_parse_requirements() {
-	# :command.fixed_flags_filter
-	while [[ $# -gt 0 ]]; do
-		key="$1"
-		case "$key" in
-			--help | -h)
-				long_usage=yes
-				gup_install_promtail_usage
-				exit
-				;;
-
-			*)
-				break
-				;;
-
-		esac
-	done
-
-	# :command.command_filter
-	action="install promtail"
 
 	# :command.parse_requirements_while
 	while [[ $# -gt 0 ]]; do
@@ -6883,51 +6403,6 @@ gup_install_zfsnap_parse_requirements() {
 }
 
 # :command.parse_requirements
-gup_install_podman_parse_requirements() {
-	# :command.fixed_flags_filter
-	while [[ $# -gt 0 ]]; do
-		key="$1"
-		case "$key" in
-			--help | -h)
-				long_usage=yes
-				gup_install_podman_usage
-				exit
-				;;
-
-			*)
-				break
-				;;
-
-		esac
-	done
-
-	# :command.command_filter
-	action="install podman"
-
-	# :command.parse_requirements_while
-	while [[ $# -gt 0 ]]; do
-		key="$1"
-		case "$key" in
-
-			-?*)
-				printf "invalid option: %s\n" "$key" >&2
-				exit 1
-				;;
-
-			*)
-				# :command.parse_requirements_case
-				# :command.parse_requirements_case_simple
-				printf "invalid argument: %s\n" "$key" >&2
-				exit 1
-
-				;;
-
-		esac
-	done
-
-}
-
-# :command.parse_requirements
 gup_install_vagrant_parse_requirements() {
 	# :command.fixed_flags_filter
 	while [[ $# -gt 0 ]]; do
@@ -7267,13 +6742,6 @@ gup_remove_parse_requirements() {
 	case $action in
 		-*) ;;
 
-		consul)
-			action="consul"
-			shift
-			gup_remove_consul_parse_requirements "$@"
-			shift $#
-			;;
-
 		neovim)
 			action="neovim"
 			shift
@@ -7293,51 +6761,6 @@ gup_remove_parse_requirements() {
 			;;
 
 	esac
-
-	# :command.parse_requirements_while
-	while [[ $# -gt 0 ]]; do
-		key="$1"
-		case "$key" in
-
-			-?*)
-				printf "invalid option: %s\n" "$key" >&2
-				exit 1
-				;;
-
-			*)
-				# :command.parse_requirements_case
-				# :command.parse_requirements_case_simple
-				printf "invalid argument: %s\n" "$key" >&2
-				exit 1
-
-				;;
-
-		esac
-	done
-
-}
-
-# :command.parse_requirements
-gup_remove_consul_parse_requirements() {
-	# :command.fixed_flags_filter
-	while [[ $# -gt 0 ]]; do
-		key="$1"
-		case "$key" in
-			--help | -h)
-				long_usage=yes
-				gup_remove_consul_usage
-				exit
-				;;
-
-			*)
-				break
-				;;
-
-		esac
-	done
-
-	# :command.command_filter
-	action="remove consul"
 
 	# :command.parse_requirements_while
 	while [[ $# -gt 0 ]]; do
@@ -7629,9 +7052,6 @@ run() {
 		"install rust") gup_install_rust_command ;;
 		"install zig") gup_install_zig_command ;;
 		"install zls") gup_install_zls_command ;;
-		"install oda") gup_install_oda_command ;;
-		"install odaserver") gup_install_odaserver_command ;;
-		"install wkhtmltopdf") gup_install_wkhtmltopdf_command ;;
 		"install btop") gup_install_btop_command ;;
 		"install gotop") gup_install_gotop_command ;;
 		"install blackbox_exporter") gup_install_blackbox_exporter_command ;;
@@ -7640,7 +7060,6 @@ run() {
 		"install node_exporter") gup_install_node_exporter_command ;;
 		"install postgres_exporter") gup_install_postgres_exporter_command ;;
 		"install prometheus") gup_install_prometheus_command ;;
-		"install promtail") gup_install_promtail_command ;;
 		"install snmp_exporter") gup_install_snmp_exporter_command ;;
 		"install caddy2") gup_install_caddy2_command ;;
 		"install traefik") gup_install_traefik_command ;;
@@ -7650,7 +7069,6 @@ run() {
 		"install marp") gup_install_marp_command ;;
 		"install task") gup_install_task_command ;;
 		"install zfsnap") gup_install_zfsnap_command ;;
-		"install podman") gup_install_podman_command ;;
 		"install vagrant") gup_install_vagrant_command ;;
 		"install etcd") gup_install_etcd_command ;;
 		"install k9s") gup_install_k9s_command ;;
@@ -7659,7 +7077,6 @@ run() {
 		"install neovim") gup_install_neovim_command ;;
 		"install helix") gup_install_helix_command ;;
 		"remove") gup_remove_command ;;
-		"remove consul") gup_remove_consul_command ;;
 		"remove neovim") gup_remove_neovim_command ;;
 		"systemd") gup_systemd_command ;;
 		"systemd loki") gup_systemd_loki_command ;;

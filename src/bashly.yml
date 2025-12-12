@@ -186,6 +186,9 @@ commands:
         help: A portable, performant script to make rolling ZFS snapshots easy
         group: Utilities
       # Containers
+      - name: lazydocker
+        help: A simple terminal UI for docker and docker-compose
+        group: Containers
       - name: vagrant
         help: HashiCorp Vagrant
         group: Containers

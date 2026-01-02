@@ -60,9 +60,9 @@ gup_install_usage() {
 	printf "  %s   install gup command\n" "gup              "
 	printf "  %s   update script for apt update\n" "update           "
 	printf "  %s   nerdfonts installer\n" "nerdfonts        "
-	printf "  %s   test app\n" "testapp          "
 	echo
 	printf "%s\n" "Cloud Commands:"
+	printf "  %s   Backblaze B2 cli tool\n" "b2               "
 	printf "  %s   DigitalOcean cli tool\n" "doctl            "
 	echo
 	printf "%s\n" "Infrastructure Commands:"
@@ -240,6 +240,28 @@ gup_install_nerdfonts_usage() {
 		printf "  %s\n" "FONT..."
 		printf "\n"
 		printf "    %s\n" "Allowed: Ubuntu, UbuntuMono, Hack, FiraMono, Noto"
+		echo
+
+	fi
+}
+
+# :command.usage
+gup_install_b2_usage() {
+	printf "gup install b2 - Backblaze B2 cli tool\n\n"
+
+	printf "%s\n" "Usage:"
+	printf "  gup install b2\n"
+	printf "  gup install b2 --help | -h\n"
+	echo
+
+	# :command.long_usage
+	if [[ -n "$long_usage" ]]; then
+		# :command.usage_options
+		printf "%s\n" "Options:"
+
+		# :command.usage_fixed_flags
+		printf "  %s\n" "--help, -h"
+		printf "    Show this help\n"
 		echo
 
 	fi
@@ -1544,28 +1566,6 @@ gup_install_helix_usage() {
 }
 
 # :command.usage
-gup_install_testapp_usage() {
-	printf "gup install testapp - test app\n\n"
-
-	printf "%s\n" "Usage:"
-	printf "  gup install testapp\n"
-	printf "  gup install testapp --help | -h\n"
-	echo
-
-	# :command.long_usage
-	if [[ -n "$long_usage" ]]; then
-		# :command.usage_options
-		printf "%s\n" "Options:"
-
-		# :command.usage_fixed_flags
-		printf "  %s\n" "--help, -h"
-		printf "    Show this help\n"
-		echo
-
-	fi
-}
-
-# :command.usage
 gup_remove_usage() {
 	printf "gup remove - remove an application and settings\n\n"
 
@@ -1814,6 +1814,33 @@ gup_install_nerdfonts_command() {
 	for font in ${fonts}; do
 		download "$font"
 	done
+
+}
+
+# :command.function
+gup_install_b2_command() {
+
+	# src/install_b2_command.sh
+	APP="b2"
+	DL="https://github.com/Backblaze/B2_Command_Line_Tool/releases/latest/download/b2-linux"
+
+	download() {
+			echo "download $1 version"
+			rm -f /tmp/"${APP}"
+			wget -qc "${DL}" -O /tmp/"${APP}"
+			if [ "$(id -u)" == 0 ]; then
+					BDIR="/usr/local/bin"
+					sudo rm -f "${BDIR}"/"${APP}"
+					sudo install /tmp/"${APP}" "${BDIR}"/"${APP}"
+			else
+					BDIR="${HOME}/.local/bin"
+					rm -f "${BDIR}"/"${APP}"
+					install /tmp/"${APP}" "${BDIR}"/"${APP}"
+			fi
+			rm -f /tmp/"${APP}"
+	}
+
+	download "$APP"
 
 }
 
@@ -3502,18 +3529,6 @@ gup_install_helix_command() {
 }
 
 # :command.function
-gup_install_testapp_command() {
-
-	# src/install_testapp_command.sh
-	echo "# This file is located at 'src/install_testapp_command.sh'."
-	echo "# It contains the implementation for the 'gup install testapp' command."
-	echo "# The code you write here will be wrapped by a function named 'gup_install_testapp_command()'."
-	echo "# Feel free to edit this file; your changes will persist when regenerating."
-	inspect_args
-
-}
-
-# :command.function
 gup_remove_neovim_command() {
 
 	# src/remove_neovim_command.sh
@@ -3702,6 +3717,13 @@ gup_install_parse_requirements() {
 			action="nerdfonts"
 			shift
 			gup_install_nerdfonts_parse_requirements "$@"
+			shift $#
+			;;
+
+		b2)
+			action="b2"
+			shift
+			gup_install_b2_parse_requirements "$@"
 			shift $#
 			;;
 
@@ -4118,13 +4140,6 @@ gup_install_parse_requirements() {
 			shift $#
 			;;
 
-		testapp)
-			action="testapp"
-			shift
-			gup_install_testapp_parse_requirements "$@"
-			shift $#
-			;;
-
 		# :command.command_fallback
 		"")
 			gup_install_usage >&2
@@ -4322,6 +4337,53 @@ gup_install_nerdfonts_parse_requirements() {
 			printf "%s\n" "font must be one of: Ubuntu, UbuntuMono, Hack, FiraMono, Noto" >&2
 			exit 1
 		fi
+	done
+
+}
+
+# :command.parse_requirements
+gup_install_b2_parse_requirements() {
+	local key
+
+	# :command.fixed_flags_filter
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+			--help | -h)
+				long_usage=yes
+				gup_install_b2_usage
+				exit
+				;;
+
+			*)
+				break
+				;;
+
+		esac
+	done
+
+	# :command.command_filter
+	action="install b2"
+
+	# :command.parse_requirements_while
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+
+			-?*)
+				printf "invalid option: %s\n" "$key" >&2
+				exit 1
+				;;
+
+			*)
+				# :command.parse_requirements_case
+				# :command.parse_requirements_case_simple
+				printf "invalid argument: %s\n" "$key" >&2
+				exit 1
+
+				;;
+
+		esac
 	done
 
 }
@@ -7100,53 +7162,6 @@ gup_install_helix_parse_requirements() {
 }
 
 # :command.parse_requirements
-gup_install_testapp_parse_requirements() {
-	local key
-
-	# :command.fixed_flags_filter
-	while [[ $# -gt 0 ]]; do
-		key="$1"
-		case "$key" in
-			--help | -h)
-				long_usage=yes
-				gup_install_testapp_usage
-				exit
-				;;
-
-			*)
-				break
-				;;
-
-		esac
-	done
-
-	# :command.command_filter
-	action="install testapp"
-
-	# :command.parse_requirements_while
-	while [[ $# -gt 0 ]]; do
-		key="$1"
-		case "$key" in
-
-			-?*)
-				printf "invalid option: %s\n" "$key" >&2
-				exit 1
-				;;
-
-			*)
-				# :command.parse_requirements_case
-				# :command.parse_requirements_case_simple
-				printf "invalid argument: %s\n" "$key" >&2
-				exit 1
-
-				;;
-
-		esac
-	done
-
-}
-
-# :command.parse_requirements
 gup_remove_parse_requirements() {
 	local key
 
@@ -7458,6 +7473,7 @@ run() {
 		"install gup") gup_install_gup_command ;;
 		"install update") gup_install_update_command ;;
 		"install nerdfonts") gup_install_nerdfonts_command ;;
+		"install b2") gup_install_b2_command ;;
 		"install doctl") gup_install_doctl_command ;;
 		"install terraform") gup_install_terraform_command ;;
 		"install githubcli") gup_install_githubcli_command ;;
@@ -7517,7 +7533,6 @@ run() {
 		"install minikube") gup_install_minikube_command ;;
 		"install neovim") gup_install_neovim_command ;;
 		"install helix") gup_install_helix_command ;;
-		"install testapp") gup_install_testapp_command ;;
 		"remove") gup_remove_command ;;
 		"remove neovim") gup_remove_neovim_command ;;
 		"systemd") gup_systemd_command ;;

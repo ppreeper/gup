@@ -21,6 +21,9 @@ commands:
             repeatable: true
             allowed: [Ubuntu, UbuntuMono, Hack, FiraMono, Noto]
       # Cloud Commands
+      - name: b2
+        help: Backblaze B2 cli tool
+        group: Cloud
       - name: doctl
         help: DigitalOcean cli tool
         group: Cloud

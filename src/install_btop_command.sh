@@ -28,7 +28,7 @@ function download() {
 
     # btop binary
     sudo mkdir -p "${PREFIX}/bin"
-    sudo cp /tmp/btop/bin/btop "${PREFIX}/bin/"
+    sudo install /tmp/btop/bin/btop "${PREFIX}/bin/btop"
 
     # doc
     sudo cp /tmp/btop/README.md "${PREFIX}/share/${APP}/README.md"
@@ -44,7 +44,7 @@ function download() {
     sudo cp /tmp/btop/Img/icon.svg "${PREFIX}/share/icons/hicolor/scalable/apps/btop.svg"
 
     # cleanup
-    rm -rf /tmp/btop
+    rm -rf /tmp/"${APP}"
     rm -f /tmp/"${FN}"
 }
 

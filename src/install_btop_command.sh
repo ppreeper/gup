@@ -14,9 +14,9 @@ function download() {
     rm -f /tmp/"${FN}"
     wget -qO /tmp/"${FN}" "${DL}"
 
-    rm -rf /tmp/btop
-    mkdir -p /tmp/btop
-    tar -xjf /tmp/"${FN}" -C /tmp/btop --strip-components=2
+    rm -f /tmp/"${APP}"
+    mkdir -p /tmp/"${APP}"
+    tar -xjf /tmp/"${FN}" -C /tmp/"${APP}" --strip-components=2
 
     # required directories
     sudo mkdir -p "${PREFIX}/bin"

@@ -44,7 +44,7 @@ function download() {
     sudo cp /tmp/btop/Img/icon.svg "${PREFIX}/share/icons/hicolor/scalable/apps/btop.svg"
 
     # cleanup
-    rm -rf /tmp/"${APP}"
+    rm -f /tmp/"${APP}"
     rm -f /tmp/"${FN}"
 }
 

@@ -21,7 +21,6 @@ download() {
     else
         BDIR="${HOME}/.bun"
         mkdir -p "${BDIR}"
-        echo "BUN_INSTALL=${BDIR}" >>${HOME}/.bashrc
         grep "export BUN_INSTALL" ${HOME}/.bashrc >/dev/null || echo "export BUN_INSTALL=${BDIR}" >>${HOME}/.bashrc
         grep 'export PATH=$BUN_INSTALL/bin:$PATH' ~/.bashrc >/dev/null || echo 'export PATH=$BUN_INSTALL/bin:$PATH' >>${HOME}/.bashrc
     fi

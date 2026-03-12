@@ -30,7 +30,7 @@ download() {
     wget -qc "${DL}" -O /tmp/"${FN}"
     unzip /tmp/"${FN}" -d /tmp
     echo install /tmp/"${APP}-${target}"/"${APP}" "${BDIR}"/bin/"${APP}"
-    #install /tmp/"${APP}-${target}"/"${APP}" "${BDIR}"/bin/"${APP}"
+    install /tmp/"${APP}-${target}"/"${APP}" "${BDIR}"/bin/"${APP}"
     rm -rf /tmp/"${APP}-${target}"
     rm -f /tmp/"${FN}"
 }

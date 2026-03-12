@@ -6,60 +6,31 @@ DL=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains ("linux-x64.z
 FN=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains ("linux-x64.zip")) | .name' | tr -d '"')
 
 BDIR="${HOME}/.bun"
-
 target="linux-x64"
-
-# platform=$(uname -ms)
-# target=""
-# case $platform in
-# 'Darwin x86_64')
-#     target=darwin-x64
-#     ;;
-# 'Darwin arm64')
-#     target=darwin-aarch64
-#     ;;
-# 'Linux aarch64' | 'Linux arm64')
-#     target=linux-aarch64
-#     ;;
-# 'MINGW64'*)
-#     target=windows-x64
-#     ;;
-# 'Linux x86_64' | *)
-#     target=linux-x64
-#     ;;
-# esac
-
-# If AVX2 isn't supported, use the -baseline build
-# case "$target" in
-# 'darwin-x64'*)
-#     if [[ $(sysctl -a | grep machdep.cpu | grep AVX2) == '' ]]; then
-#         target="$target-baseline"
-#     fi
-#     ;;
-# 'linux-x64'*)
-#     # If AVX2 isn't supported, use the -baseline build
-#     if [[ $(cat /proc/cpuinfo | grep avx2) = '' ]]; then
-#         target="$target-baseline"
-#     fi
-#     ;;
-# esac
-
-setup() {
-    mkdir -p "${BDIR}"
-    grep "export BUN_INSTALL" ${HOME}/.bashrc >/dev/null || echo "export BUN_INSTALL=${BDIR}" >>${HOME}/.bashrc
-    grep 'export PATH=$BUN_INSTALL/bin:$PATH' ~/.bashrc >/dev/null || echo 'export PATH=$BUN_INSTALL/bin:$PATH' >>${HOME}/.bashrc
-    echo "setup done"
-}
 
 download() {
     echo "download $1 version"
     echo "installing ${vers}"
-    setup
+
+    if [ "$(id -u)" == 0 ]; then
+        BDIR="/usr/local/bun"
+        sudo mkdir -p "${BDIR}"
+        echo "BUN_INSTALL=${BDIR}" | sudo tee -a /etc/environment
+        grep "export BUN_INSTALL" /etc/profile >/dev/null || echo "export BUN_INSTALL=${BDIR}" | sudo tee -a /etc/profile
+        grep 'export PATH=$BUN_INSTALL/bin:$PATH' /etc/profile >/dev/null || echo 'export PATH=$BUN_INSTALL/bin:$PATH' | sudo tee -a /etc/profile
+    else
+        BDIR="${HOME}/.bun"
+        mkdir -p "${BDIR}"
+        echo "BUN_INSTALL=${BDIR}" >>${HOME}/.bashrc
+        grep "export BUN_INSTALL" ${HOME}/.bashrc >/dev/null || echo "export BUN_INSTALL=${BDIR}" >>${HOME}/.bashrc
+        grep 'export PATH=$BUN_INSTALL/bin:$PATH' ~/.bashrc >/dev/null || echo 'export PATH=$BUN_INSTALL/bin:$PATH' >>${HOME}/.bashrc
+    fi
+
     rm -rf /tmp/"${APP}-${target}"
     rm -f /tmp/"${FN}"
     wget -qc "${DL}" -O /tmp/"${FN}"
-    unzip /tmp/"${FN}" -d /tmp/"${APP}-${target}"
-    install /tmp/"${APP}-${target}"/"${APP}-${target}"/"${APP}" "${BDIR}"/bin/"${APP}"
+    unzip /tmp/"${FN}" -d /tmp
+    install /tmp/"${APP}-${target}"/"${APP}" "${BDIR}"/bin/"${APP}"
     rm -rf /tmp/"${APP}-${target}"
     rm -f /tmp/"${FN}"
 }

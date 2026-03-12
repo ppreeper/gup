@@ -13,7 +13,7 @@ download() {
     echo "installing ${vers}"
 
     if [ "$(id -u)" == 0 ]; then
-        BDIR="/usr/local/bun"
+        BDIR="/usr/local"
         sudo mkdir -p "${BDIR}"
         echo "BUN_INSTALL=${BDIR}" | sudo tee -a /etc/environment
         grep "export BUN_INSTALL" /etc/profile >/dev/null || echo "export BUN_INSTALL=${BDIR}" | sudo tee -a /etc/profile

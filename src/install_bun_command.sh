@@ -15,7 +15,7 @@ download() {
     if [ "$(id -u)" == 0 ]; then
         BDIR="/usr/local"
         sudo mkdir -p "${BDIR}"
-        echo "BUN_INSTALL=${BDIR}" | sudo tee -a /etc/environment
+        grep "BUN_INSTALL=${BDIR}" /etc/environment >/dev/null || echo "BUN_INSTALL=${BDIR}" | sudo tee -a /etc/environment
         grep "export BUN_INSTALL" /etc/profile >/dev/null || echo "export BUN_INSTALL=${BDIR}" | sudo tee -a /etc/profile
         grep 'export PATH=$BUN_INSTALL/bin:$PATH' /etc/profile >/dev/null || echo 'export PATH=$BUN_INSTALL/bin:$PATH' | sudo tee -a /etc/profile
     else
@@ -30,7 +30,7 @@ download() {
     wget -qc "${DL}" -O /tmp/"${FN}"
     unzip /tmp/"${FN}" -d /tmp
     echo install /tmp/"${APP}-${target}"/"${APP}" "${BDIR}"/bin/"${APP}"
-    install /tmp/"${APP}-${target}"/"${APP}" "${BDIR}"/bin/"${APP}"
+    #install /tmp/"${APP}-${target}"/"${APP}" "${BDIR}"/bin/"${APP}"
     rm -rf /tmp/"${APP}-${target}"
     rm -f /tmp/"${FN}"
 }

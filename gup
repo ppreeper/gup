@@ -3543,12 +3543,7 @@ gup_install_task_command() {
 gup_install_timer_command() {
 
 	# src/install_timer_command.sh
-	echo "# This file is located at 'src/install_timer_command.sh'."
-	echo "# It contains the implementation for the 'gup install timer' command."
-	echo "# The code you write here will be wrapped by a function named 'gup_install_timer_command()'."
-	echo "# Feel free to edit this file; your changes will persist when regenerating."
-	inspect_args
-
+	go install github.com/caarlos0/timer@latest
 }
 
 # :command.function

@@ -1,0 +1,1 @@
+go install github.com/raviqqe/muffet/v2@latest

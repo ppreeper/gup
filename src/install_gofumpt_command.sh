@@ -1,0 +1,1 @@
+go install mvdan.cc/gofumpt@latest

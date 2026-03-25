@@ -28,6 +28,9 @@ commands:
         help: DigitalOcean cli tool
         group: Cloud
       # Infrastructure
+      - name: distrobuilder
+        help: Distrobuilder is a tool to build Linux distributions and images
+        group: Infrastructure
       - name: terraform
         help: Terraform is an open-source infrastructure as code software tool
         group: Infrastructure
@@ -75,6 +78,12 @@ commands:
       - name: go-blueprint
         help: Go-blueprint allows users to spin up a quick Go project using a popular framework
         group: Go Development
+      - name: gofumpt
+        help: gofumpt is a stricter gofmt
+        group: Go Development
+      - name: goimports
+        help: Go tool to format Go source code and manage imports
+        group: Go Development
       - name: gomodifytags
         help: Go tool to modify/update field tags in structs
         group: Go Development
@@ -95,6 +104,9 @@ commands:
         group: Go Development
       - name: impl
         help: impl generates method stubs for implementing an interface
+        group: Go Development
+      - name: nilaway
+        help: nilaway is a tool to detect nil pointer dereferences in Go code
         group: Go Development
       - name: staticcheck
         help: The advanced Go linter
@@ -182,8 +194,17 @@ commands:
       - name: gdu
         help: Fast disk usage analyzer with console interface written in Go
         group: Utilities
+      - name: gum
+        help: A tool for glamorous shell scripts
+        group: Utilities
       - name: marp
         help: Marp CLI is a Markdown presentation tool
+        group: Utilities
+      - name: muffet
+        help: A fast, concurrent web link checker
+        group: Utilities
+      - name: sshconfig
+        help: A tool to manage SSH configuration
         group: Utilities
       - name: task
         help: A task runner / simpler Make alternative written in Go

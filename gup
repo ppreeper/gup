@@ -66,6 +66,7 @@ gup_install_usage() {
 	printf "  %s   DigitalOcean cli tool\n" "doctl            "
 	echo
 	printf "%s\n" "Infrastructure Commands:"
+	printf "  %s   Distrobuilder is a tool to build Linux distributions and images\n" "distrobuilder    "
 	printf "  %s   Terraform is an open-source infrastructure as code software tool\n" "terraform        "
 	echo
 	printf "%s\n" "Development Commands:"
@@ -85,6 +86,8 @@ gup_install_usage() {
 	printf "  %s   Live reload for Go apps\n" "air              "
 	printf "  %s   Delve is a source level debugger for Go programs\n" "dlv              "
 	printf "  %s   Go-blueprint allows users to spin up a quick Go project using a popular framework\n" "go-blueprint     "
+	printf "  %s   gofumpt is a stricter gofmt\n" "gofumpt          "
+	printf "  %s   Go tool to format Go source code and manage imports\n" "goimports        "
 	printf "  %s   Go tool to modify/update field tags in structs\n" "gomodifytags     "
 	printf "  %s   The Go Playground client\n" "goplay           "
 	printf "  %s   Go language server\n" "gopls            "
@@ -92,6 +95,7 @@ gup_install_usage() {
 	printf "  %s   Go vulnerability checker\n" "govulncheck      "
 	printf "  %s   CLI tool to create amazing web applications with Go\n" "gowebly          "
 	printf "  %s   impl generates method stubs for implementing an interface\n" "impl             "
+	printf "  %s   nilaway is a tool to detect nil pointer dereferences in Go code\n" "nilaway          "
 	printf "  %s   The advanced Go linter\n" "staticcheck      "
 	printf "  %s   Automatically generate RESTful API documentation with Swagger 2.0 for Go\n" "swag             "
 	printf "  %s   An HTML templating language for Go that has great developer tooling\n" "templ            "
@@ -134,7 +138,10 @@ gup_install_usage() {
 	printf "%s\n" "Utilities Commands:"
 	printf "  %s   Disk Usage/Free Utility\n" "duf              "
 	printf "  %s   Fast disk usage analyzer with console interface written in Go\n" "gdu              "
+	printf "  %s   A tool for glamorous shell scripts\n" "gum              "
 	printf "  %s   Marp CLI is a Markdown presentation tool\n" "marp             "
+	printf "  %s   A fast, concurrent web link checker\n" "muffet           "
+	printf "  %s   A tool to manage SSH configuration\n" "sshconfig        "
 	printf "  %s   A task runner / simpler Make alternative written in Go\n" "task             "
 	printf "  %s   A portable, performant script to make rolling ZFS snapshots easy\n" "zfsnap           "
 	echo
@@ -275,6 +282,28 @@ gup_install_doctl_usage() {
 	printf "%s\n" "Usage:"
 	printf "  gup install doctl\n"
 	printf "  gup install doctl --help | -h\n"
+	echo
+
+	# :command.long_usage
+	if [[ -n "$long_usage" ]]; then
+		# :command.usage_options
+		printf "%s\n" "Options:"
+
+		# :command.usage_fixed_flags
+		printf "  %s\n" "--help, -h"
+		printf "    Show this help\n"
+		echo
+
+	fi
+}
+
+# :command.usage
+gup_install_distrobuilder_usage() {
+	printf "gup install distrobuilder - Distrobuilder is a tool to build Linux distributions and images\n\n"
+
+	printf "%s\n" "Usage:"
+	printf "  gup install distrobuilder\n"
+	printf "  gup install distrobuilder --help | -h\n"
 	echo
 
 	# :command.long_usage
@@ -621,6 +650,50 @@ gup_install_go_blueprint_usage() {
 }
 
 # :command.usage
+gup_install_gofumpt_usage() {
+	printf "gup install gofumpt - gofumpt is a stricter gofmt\n\n"
+
+	printf "%s\n" "Usage:"
+	printf "  gup install gofumpt\n"
+	printf "  gup install gofumpt --help | -h\n"
+	echo
+
+	# :command.long_usage
+	if [[ -n "$long_usage" ]]; then
+		# :command.usage_options
+		printf "%s\n" "Options:"
+
+		# :command.usage_fixed_flags
+		printf "  %s\n" "--help, -h"
+		printf "    Show this help\n"
+		echo
+
+	fi
+}
+
+# :command.usage
+gup_install_goimports_usage() {
+	printf "gup install goimports - Go tool to format Go source code and manage imports\n\n"
+
+	printf "%s\n" "Usage:"
+	printf "  gup install goimports\n"
+	printf "  gup install goimports --help | -h\n"
+	echo
+
+	# :command.long_usage
+	if [[ -n "$long_usage" ]]; then
+		# :command.usage_options
+		printf "%s\n" "Options:"
+
+		# :command.usage_fixed_flags
+		printf "  %s\n" "--help, -h"
+		printf "    Show this help\n"
+		echo
+
+	fi
+}
+
+# :command.usage
 gup_install_gomodifytags_usage() {
 	printf "gup install gomodifytags - Go tool to modify/update field tags in structs\n\n"
 
@@ -759,6 +832,28 @@ gup_install_impl_usage() {
 	printf "%s\n" "Usage:"
 	printf "  gup install impl\n"
 	printf "  gup install impl --help | -h\n"
+	echo
+
+	# :command.long_usage
+	if [[ -n "$long_usage" ]]; then
+		# :command.usage_options
+		printf "%s\n" "Options:"
+
+		# :command.usage_fixed_flags
+		printf "  %s\n" "--help, -h"
+		printf "    Show this help\n"
+		echo
+
+	fi
+}
+
+# :command.usage
+gup_install_nilaway_usage() {
+	printf "gup install nilaway - nilaway is a tool to detect nil pointer dereferences in Go code\n\n"
+
+	printf "%s\n" "Usage:"
+	printf "  gup install nilaway\n"
+	printf "  gup install nilaway --help | -h\n"
 	echo
 
 	# :command.long_usage
@@ -1347,12 +1442,78 @@ gup_install_gdu_usage() {
 }
 
 # :command.usage
+gup_install_gum_usage() {
+	printf "gup install gum - A tool for glamorous shell scripts\n\n"
+
+	printf "%s\n" "Usage:"
+	printf "  gup install gum\n"
+	printf "  gup install gum --help | -h\n"
+	echo
+
+	# :command.long_usage
+	if [[ -n "$long_usage" ]]; then
+		# :command.usage_options
+		printf "%s\n" "Options:"
+
+		# :command.usage_fixed_flags
+		printf "  %s\n" "--help, -h"
+		printf "    Show this help\n"
+		echo
+
+	fi
+}
+
+# :command.usage
 gup_install_marp_usage() {
 	printf "gup install marp - Marp CLI is a Markdown presentation tool\n\n"
 
 	printf "%s\n" "Usage:"
 	printf "  gup install marp\n"
 	printf "  gup install marp --help | -h\n"
+	echo
+
+	# :command.long_usage
+	if [[ -n "$long_usage" ]]; then
+		# :command.usage_options
+		printf "%s\n" "Options:"
+
+		# :command.usage_fixed_flags
+		printf "  %s\n" "--help, -h"
+		printf "    Show this help\n"
+		echo
+
+	fi
+}
+
+# :command.usage
+gup_install_muffet_usage() {
+	printf "gup install muffet - A fast, concurrent web link checker\n\n"
+
+	printf "%s\n" "Usage:"
+	printf "  gup install muffet\n"
+	printf "  gup install muffet --help | -h\n"
+	echo
+
+	# :command.long_usage
+	if [[ -n "$long_usage" ]]; then
+		# :command.usage_options
+		printf "%s\n" "Options:"
+
+		# :command.usage_fixed_flags
+		printf "  %s\n" "--help, -h"
+		printf "    Show this help\n"
+		echo
+
+	fi
+}
+
+# :command.usage
+gup_install_sshconfig_usage() {
+	printf "gup install sshconfig - A tool to manage SSH configuration\n\n"
+
+	printf "%s\n" "Usage:"
+	printf "  gup install sshconfig\n"
+	printf "  gup install sshconfig --help | -h\n"
 	echo
 
 	# :command.long_usage
@@ -1906,6 +2067,21 @@ gup_install_doctl_command() {
 }
 
 # :command.function
+gup_install_distrobuilder_command() {
+
+	# src/install_distrobuilder_command.sh
+	PWD=$(pwd)
+	REPO="https://github.com/lxc/distrobuilder"
+	rm -rf /tmp/distrobuilder
+	git clone "${REPO}" /tmp/distrobuilder
+	cd /tmp/distrobuilder
+	make
+	cd "$PWD"
+	rm -rf /tmp/distrobuilder
+
+}
+
+# :command.function
 gup_install_terraform_command() {
 
 	# src/install_terraform_command.sh
@@ -2331,6 +2507,20 @@ gup_install_go_blueprint_command() {
 }
 
 # :command.function
+gup_install_gofumpt_command() {
+
+	# src/install_gofumpt_command.sh
+	go install mvdan.cc/gofumpt@latest
+}
+
+# :command.function
+gup_install_goimports_command() {
+
+	# src/install_goimports_command.sh
+	go install golang.org/x/tools/cmd/goimports@latest
+}
+
+# :command.function
 gup_install_gomodifytags_command() {
 
 	# src/install_gomodifytags_command.sh
@@ -2383,6 +2573,13 @@ gup_install_impl_command() {
 	# src/install_impl_command.sh
 	go install github.com/josharian/impl@latest
 
+}
+
+# :command.function
+gup_install_nilaway_command() {
+
+	# src/install_nilaway_command.sh
+	go install go.uber.org/nilaway/cmd/nilaway@latest
 }
 
 # :command.function
@@ -3213,6 +3410,13 @@ gup_install_gdu_command() {
 }
 
 # :command.function
+gup_install_gum_command() {
+
+	# src/install_gum_command.sh
+	go install github.com/charmbracelet/gum@latest
+}
+
+# :command.function
 gup_install_marp_command() {
 
 	# src/install_marp_command.sh
@@ -3252,6 +3456,20 @@ gup_install_marp_command() {
 			fi
 	fi
 
+}
+
+# :command.function
+gup_install_muffet_command() {
+
+	# src/install_muffet_command.sh
+	go install github.com/raviqqe/muffet/v2@latest
+}
+
+# :command.function
+gup_install_sshconfig_command() {
+
+	# src/install_sshconfig_command.sh
+	go install github.com/ppreeper/sshconfig@latest
 }
 
 # :command.function
@@ -3757,6 +3975,13 @@ gup_install_parse_requirements() {
 			shift $#
 			;;
 
+		distrobuilder)
+			action="distrobuilder"
+			shift
+			gup_install_distrobuilder_parse_requirements "$@"
+			shift $#
+			;;
+
 		terraform)
 			action="terraform"
 			shift
@@ -3862,6 +4087,20 @@ gup_install_parse_requirements() {
 			shift $#
 			;;
 
+		gofumpt)
+			action="gofumpt"
+			shift
+			gup_install_gofumpt_parse_requirements "$@"
+			shift $#
+			;;
+
+		goimports)
+			action="goimports"
+			shift
+			gup_install_goimports_parse_requirements "$@"
+			shift $#
+			;;
+
 		gomodifytags)
 			action="gomodifytags"
 			shift
@@ -3908,6 +4147,13 @@ gup_install_parse_requirements() {
 			action="impl"
 			shift
 			gup_install_impl_parse_requirements "$@"
+			shift $#
+			;;
+
+		nilaway)
+			action="nilaway"
+			shift
+			gup_install_nilaway_parse_requirements "$@"
 			shift $#
 			;;
 
@@ -4093,10 +4339,31 @@ gup_install_parse_requirements() {
 			shift $#
 			;;
 
+		gum)
+			action="gum"
+			shift
+			gup_install_gum_parse_requirements "$@"
+			shift $#
+			;;
+
 		marp)
 			action="marp"
 			shift
 			gup_install_marp_parse_requirements "$@"
+			shift $#
+			;;
+
+		muffet)
+			action="muffet"
+			shift
+			gup_install_muffet_parse_requirements "$@"
+			shift $#
+			;;
+
+		sshconfig)
+			action="sshconfig"
+			shift
+			gup_install_sshconfig_parse_requirements "$@"
 			shift $#
 			;;
 
@@ -4441,6 +4708,53 @@ gup_install_doctl_parse_requirements() {
 
 	# :command.command_filter
 	action="install doctl"
+
+	# :command.parse_requirements_while
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+
+			-?*)
+				printf "invalid option: %s\n" "$key" >&2
+				exit 1
+				;;
+
+			*)
+				# :command.parse_requirements_case
+				# :command.parse_requirements_case_simple
+				printf "invalid argument: %s\n" "$key" >&2
+				exit 1
+
+				;;
+
+		esac
+	done
+
+}
+
+# :command.parse_requirements
+gup_install_distrobuilder_parse_requirements() {
+	local key
+
+	# :command.fixed_flags_filter
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+			--help | -h)
+				long_usage=yes
+				gup_install_distrobuilder_usage
+				exit
+				;;
+
+			*)
+				break
+				;;
+
+		esac
+	done
+
+	# :command.command_filter
+	action="install distrobuilder"
 
 	# :command.parse_requirements_while
 	while [[ $# -gt 0 ]]; do
@@ -5171,6 +5485,100 @@ gup_install_go_blueprint_parse_requirements() {
 }
 
 # :command.parse_requirements
+gup_install_gofumpt_parse_requirements() {
+	local key
+
+	# :command.fixed_flags_filter
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+			--help | -h)
+				long_usage=yes
+				gup_install_gofumpt_usage
+				exit
+				;;
+
+			*)
+				break
+				;;
+
+		esac
+	done
+
+	# :command.command_filter
+	action="install gofumpt"
+
+	# :command.parse_requirements_while
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+
+			-?*)
+				printf "invalid option: %s\n" "$key" >&2
+				exit 1
+				;;
+
+			*)
+				# :command.parse_requirements_case
+				# :command.parse_requirements_case_simple
+				printf "invalid argument: %s\n" "$key" >&2
+				exit 1
+
+				;;
+
+		esac
+	done
+
+}
+
+# :command.parse_requirements
+gup_install_goimports_parse_requirements() {
+	local key
+
+	# :command.fixed_flags_filter
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+			--help | -h)
+				long_usage=yes
+				gup_install_goimports_usage
+				exit
+				;;
+
+			*)
+				break
+				;;
+
+		esac
+	done
+
+	# :command.command_filter
+	action="install goimports"
+
+	# :command.parse_requirements_while
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+
+			-?*)
+				printf "invalid option: %s\n" "$key" >&2
+				exit 1
+				;;
+
+			*)
+				# :command.parse_requirements_case
+				# :command.parse_requirements_case_simple
+				printf "invalid argument: %s\n" "$key" >&2
+				exit 1
+
+				;;
+
+		esac
+	done
+
+}
+
+# :command.parse_requirements
 gup_install_gomodifytags_parse_requirements() {
 	local key
 
@@ -5475,6 +5883,53 @@ gup_install_impl_parse_requirements() {
 
 	# :command.command_filter
 	action="install impl"
+
+	# :command.parse_requirements_while
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+
+			-?*)
+				printf "invalid option: %s\n" "$key" >&2
+				exit 1
+				;;
+
+			*)
+				# :command.parse_requirements_case
+				# :command.parse_requirements_case_simple
+				printf "invalid argument: %s\n" "$key" >&2
+				exit 1
+
+				;;
+
+		esac
+	done
+
+}
+
+# :command.parse_requirements
+gup_install_nilaway_parse_requirements() {
+	local key
+
+	# :command.fixed_flags_filter
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+			--help | -h)
+				long_usage=yes
+				gup_install_nilaway_usage
+				exit
+				;;
+
+			*)
+				break
+				;;
+
+		esac
+	done
+
+	# :command.command_filter
+	action="install nilaway"
 
 	# :command.parse_requirements_while
 	while [[ $# -gt 0 ]]; do
@@ -6722,6 +7177,53 @@ gup_install_gdu_parse_requirements() {
 }
 
 # :command.parse_requirements
+gup_install_gum_parse_requirements() {
+	local key
+
+	# :command.fixed_flags_filter
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+			--help | -h)
+				long_usage=yes
+				gup_install_gum_usage
+				exit
+				;;
+
+			*)
+				break
+				;;
+
+		esac
+	done
+
+	# :command.command_filter
+	action="install gum"
+
+	# :command.parse_requirements_while
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+
+			-?*)
+				printf "invalid option: %s\n" "$key" >&2
+				exit 1
+				;;
+
+			*)
+				# :command.parse_requirements_case
+				# :command.parse_requirements_case_simple
+				printf "invalid argument: %s\n" "$key" >&2
+				exit 1
+
+				;;
+
+		esac
+	done
+
+}
+
+# :command.parse_requirements
 gup_install_marp_parse_requirements() {
 	local key
 
@@ -6744,6 +7246,100 @@ gup_install_marp_parse_requirements() {
 
 	# :command.command_filter
 	action="install marp"
+
+	# :command.parse_requirements_while
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+
+			-?*)
+				printf "invalid option: %s\n" "$key" >&2
+				exit 1
+				;;
+
+			*)
+				# :command.parse_requirements_case
+				# :command.parse_requirements_case_simple
+				printf "invalid argument: %s\n" "$key" >&2
+				exit 1
+
+				;;
+
+		esac
+	done
+
+}
+
+# :command.parse_requirements
+gup_install_muffet_parse_requirements() {
+	local key
+
+	# :command.fixed_flags_filter
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+			--help | -h)
+				long_usage=yes
+				gup_install_muffet_usage
+				exit
+				;;
+
+			*)
+				break
+				;;
+
+		esac
+	done
+
+	# :command.command_filter
+	action="install muffet"
+
+	# :command.parse_requirements_while
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+
+			-?*)
+				printf "invalid option: %s\n" "$key" >&2
+				exit 1
+				;;
+
+			*)
+				# :command.parse_requirements_case
+				# :command.parse_requirements_case_simple
+				printf "invalid argument: %s\n" "$key" >&2
+				exit 1
+
+				;;
+
+		esac
+	done
+
+}
+
+# :command.parse_requirements
+gup_install_sshconfig_parse_requirements() {
+	local key
+
+	# :command.fixed_flags_filter
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+			--help | -h)
+				long_usage=yes
+				gup_install_sshconfig_usage
+				exit
+				;;
+
+			*)
+				break
+				;;
+
+		esac
+	done
+
+	# :command.command_filter
+	action="install sshconfig"
 
 	# :command.parse_requirements_while
 	while [[ $# -gt 0 ]]; do
@@ -7552,6 +8148,7 @@ run() {
 		"install nerdfonts") gup_install_nerdfonts_command ;;
 		"install b2") gup_install_b2_command ;;
 		"install doctl") gup_install_doctl_command ;;
+		"install distrobuilder") gup_install_distrobuilder_command ;;
 		"install terraform") gup_install_terraform_command ;;
 		"install githubcli") gup_install_githubcli_command ;;
 		"install forgejocli") gup_install_forgejocli_command ;;
@@ -7567,6 +8164,8 @@ run() {
 		"install air") gup_install_air_command ;;
 		"install dlv") gup_install_dlv_command ;;
 		"install go-blueprint") gup_install_go_blueprint_command ;;
+		"install gofumpt") gup_install_gofumpt_command ;;
+		"install goimports") gup_install_goimports_command ;;
 		"install gomodifytags") gup_install_gomodifytags_command ;;
 		"install goplay") gup_install_goplay_command ;;
 		"install gopls") gup_install_gopls_command ;;
@@ -7574,6 +8173,7 @@ run() {
 		"install govulncheck") gup_install_govulncheck_command ;;
 		"install gowebly") gup_install_gowebly_command ;;
 		"install impl") gup_install_impl_command ;;
+		"install nilaway") gup_install_nilaway_command ;;
 		"install staticcheck") gup_install_staticcheck_command ;;
 		"install swag") gup_install_swag_command ;;
 		"install templ") gup_install_templ_command ;;
@@ -7600,7 +8200,10 @@ run() {
 		"install hugo") gup_install_hugo_command ;;
 		"install duf") gup_install_duf_command ;;
 		"install gdu") gup_install_gdu_command ;;
+		"install gum") gup_install_gum_command ;;
 		"install marp") gup_install_marp_command ;;
+		"install muffet") gup_install_muffet_command ;;
+		"install sshconfig") gup_install_sshconfig_command ;;
 		"install task") gup_install_task_command ;;
 		"install zfsnap") gup_install_zfsnap_command ;;
 		"install lazydocker") gup_install_lazydocker_command ;;

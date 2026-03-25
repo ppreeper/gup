@@ -59,6 +59,9 @@ commands:
       - name: tailwindcss
         help: tailwindcss cli
         group: Development
+      - name: yamlfmt
+        help: an extensible command line tool or library to format yaml files.
+        group: Development
       # Go Development
       - name: go
         help: go programming language

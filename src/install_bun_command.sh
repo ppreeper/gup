@@ -31,6 +31,8 @@ download() {
     unzip /tmp/"${FN}" -d /tmp
     echo install /tmp/"${APP}-${target}"/"${APP}" "${BDIR}"/bin/"${APP}"
     install /tmp/"${APP}-${target}"/"${APP}" "${BDIR}"/bin/"${APP}"
+    cd "${BDIR}"/bin
+    ln -f -s bun bunx
     rm -rf /tmp/"${APP}-${target}"
     rm -f /tmp/"${FN}"
 }

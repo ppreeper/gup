@@ -143,6 +143,7 @@ gup_install_usage() {
 	printf "  %s   A fast, concurrent web link checker\n" "muffet           "
 	printf "  %s   A tool to manage SSH configuration\n" "sshconfig        "
 	printf "  %s   A task runner / simpler Make alternative written in Go\n" "task             "
+	printf "  %s   A sleep command with a progress bar\n" "timer            "
 	printf "  %s   A portable, performant script to make rolling ZFS snapshots easy\n" "zfsnap           "
 	echo
 	printf "%s\n" "Containers Commands:"
@@ -1536,6 +1537,28 @@ gup_install_task_usage() {
 	printf "%s\n" "Usage:"
 	printf "  gup install task\n"
 	printf "  gup install task --help | -h\n"
+	echo
+
+	# :command.long_usage
+	if [[ -n "$long_usage" ]]; then
+		# :command.usage_options
+		printf "%s\n" "Options:"
+
+		# :command.usage_fixed_flags
+		printf "  %s\n" "--help, -h"
+		printf "    Show this help\n"
+		echo
+
+	fi
+}
+
+# :command.usage
+gup_install_timer_usage() {
+	printf "gup install timer - A sleep command with a progress bar\n\n"
+
+	printf "%s\n" "Usage:"
+	printf "  gup install timer\n"
+	printf "  gup install timer --help | -h\n"
 	echo
 
 	# :command.long_usage
@@ -3517,6 +3540,18 @@ gup_install_task_command() {
 }
 
 # :command.function
+gup_install_timer_command() {
+
+	# src/install_timer_command.sh
+	echo "# This file is located at 'src/install_timer_command.sh'."
+	echo "# It contains the implementation for the 'gup install timer' command."
+	echo "# The code you write here will be wrapped by a function named 'gup_install_timer_command()'."
+	echo "# Feel free to edit this file; your changes will persist when regenerating."
+	inspect_args
+
+}
+
+# :command.function
 gup_install_zfsnap_command() {
 
 	# src/install_zfsnap_command.sh
@@ -4371,6 +4406,13 @@ gup_install_parse_requirements() {
 			action="task"
 			shift
 			gup_install_task_parse_requirements "$@"
+			shift $#
+			;;
+
+		timer)
+			action="timer"
+			shift
+			gup_install_timer_parse_requirements "$@"
 			shift $#
 			;;
 
@@ -7412,6 +7454,53 @@ gup_install_task_parse_requirements() {
 }
 
 # :command.parse_requirements
+gup_install_timer_parse_requirements() {
+	local key
+
+	# :command.fixed_flags_filter
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+			--help | -h)
+				long_usage=yes
+				gup_install_timer_usage
+				exit
+				;;
+
+			*)
+				break
+				;;
+
+		esac
+	done
+
+	# :command.command_filter
+	action="install timer"
+
+	# :command.parse_requirements_while
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+
+			-?*)
+				printf "invalid option: %s\n" "$key" >&2
+				exit 1
+				;;
+
+			*)
+				# :command.parse_requirements_case
+				# :command.parse_requirements_case_simple
+				printf "invalid argument: %s\n" "$key" >&2
+				exit 1
+
+				;;
+
+		esac
+	done
+
+}
+
+# :command.parse_requirements
 gup_install_zfsnap_parse_requirements() {
 	local key
 
@@ -8205,6 +8294,7 @@ run() {
 		"install muffet") gup_install_muffet_command ;;
 		"install sshconfig") gup_install_sshconfig_command ;;
 		"install task") gup_install_task_command ;;
+		"install timer") gup_install_timer_command ;;
 		"install zfsnap") gup_install_zfsnap_command ;;
 		"install lazydocker") gup_install_lazydocker_command ;;
 		"install vagrant") gup_install_vagrant_command ;;

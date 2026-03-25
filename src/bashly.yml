@@ -209,6 +209,9 @@ commands:
       - name: task
         help: A task runner / simpler Make alternative written in Go
         group: Utilities
+      - name: timer
+        help: A sleep command with a progress bar
+        group: Utilities
       - name: zfsnap
         help: A portable, performant script to make rolling ZFS snapshots easy
         group: Utilities

@@ -1,0 +1,1 @@
+go install github.com/caarlos0/timer@latest

@@ -145,6 +145,7 @@ gup_install_usage() {
 	printf "  %s   A tool to manage SSH configuration\n" "sshconfig        "
 	printf "  %s   A task runner / simpler Make alternative written in Go\n" "task             "
 	printf "  %s   A sleep command with a progress bar\n" "timer            "
+	printf "  %s   A command-line program to download videos from YouTube and other sites\n" "ytdlp            "
 	printf "  %s   A portable, performant script to make rolling ZFS snapshots easy\n" "zfsnap           "
 	echo
 	printf "%s\n" "Containers Commands:"
@@ -1582,6 +1583,28 @@ gup_install_timer_usage() {
 	printf "%s\n" "Usage:"
 	printf "  gup install timer\n"
 	printf "  gup install timer --help | -h\n"
+	echo
+
+	# :command.long_usage
+	if [[ -n "$long_usage" ]]; then
+		# :command.usage_options
+		printf "%s\n" "Options:"
+
+		# :command.usage_fixed_flags
+		printf "  %s\n" "--help, -h"
+		printf "    Show this help\n"
+		echo
+
+	fi
+}
+
+# :command.usage
+gup_install_ytdlp_usage() {
+	printf "gup install ytdlp - A command-line program to download videos from YouTube and other sites\n\n"
+
+	printf "%s\n" "Usage:"
+	printf "  gup install ytdlp\n"
+	printf "  gup install ytdlp --help | -h\n"
 	echo
 
 	# :command.long_usage
@@ -3577,6 +3600,52 @@ gup_install_timer_command() {
 }
 
 # :command.function
+gup_install_ytdlp_command() {
+
+	# src/install_ytdlp_command.sh
+	APP="yt-dlp"
+	REPO="yt-dlp/yt-dlp"
+	RURL="https://api.github.com/repos/${REPO}/releases/latest"
+	vers=$(wget -qO- "${RURL}" | jq .tag_name | tr -d '"')
+	DL=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains ("_linux")) | .browser_download_url' | tr -d '"' | grep "_linux$")
+	FN=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains ("_linux")) | .name' | tr -d '"' | grep "_linux$")
+
+	function download() {
+			echo "download $1 version"
+			echo "installing ${vers}"
+
+			rm -f /tmp/"${FN}"
+			wget -qO /tmp/"${FN}" "${DL}"
+
+			if [ "$(id -u)" == 0 ]; then
+					BDIR="/usr/local/bin"
+					sudo rm -f "${BDIR}/${APP}"
+					sudo install /tmp/"${FN}" "${BDIR}/${APP}"
+			else
+					BDIR="${HOME}/.local/bin"
+					rm -f "${BDIR}/${APP}"
+					install /tmp/"${FN}" "${BDIR}/${APP}"
+			fi
+
+			# cleanup
+			rm -f /tmp/"${APP}"
+			rm -f /tmp/"${FN}"
+	}
+
+	if [ -z "$(which ${APP})" ]; then
+			download new
+	else
+			APPVER=$($(which ${APP}) --version)
+			version=$(echo "${vers}" | sed 's/^v//')
+			if [ "${APPVER}" = "${version}" ]; then
+					echo "${APP} version is current"
+			else
+					download "${vers}"
+			fi
+	fi
+}
+
+# :command.function
 gup_install_zfsnap_command() {
 
 	# src/install_zfsnap_command.sh
@@ -4445,6 +4514,13 @@ gup_install_parse_requirements() {
 			action="timer"
 			shift
 			gup_install_timer_parse_requirements "$@"
+			shift $#
+			;;
+
+		ytdlp)
+			action="ytdlp"
+			shift
+			gup_install_ytdlp_parse_requirements "$@"
 			shift $#
 			;;
 
@@ -7580,6 +7656,53 @@ gup_install_timer_parse_requirements() {
 }
 
 # :command.parse_requirements
+gup_install_ytdlp_parse_requirements() {
+	local key
+
+	# :command.fixed_flags_filter
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+			--help | -h)
+				long_usage=yes
+				gup_install_ytdlp_usage
+				exit
+				;;
+
+			*)
+				break
+				;;
+
+		esac
+	done
+
+	# :command.command_filter
+	action="install ytdlp"
+
+	# :command.parse_requirements_while
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+
+			-?*)
+				printf "invalid option: %s\n" "$key" >&2
+				exit 1
+				;;
+
+			*)
+				# :command.parse_requirements_case
+				# :command.parse_requirements_case_simple
+				printf "invalid argument: %s\n" "$key" >&2
+				exit 1
+
+				;;
+
+		esac
+	done
+
+}
+
+# :command.parse_requirements
 gup_install_zfsnap_parse_requirements() {
 	local key
 
@@ -8375,6 +8498,7 @@ run() {
 		"install sshconfig") gup_install_sshconfig_command ;;
 		"install task") gup_install_task_command ;;
 		"install timer") gup_install_timer_command ;;
+		"install ytdlp") gup_install_ytdlp_command ;;
 		"install zfsnap") gup_install_zfsnap_command ;;
 		"install lazydocker") gup_install_lazydocker_command ;;
 		"install vagrant") gup_install_vagrant_command ;;

@@ -215,6 +215,9 @@ commands:
       - name: timer
         help: A sleep command with a progress bar
         group: Utilities
+      - name: ytdlp
+        help: A command-line program to download videos from YouTube and other sites
+        group: Utilities
       - name: zfsnap
         help: A portable, performant script to make rolling ZFS snapshots easy
         group: Utilities

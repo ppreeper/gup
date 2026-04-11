@@ -22,10 +22,10 @@ function download() {
 }
 
 
-if [ -z "$(which ${APP})" ]; then
+if [ -z "$(command -v ${APP})" ]; then
     download new
 else
-    APPVER=$($(which ${APP}) -V 2>&1 | grep -e "^helix" | awk '{print $2}')
+    APPVER=$($(command -v ${APP}) -V 2>&1 | grep -e "^helix" | awk '{print $2}')
     if [ "${APPVER}" = "${vers}" ]; then
         echo "${APP} version is current"
     else

@@ -23,10 +23,10 @@ download() {
     rm -f "/tmp/${FN}" /tmp/"${APP}"
 }
 
-if [ -z "$(which ${APP})" ]; then
+if [ -z "$(command -v ${APP})" ]; then
     download new
 else
-    APPVER=$($(which ${APP}) --version 2>&1 | grep marp-cli | awk '{print $2}' | tr -d 'v')
+    APPVER=$($(command -v ${APP}) --version 2>&1 | grep marp-cli | awk '{print $2}' | tr -d 'v')
     if [ "${APPVER}" = "${vers}" ]; then
         echo "${APP} version is current"
     else

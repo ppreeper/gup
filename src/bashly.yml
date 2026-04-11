@@ -87,6 +87,9 @@ commands:
       - name: goimports
         help: Go tool to format Go source code and manage imports
         group: Go Development
+      - name: golangci-lint
+        help: golangci-lint is a linters aggregator for Go
+        group: Go Development
       - name: gomodifytags
         help: Go tool to modify/update field tags in structs
         group: Go Development
@@ -205,6 +208,9 @@ commands:
         group: Utilities
       - name: muffet
         help: A fast, concurrent web link checker
+        group: Utilities
+      - name: s5cmd
+        help: s5cmd is a super fast and highly parallel S3 and local filesystem execution
         group: Utilities
       - name: sshconfig
         help: A tool to manage SSH configuration

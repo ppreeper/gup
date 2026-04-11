@@ -1,4 +1,4 @@
-APPBIN=$(which rustup 2>/dev/null || echo "")
+APPBIN=$(command -v rustup 2>/dev/null || echo "")
 
 if [ -z "${APPBIN}" ]; then
     echo "Installing Rust"

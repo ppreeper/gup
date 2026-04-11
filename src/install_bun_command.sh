@@ -37,10 +37,10 @@ download() {
     rm -f /tmp/"${FN}"
 }
 
-if [ -z "$(which ${APP})" ]; then
+if [ -z "$(command -v ${APP})" ]; then
     download new
 else
-    APPVER=$($(which ${APP}) --version 2>&1)
+    APPVER=$($(command -v ${APP}) --version 2>&1)
     if [ "${APPVER}" = "${vers}" ]; then
         echo "${APP} version is current"
     else

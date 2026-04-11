@@ -89,6 +89,7 @@ gup_install_usage() {
 	printf "  %s   Go-blueprint allows users to spin up a quick Go project using a popular framework\n" "go-blueprint     "
 	printf "  %s   gofumpt is a stricter gofmt\n" "gofumpt          "
 	printf "  %s   Go tool to format Go source code and manage imports\n" "goimports        "
+	printf "  %s   golangci-lint is a linters aggregator for Go\n" "golangci-lint    "
 	printf "  %s   Go tool to modify/update field tags in structs\n" "gomodifytags     "
 	printf "  %s   The Go Playground client\n" "goplay           "
 	printf "  %s   Go language server\n" "gopls            "
@@ -142,6 +143,7 @@ gup_install_usage() {
 	printf "  %s   A tool for glamorous shell scripts\n" "gum              "
 	printf "  %s   Marp CLI is a Markdown presentation tool\n" "marp             "
 	printf "  %s   A fast, concurrent web link checker\n" "muffet           "
+	printf "  %s   s5cmd is a super fast and highly parallel S3 and local filesystem execution\n" "s5cmd            "
 	printf "  %s   A tool to manage SSH configuration\n" "sshconfig        "
 	printf "  %s   A task runner / simpler Make alternative written in Go\n" "task             "
 	printf "  %s   A sleep command with a progress bar\n" "timer            "
@@ -703,6 +705,28 @@ gup_install_goimports_usage() {
 	printf "%s\n" "Usage:"
 	printf "  gup install goimports\n"
 	printf "  gup install goimports --help | -h\n"
+	echo
+
+	# :command.long_usage
+	if [[ -n "$long_usage" ]]; then
+		# :command.usage_options
+		printf "%s\n" "Options:"
+
+		# :command.usage_fixed_flags
+		printf "  %s\n" "--help, -h"
+		printf "    Show this help\n"
+		echo
+
+	fi
+}
+
+# :command.usage
+gup_install_golangci_lint_usage() {
+	printf "gup install golangci-lint - golangci-lint is a linters aggregator for Go\n\n"
+
+	printf "%s\n" "Usage:"
+	printf "  gup install golangci-lint\n"
+	printf "  gup install golangci-lint --help | -h\n"
 	echo
 
 	# :command.long_usage
@@ -1533,6 +1557,28 @@ gup_install_muffet_usage() {
 }
 
 # :command.usage
+gup_install_s5cmd_usage() {
+	printf "gup install s5cmd - s5cmd is a super fast and highly parallel S3 and local filesystem execution\n\n"
+
+	printf "%s\n" "Usage:"
+	printf "  gup install s5cmd\n"
+	printf "  gup install s5cmd --help | -h\n"
+	echo
+
+	# :command.long_usage
+	if [[ -n "$long_usage" ]]; then
+		# :command.usage_options
+		printf "%s\n" "Options:"
+
+		# :command.usage_fixed_flags
+		printf "  %s\n" "--help, -h"
+		printf "    Show this help\n"
+		echo
+
+	fi
+}
+
+# :command.usage
 gup_install_sshconfig_usage() {
 	printf "gup install sshconfig - A tool to manage SSH configuration\n\n"
 
@@ -2123,10 +2169,10 @@ gup_install_doctl_command() {
 			rm -f /tmp/"${FN}"
 	}
 
-	if [ -z "$(which ${APP})" ]; then
+	if [ -z "$(command -v ${APP})" ]; then
 			download new
 	else
-			APPVER=$($(which ${APP}) version 2>&1 | grep "doctl version" | awk '{print $3}' | awk -F'-' '{print $1}')
+			APPVER=$($(command -v ${APP}) version 2>&1 | grep "doctl version" | awk '{print $3}' | awk -F'-' '{print $1}')
 			if [ "${APPVER}" = "${vers}" ]; then
 					echo "${APP} version is current"
 			else
@@ -2180,10 +2226,10 @@ gup_install_terraform_command() {
 			rm -rf /tmp/"${FN}"
 	}
 
-	if [ -z "$(which ${APP})" ]; then
+	if [ -z "$(command -v ${APP})" ]; then
 			download new
 	else
-			APPVER=$($(which ${APP}) version 2>&1 | grep -i "^${APP}" | awk '{print $2}' | tr -d 'v')
+			APPVER=$($(command -v ${APP}) version 2>&1 | grep -i "^${APP}" | awk '{print $2}' | tr -d 'v')
 			if [ "${APPVER}" = "${vers}" ]; then
 					echo "${APP} version is current"
 			else
@@ -2218,10 +2264,10 @@ gup_install_githubcli_command() {
 			sudo rm -f /tmp/"${FN}"
 	}
 
-	if [ -z "$(which ${APP})" ]; then
+	if [ -z "$(command -v ${APP})" ]; then
 			download new
 	else
-			APPVER=$($(which ${APP}) version 2>&1 | awk '{print $3}')
+			APPVER=$($(command -v ${APP}) version 2>&1 | awk '{print $3}')
 			if [ "${APPVER}" = "${vers}" ]; then
 					echo "${APP} version is current"
 			else
@@ -2286,10 +2332,10 @@ gup_install_lazygit_command() {
 			rm -rf lazygit /tmp/"${FN}"
 	}
 
-	if [ -z "$(which ${APP})" ]; then
+	if [ -z "$(command -v ${APP})" ]; then
 			download new
 	else
-		APPVER=$($(which ${APP}) --version 2>&1 | awk '{print $6}' | sed 's/,//g' | awk -F'=' '{print $2}')
+		APPVER=$($(command -v ${APP}) --version 2>&1 | awk '{print $6}' | sed 's/,//g' | awk -F'=' '{print $2}')
 		if [ "${APPVER}" = "${vers}" ]; then
 				echo "${APP} version is current"
 		else
@@ -2356,10 +2402,10 @@ gup_install_upx_command() {
 			rm -rf /tmp/"${FN}" /tmp/"${APP}_${vers}"
 	}
 
-	if [ -z "$(which "${APP}")" ]; then
+	if [ -z "$(command -v "${APP}")" ]; then
 			download new
 	else
-			APPVER=$($(which "${APP}") -V 2>&1 | grep -e "^${APP}" | awk '{print $2}')
+			APPVER=$($(command -v "${APP}") -V 2>&1 | grep -e "^${APP}" | awk '{print $2}')
 			if [ "${APPVER}" = "${vers}" ]; then
 					echo "${APP} version is current"
 			else
@@ -2396,10 +2442,10 @@ gup_install_tailwindcss_command() {
 			rm -rf /tmp/"${FN}"
 	}
 
-	if [ -z "$(which ${APP})" ]; then
+	if [ -z "$(command -v ${APP})" ]; then
 			download new
 	else
-			APPVER=$($(which ${APP}) --help 2>&1 | grep "${APP}.*v" | awk '{print $3}' | tr -d 'v')
+			APPVER=$($(command -v ${APP}) --help 2>&1 | grep "${APP}.*v" | awk '{print $3}' | tr -d 'v')
 			if [ "${APPVER}" = "${vers}" ]; then
 					echo "${APP} version is current"
 			else
@@ -2441,10 +2487,10 @@ gup_install_go_command() {
 			rm -f /tmp/"${FN}"
 	}
 
-	if [ -z "$(which ${APP})" ]; then
+	if [ -z "$(command -v ${APP})" ]; then
 			download new
 	else
-			APPVER=$($(which ${APP}) version 2>&1 | awk '{print $3}')
+			APPVER=$($(command -v ${APP}) version 2>&1 | awk '{print $3}')
 			if [ "${APPVER}" = "${vers}" ]; then
 					echo "${APP} version is current"
 			else
@@ -2496,10 +2542,10 @@ gup_install_tinygo_command() {
 			rm -rf /tmp/"${FN}" /tmp/"${APP}_${vers}"
 	}
 
-	if [ -z "$(which ${APP})" ]; then
+	if [ -z "$(command -v ${APP})" ]; then
 			download new
 	else
-			APPVER=$($(which ${APP}) version 2>&1 | awk '{print $3}')
+			APPVER=$($(command -v ${APP}) version 2>&1 | awk '{print $3}')
 			if [ "v${APPVER}" = "${vers}" ]; then
 					echo "${APP} version is current"
 					exit 0
@@ -2594,6 +2640,18 @@ gup_install_goimports_command() {
 
 	# src/install_goimports_command.sh
 	go install golang.org/x/tools/cmd/goimports@latest
+}
+
+# :command.function
+gup_install_golangci_lint_command() {
+
+	# src/install_golangci_lint_command.sh
+	APP="golangci-lint"
+	REPO="golangci/golangci-lint"
+	RURL="https://api.github.com/repos/${REPO}/releases/latest"
+	vers=$(wget -qO- "${RURL}" | jq .tag_name | tr -d '"')
+
+	go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@${vers}
 }
 
 # :command.function
@@ -2782,10 +2840,10 @@ gup_install_bun_command() {
 			rm -f /tmp/"${FN}"
 	}
 
-	if [ -z "$(which ${APP})" ]; then
+	if [ -z "$(command -v ${APP})" ]; then
 			download new
 	else
-			APPVER=$($(which ${APP}) --version 2>&1)
+			APPVER=$($(command -v ${APP}) --version 2>&1)
 			if [ "${APPVER}" = "${vers}" ]; then
 					echo "${APP} version is current"
 			else
@@ -2825,10 +2883,10 @@ gup_install_ruff_command() {
 			rm -rf /tmp/"${FN}" /tmp/"${APP}_${vers}"
 	}
 
-	if [ -z "$(which ${APP})" ]; then
+	if [ -z "$(command -v ${APP})" ]; then
 			download new
 	else
-			APPVER=$($(which ${APP}) --version 2>&1 | grep "^${APP}" | awk '{print $2}')
+			APPVER=$($(command -v ${APP}) --version 2>&1 | grep "^${APP}" | awk '{print $2}')
 			if [ "${APPVER}" = "${vers}" ]; then
 					echo "${APP} version is current"
 			else
@@ -2871,10 +2929,10 @@ gup_install_uv_command() {
 			rm -rf /tmp/"${FN}" /tmp/"${APP}_${vers}"
 	}
 
-	if [ -z "$(which ${APP})" ]; then
+	if [ -z "$(command -v ${APP})" ]; then
 			download new
 	else
-			APPVER=$($(which ${APP}) --version 2>&1 | grep "^${APP}" | awk '{print $2}')
+			APPVER=$($(command -v ${APP}) --version 2>&1 | grep "^${APP}" | awk '{print $2}')
 			if [ "${APPVER}" = "${vers}" ]; then
 					echo "${APP} version is current"
 			else
@@ -2887,7 +2945,7 @@ gup_install_uv_command() {
 gup_install_rust_command() {
 
 	# src/install_rust_command.sh
-	APPBIN=$(which rustup 2>/dev/null || echo "")
+	APPBIN=$(command -v rustup 2>/dev/null || echo "")
 
 	if [ -z "${APPBIN}" ]; then
 			echo "Installing Rust"
@@ -2926,10 +2984,10 @@ gup_install_zig_command() {
 			rm -f /tmp/"${FN}"
 	}
 
-	if [ -z "$(which ${APP})" ]; then
+	if [ -z "$(command -v ${APP})" ]; then
 			download new
 	else
-			APPVER=$($(which ${APP}) version 2>&1)
+			APPVER=$($(command -v ${APP}) version 2>&1)
 			if [ "${APPVER}" = "${vers}" ]; then
 					echo "${APP} version is current"
 			else
@@ -2963,10 +3021,10 @@ gup_install_zls_command() {
 			rm -rf /tmp/"${FN}" /tmp/"${APP}_${vers}"
 	}
 
-	if [ -z "$(which ${APP})" ]; then
+	if [ -z "$(command -v ${APP})" ]; then
 			download new
 	else
-			APPVER=$($(which ${APP}) version 2>&1)
+			APPVER=$($(command -v ${APP}) version 2>&1)
 			if [ "${APPVER}" = "${vers}" ]; then
 					echo "${APP} version is current"
 			else
@@ -3030,10 +3088,10 @@ gup_install_btop_command() {
 			rm -f /tmp/"${FN}"
 	}
 
-	if [ -z "$(which ${APP})" ]; then
+	if [ -z "$(command -v ${APP})" ]; then
 			download new
 	else
-			APPVER=$($(which ${APP}) --version | grep "^btop version:" | awk -F':' '{print $2}' | sed -E 's/\x1B\[[0-9;]*[a-zA-Z]//g' | awk '{$1=$1; print}')
+			APPVER=$($(command -v ${APP}) --version | grep "^btop version:" | awk -F':' '{print $2}' | sed -E 's/\x1B\[[0-9;]*[a-zA-Z]//g' | awk '{$1=$1; print}')
 			version=$(echo "${vers}" | sed 's/^v//')
 			if [ "${APPVER}" = "${version}" ]; then
 					echo "${APP} version is current"
@@ -3070,10 +3128,10 @@ gup_install_gotop_command() {
 			rm -f /tmp/"${FN}"
 	}
 
-	if [ -z "$(which ${APP})" ]; then
+	if [ -z "$(command -v ${APP})" ]; then
 			download new
 	else
-			APPVER=$($(which ${APP}) --version 2>&1 | grep ^${APP} | awk '{print $2}')
+			APPVER=$($(command -v ${APP}) --version 2>&1 | grep ^${APP} | awk '{print $2}')
 			if [ "${APPVER}" = "${vers}" ]; then
 					echo "${APP} version is current"
 			else
@@ -3112,10 +3170,10 @@ gup_install_blackbox_exporter_command() {
 			rm -rf /tmp/"${FN}" /tmp/"${APP}_${vers}"
 	}
 
-	if [ -z "$(which ${APP})" ]; then
+	if [ -z "$(command -v ${APP})" ]; then
 			download new
 	else
-			APPVER=$($(which ${APP}) --version 2>&1 | grep -i "^${APP}" | awk '{print $3}')
+			APPVER=$($(command -v ${APP}) --version 2>&1 | grep -i "^${APP}" | awk '{print $3}')
 			if [ "${APPVER}" = "${vers}" ]; then
 					echo "${APP} version is current"
 			else
@@ -3164,10 +3222,10 @@ gup_install_loki_command() {
 			rm -rf /tmp/"${FN}" /tmp/"${APP}_${vers}"
 	}
 
-	if [ -z "$(which ${APP})" ]; then
+	if [ -z "$(command -v ${APP})" ]; then
 			download new
 	else
-			APPVER=$($(which ${APP}) --version 2>&1 | grep -i ^${APP} | awk '{print $3}')
+			APPVER=$($(command -v ${APP}) --version 2>&1 | grep -i ^${APP} | awk '{print $3}')
 			if [ "${APPVER}" = "${vers}" ]; then
 					echo "${APP} version is current"
 			else
@@ -3207,10 +3265,10 @@ gup_install_node_exporter_command() {
 			rm -rf /tmp/${APP}_"${vers}" /tmp/"${FN}"
 	}
 
-	if [ -z "$(which ${APP})" ]; then
+	if [ -z "$(command -v ${APP})" ]; then
 			download new
 	else
-			APPVER=$($(which ${APP}) --version 2>&1 | grep -i ^${APP} | awk '{print $3}' | tr -d 'v')
+			APPVER=$($(command -v ${APP}) --version 2>&1 | grep -i ^${APP} | awk '{print $3}' | tr -d 'v')
 			if [ "${APPVER}" = "$vers" ]; then
 					echo "${APP} version is current"
 			else
@@ -3250,10 +3308,10 @@ gup_install_postgres_exporter_command() {
 			rm -rf /tmp/"${FN}" /tmp/"${APP}_${vers}"
 	}
 
-	if [ -z "$(which ${APP})" ]; then
+	if [ -z "$(command -v ${APP})" ]; then
 			download new
 	else
-			APPVER=$($(which ${APP}) --version 2>&1 | grep -i ^${APP} | awk '{print $3}')
+			APPVER=$($(command -v ${APP}) --version 2>&1 | grep -i ^${APP} | awk '{print $3}')
 			if [ "${APPVER}" = "${vers}" ]; then
 					echo "${APP} version is current"
 			else
@@ -3297,10 +3355,10 @@ gup_install_prometheus_command() {
 			rm -rf /tmp/"${FN}" /tmp/"${APP}_${vers}"
 	}
 
-	if [ -z "$(which ${APP})" ]; then
+	if [ -z "$(command -v ${APP})" ]; then
 			download new
 	else
-			APPVER=$($(which ${APP}) --version 2>&1 | grep -i ^${APP} | awk '{print $3}')
+			APPVER=$($(command -v ${APP}) --version 2>&1 | grep -i ^${APP} | awk '{print $3}')
 			if [ "${APPVER}" = "${vers}" ]; then
 					echo "${APP} version is current"
 			else
@@ -3338,10 +3396,10 @@ gup_install_snmp_exporter_command() {
 			rm -rf /tmp/"${FN}" /tmp/"${APP}_${vers}"
 	}
 
-	if [ -z "$(which ${APP})" ]; then
+	if [ -z "$(command -v ${APP})" ]; then
 			download new
 	else
-			APPVER=$($(which ${APP}) --version 2>&1 | grep -i "^${APP}" | awk '{print $3}')
+			APPVER=$($(command -v ${APP}) --version 2>&1 | grep -i "^${APP}" | awk '{print $3}')
 			if [ "${APPVER}" = "${vers}" ]; then
 					echo "${APP} version is current"
 			else
@@ -3380,10 +3438,10 @@ gup_install_caddy2_command() {
 			rm -rf /tmp/"${FN}" /tmp/"${APP}_${vers}"
 	}
 
-	if [ -z "$(which ${APP})" ]; then
+	if [ -z "$(command -v ${APP})" ]; then
 			download new
 	else
-			APPVER=$($(which ${APP}) version 2>&1 | grep -i "^v" | awk '{print $1}')
+			APPVER=$($(command -v ${APP}) version 2>&1 | grep -i "^v" | awk '{print $1}')
 			if [ "${APPVER}" = "${vers}" ]; then
 					echo "${APP} version is current"
 			else
@@ -3421,10 +3479,10 @@ gup_install_traefik_command() {
 			rm -rf /tmp/"${APP}_${vers}" /tmp/"${FN}"
 	}
 
-	if [ -z "$(which ${APP})" ]; then
+	if [ -z "$(command -v ${APP})" ]; then
 			download new
 	else
-			APPVER=$($(which ${APP}) version 2>&1 | grep ^Version | awk '{print $2}')
+			APPVER=$($(command -v ${APP}) version 2>&1 | grep ^Version | awk '{print $2}')
 			if [ "${APPVER}" = "${vers}" ]; then
 					echo "${APP} version is current"
 			else
@@ -3459,10 +3517,10 @@ gup_install_hugo_command() {
 			rm -f /tmp/"${FN}"
 	}
 
-	if [ -z "$(which ${APP})" ]; then
+	if [ -z "$(command -v ${APP})" ]; then
 			download new
 	else
-			APPVER=$($(which ${APP}) version 2>&1 | awk '{print $2}' | awk -F'-' '{print $1}')
+			APPVER=$($(command -v ${APP}) version 2>&1 | awk '{print $2}' | awk -F'-' '{print $1}')
 			if [ "${APPVER}" = "${vers}" ]; then
 					echo "${APP} version is current"
 			else
@@ -3521,10 +3579,10 @@ gup_install_marp_command() {
 			rm -f "/tmp/${FN}" /tmp/"${APP}"
 	}
 
-	if [ -z "$(which ${APP})" ]; then
+	if [ -z "$(command -v ${APP})" ]; then
 			download new
 	else
-			APPVER=$($(which ${APP}) --version 2>&1 | grep marp-cli | awk '{print $2}' | tr -d 'v')
+			APPVER=$($(command -v ${APP}) --version 2>&1 | grep marp-cli | awk '{print $2}' | tr -d 'v')
 			if [ "${APPVER}" = "${vers}" ]; then
 					echo "${APP} version is current"
 			else
@@ -3539,6 +3597,18 @@ gup_install_muffet_command() {
 
 	# src/install_muffet_command.sh
 	go install github.com/raviqqe/muffet/v2@latest
+}
+
+# :command.function
+gup_install_s5cmd_command() {
+
+	# src/install_s5cmd_command.sh
+	APP="s5cmd"
+	REPO="peak/s5cmd"
+	RURL="https://api.github.com/repos/${REPO}/releases/latest"
+	vers=$(wget -qO- "${RURL}" | jq .tag_name | tr -d '"')
+
+	go install github.com/peak/s5cmd/v2@${vers}
 }
 
 # :command.function
@@ -3579,10 +3649,10 @@ gup_install_task_command() {
 			rm -rf /tmp/"${FN}" /tmp/"${APP}_${vers}"
 	}
 
-	if [ -z "$(which ${APP})" ]; then
+	if [ -z "$(command -v ${APP})" ]; then
 			download new
 	else
-			APPVER=$($(which "${APP}") --version 2>&1 | tr -d 'v')
+			APPVER=$($(command -v "${APP}") --version 2>&1 | tr -d 'v')
 			if [ "${APPVER}" = "${vers}" ]; then
 					echo "${APP} version is current"
 			else
@@ -3632,10 +3702,10 @@ gup_install_ytdlp_command() {
 			rm -f /tmp/"${FN}"
 	}
 
-	if [ -z "$(which ${APP})" ]; then
+	if [ -z "$(command -v ${APP})" ]; then
 			download new
 	else
-			APPVER=$($(which ${APP}) --version)
+			APPVER=$($(command -v ${APP}) --version)
 			version=$(echo "${vers}" | sed 's/^v//')
 			if [ "${APPVER}" = "${version}" ]; then
 					echo "${APP} version is current"
@@ -3696,10 +3766,10 @@ gup_install_lazydocker_command() {
 			rm -rf lazydocker /tmp/"${FN}"
 	}
 
-	if [ -z "$(which ${APP})" ]; then
+	if [ -z "$(command -v ${APP})" ]; then
 			download new
 	else
-		APPVER=$($(which ${APP}) --version 2>&1 | awk '{print $6}' | sed 's/,//g' | awk -F'=' '{print $2}')
+		APPVER=$($(command -v ${APP}) --version 2>&1 | awk '{print $6}' | sed 's/,//g' | awk -F'=' '{print $2}')
 		if [ "${APPVER}" = "${vers}" ]; then
 				echo "${APP} version is current"
 		else
@@ -3744,10 +3814,10 @@ gup_install_etcd_command() {
 			rm -f "/tmp/${FN}"
 	}
 
-	if [ -z "$(which ${APP})" ]; then
+	if [ -z "$(command -v ${APP})" ]; then
 			download new
 	else
-			APPVER=$($(which ${APP}) --version 2>&1 | grep "etcd.*Version" | awk '{print $3}' | sed 's/^v//')
+			APPVER=$($(command -v ${APP}) --version 2>&1 | grep "etcd.*Version" | awk '{print $3}' | sed 's/^v//')
 			if [ "${APPVER}" = "${vers}" ]; then
 					echo "${APP} version is current"
 			else
@@ -3786,10 +3856,10 @@ gup_install_k9s_command() {
 			rm -rf k9s /tmp/"${FN}"
 	}
 
-	if [ -z "$(which ${APP})" ]; then
+	if [ -z "$(command -v ${APP})" ]; then
 			download new
 	else
-		APPVER=$($(which ${APP}) version 2>&1 | grep Version | awk '{print $2}' | tr -d 'v')
+		APPVER=$($(command -v ${APP}) version 2>&1 | grep Version | awk '{print $2}' | tr -d 'v')
 		if [ "${APPVER}" = "${vers}" ]; then
 				echo "${APP} version is current"
 		else
@@ -3845,10 +3915,10 @@ gup_install_neovim_command() {
 			rm -f /tmp/"${FN}"
 	}
 
-	if [ -z "$(which ${APP})" ]; then
+	if [ -z "$(command -v ${APP})" ]; then
 			download new
 	else
-			APPVER=$($(which "${APP}") --version 2>&1 | grep -i "^${APP}" | awk '{print $2}' | tr -d 'v')
+			APPVER=$($(command -v "${APP}") --version 2>&1 | grep -i "^${APP}" | awk '{print $2}' | tr -d 'v')
 			if [ "${APPVER}" = "${vers}" ]; then
 					echo "${APP} version is current"
 			else
@@ -3885,10 +3955,10 @@ gup_install_helix_command() {
 			rm -f /tmp/"${FN}"
 	}
 
-	if [ -z "$(which ${APP})" ]; then
+	if [ -z "$(command -v ${APP})" ]; then
 			download new
 	else
-			APPVER=$($(which ${APP}) -V 2>&1 | grep -e "^helix" | awk '{print $2}')
+			APPVER=$($(command -v ${APP}) -V 2>&1 | grep -e "^helix" | awk '{print $2}')
 			if [ "${APPVER}" = "${vers}" ]; then
 					echo "${APP} version is current"
 			else
@@ -4237,6 +4307,13 @@ gup_install_parse_requirements() {
 			shift $#
 			;;
 
+		golangci-lint)
+			action="golangci-lint"
+			shift
+			gup_install_golangci_lint_parse_requirements "$@"
+			shift $#
+			;;
+
 		gomodifytags)
 			action="gomodifytags"
 			shift
@@ -4493,6 +4570,13 @@ gup_install_parse_requirements() {
 			action="muffet"
 			shift
 			gup_install_muffet_parse_requirements "$@"
+			shift $#
+			;;
+
+		s5cmd)
+			action="s5cmd"
+			shift
+			gup_install_s5cmd_parse_requirements "$@"
 			shift $#
 			;;
 
@@ -5751,6 +5835,53 @@ gup_install_goimports_parse_requirements() {
 
 	# :command.command_filter
 	action="install goimports"
+
+	# :command.parse_requirements_while
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+
+			-?*)
+				printf "invalid option: %s\n" "$key" >&2
+				exit 1
+				;;
+
+			*)
+				# :command.parse_requirements_case
+				# :command.parse_requirements_case_simple
+				printf "invalid argument: %s\n" "$key" >&2
+				exit 1
+
+				;;
+
+		esac
+	done
+
+}
+
+# :command.parse_requirements
+gup_install_golangci_lint_parse_requirements() {
+	local key
+
+	# :command.fixed_flags_filter
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+			--help | -h)
+				long_usage=yes
+				gup_install_golangci_lint_usage
+				exit
+				;;
+
+			*)
+				break
+				;;
+
+		esac
+	done
+
+	# :command.command_filter
+	action="install golangci-lint"
 
 	# :command.parse_requirements_while
 	while [[ $# -gt 0 ]]; do
@@ -7515,6 +7646,53 @@ gup_install_muffet_parse_requirements() {
 }
 
 # :command.parse_requirements
+gup_install_s5cmd_parse_requirements() {
+	local key
+
+	# :command.fixed_flags_filter
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+			--help | -h)
+				long_usage=yes
+				gup_install_s5cmd_usage
+				exit
+				;;
+
+			*)
+				break
+				;;
+
+		esac
+	done
+
+	# :command.command_filter
+	action="install s5cmd"
+
+	# :command.parse_requirements_while
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+
+			-?*)
+				printf "invalid option: %s\n" "$key" >&2
+				exit 1
+				;;
+
+			*)
+				# :command.parse_requirements_case
+				# :command.parse_requirements_case_simple
+				printf "invalid argument: %s\n" "$key" >&2
+				exit 1
+
+				;;
+
+		esac
+	done
+
+}
+
+# :command.parse_requirements
 gup_install_sshconfig_parse_requirements() {
 	local key
 
@@ -8458,6 +8636,7 @@ run() {
 		"install go-blueprint") gup_install_go_blueprint_command ;;
 		"install gofumpt") gup_install_gofumpt_command ;;
 		"install goimports") gup_install_goimports_command ;;
+		"install golangci-lint") gup_install_golangci_lint_command ;;
 		"install gomodifytags") gup_install_gomodifytags_command ;;
 		"install goplay") gup_install_goplay_command ;;
 		"install gopls") gup_install_gopls_command ;;
@@ -8495,6 +8674,7 @@ run() {
 		"install gum") gup_install_gum_command ;;
 		"install marp") gup_install_marp_command ;;
 		"install muffet") gup_install_muffet_command ;;
+		"install s5cmd") gup_install_s5cmd_command ;;
 		"install sshconfig") gup_install_sshconfig_command ;;
 		"install task") gup_install_task_command ;;
 		"install timer") gup_install_timer_command ;;

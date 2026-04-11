@@ -24,10 +24,10 @@ function download() {
     rm -rf /tmp/"${FN}" /tmp/"${APP}_${vers}"
 }
 
-if [ -z "$(which "${APP}")" ]; then
+if [ -z "$(command -v "${APP}")" ]; then
     download new
 else
-    APPVER=$($(which "${APP}") -V 2>&1 | grep -e "^${APP}" | awk '{print $2}')
+    APPVER=$($(command -v "${APP}") -V 2>&1 | grep -e "^${APP}" | awk '{print $2}')
     if [ "${APPVER}" = "${vers}" ]; then
         echo "${APP} version is current"
     else

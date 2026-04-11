@@ -27,10 +27,10 @@ function download() {
     rm -f /tmp/"${FN}"
 }
 
-if [ -z "$(which ${APP})" ]; then
+if [ -z "$(command -v ${APP})" ]; then
     download new
 else
-    APPVER=$($(which ${APP}) --version)
+    APPVER=$($(command -v ${APP}) --version)
     version=$(echo "${vers}" | sed 's/^v//')
     if [ "${APPVER}" = "${version}" ]; then
         echo "${APP} version is current"

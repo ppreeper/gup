@@ -2058,6 +2058,49 @@ inspect_args() {
 	fi
 }
 
+# :command.user_lib
+# src/lib/helpers.sh
+gup_ensure_go() {
+		local missing_deps=()
+		for dep in go; do
+				if ! command -v "$dep" >/dev/null 2>&1; then
+						echo $dep
+						missing_deps+=("$dep")
+				fi
+		done
+
+		if [ ${#missing_deps[@]} -ne 0 ]; then
+				echo "Missing go: please install Go \`gup install go\`" >&2
+				exit 1
+		fi
+}
+
+# download using curl or wget
+gup_download() {
+		local url="$1"
+		local output="$2"
+		if command -v curl >/dev/null 2>&1; then
+				curl -fsSL -o "$output" "$url"
+		else
+				wget -qO "$output" "$url"
+		fi
+}
+
+# get the latest release tag from GitHub API
+gup_get_latest_release() {
+		local repo="$1"
+		local api_url="https://api.github.com/repos/${repo}/releases/latest"
+		wget -qO- "${api_url}" | jq -r .tag_name
+		# wget -qO- "${api_url}" | jq .tag_name | tr -d '"'
+}
+
+gup_get_latest_dl() {
+		local repo="$1"
+		local api_url="https://api.github.com/repos/${repo}/releases/latest"
+		wget -qO- "${api_url}" | jq -r .tag_name
+		# wget -qO- "${api_url}" | jq .tag_name | tr -d '"'
+}
+
 # :command.command_functions
 
 # :command.function
@@ -2124,22 +2167,29 @@ gup_install_b2_command() {
 	DL="https://github.com/Backblaze/B2_Command_Line_Tool/releases/latest/download/b2-linux"
 
 	download() {
-			echo "download $1 version"
-			rm -f /tmp/"${APP}"
-			wget -qc "${DL}" -O /tmp/"${APP}"
-			if [ "$(id -u)" == 0 ]; then
-					BDIR="/usr/local/bin"
-					sudo rm -f "${BDIR}"/"${APP}"
-					sudo install /tmp/"${APP}" "${BDIR}"/"${APP}"
+			local tmpdir out bdir
+			tmpdir=$(mktemp -d) || { printf 'failed to create tempdir\n' >&2; return 1; }
+			trap 'rm -rf "${tmpdir}"' RETURN
+			out="${tmpdir}/${APP}"
+
+			printf "download %s ...\n" "${APP}"
+			gup_download "${DL}" "${out}" || { printf 'download failed\n' >&2; return 1; }
+
+			chmod +x "${out}"
+
+			if (( EUID == 0 )); then
+					bdir="/usr/local/bin"
+					rm -f "${bdir}"/"${APP}"
+					install -m 0755 "${out}" "${bdir}"/"${APP}"
 			else
-					BDIR="${HOME}/.local/bin"
-					rm -f "${BDIR}"/"${APP}"
-					install /tmp/"${APP}" "${BDIR}"/"${APP}"
+					bdir="${HOME}/.local/bin"
+					mkdir -p "${bdir}"
+					rm -f "${bdir}"/"${APP}"
+					install -m 0755 "${out}" "${bdir}"/"${APP}"
 			fi
-			rm -f /tmp/"${APP}"
 	}
 
-	download "$APP"
+	download "${APP}"
 
 }
 
@@ -2362,14 +2412,24 @@ gup_install_mkcert_command() {
 gup_install_scc_command() {
 
 	# src/install_scc_command.sh
-	go install github.com/boyter/scc/v3@latest
+	APP="scc"
+	REPO="boyter/scc"
+	vers=$(gup_get_latest_release "${REPO}")
+
+	gup_ensure_go
+	go install github.com/boyter/scc/v3@${vers}
 }
 
 # :command.function
 gup_install_sqlc_command() {
 
 	# src/install_sqlc_command.sh
-	go install github.com/sqlc-dev/sqlc/cmd/sqlc@latest
+	APP="sqlc"
+	REPO="sqlc-dev/sqlc"
+	vers=$(gup_get_latest_release "${REPO}")
+
+	gup_ensure_go
+	go install github.com/sqlc-dev/sqlc/cmd/sqlc@${vers}
 }
 
 # :command.function
@@ -2609,7 +2669,12 @@ gup_install_godevenv_command() {
 gup_install_air_command() {
 
 	# src/install_air_command.sh
-	go install github.com/air-verse/air@latest
+	APP="air"
+	REPO="cosmtrek/air"
+	vers=$(gup_get_latest_release "${REPO}")
+
+	gup_ensure_go
+	go install github.com/cosmtrek/air@${vers}
 
 }
 
@@ -2617,7 +2682,12 @@ gup_install_air_command() {
 gup_install_dlv_command() {
 
 	# src/install_dlv_command.sh
-	go install github.com/go-delve/delve/cmd/dlv@latest
+	APP="dlv"
+	REPO="go-delve/delve"
+	vers=$(gup_get_latest_release "${REPO}")
+
+	gup_ensure_go
+	go install github.com/go-delve/delve/cmd/dlv@${vers}
 
 }
 
@@ -2625,21 +2695,36 @@ gup_install_dlv_command() {
 gup_install_go_blueprint_command() {
 
 	# src/install_go_blueprint_command.sh
-	go install github.com/melkeydev/go-blueprint@latest
+	APP="go-blueprint"
+	REPO="melkeydev/go-blueprint"
+	vers=$(gup_get_latest_release "${REPO}")
+
+	gup_ensure_go
+	go install github.com/melkeydev/go-blueprint@${vers}
 }
 
 # :command.function
 gup_install_gofumpt_command() {
 
 	# src/install_gofumpt_command.sh
-	go install mvdan.cc/gofumpt@latest
+	APP="gofumpt"
+	REPO="mvdan/gofumpt"
+	vers=$(gup_get_latest_release "${REPO}")
+
+	gup_ensure_go
+	go install mvdan.cc/gofumpt@${vers}
 }
 
 # :command.function
 gup_install_goimports_command() {
 
 	# src/install_goimports_command.sh
-	go install golang.org/x/tools/cmd/goimports@latest
+	APP="goimports"
+	REPO="golang/tools"
+	vers=$(gup_get_latest_release "${REPO}")
+
+	gup_ensure_go
+	go install golang.org/x/tools/cmd/goimports@${vers}
 }
 
 # :command.function
@@ -2648,9 +2733,9 @@ gup_install_golangci_lint_command() {
 	# src/install_golangci_lint_command.sh
 	APP="golangci-lint"
 	REPO="golangci/golangci-lint"
-	RURL="https://api.github.com/repos/${REPO}/releases/latest"
-	vers=$(wget -qO- "${RURL}" | jq .tag_name | tr -d '"')
+	vers=$(gup_get_latest_release "${REPO}")
 
+	gup_ensure_go
 	go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@${vers}
 }
 
@@ -2658,7 +2743,12 @@ gup_install_golangci_lint_command() {
 gup_install_gomodifytags_command() {
 
 	# src/install_gomodifytags_command.sh
-	go install github.com/fatih/gomodifytags@latest
+	APP="gomodifytags"
+	REPO="fatih/gomodifytags"
+	vers=$(gup_get_latest_release "${REPO}")
+
+	gup_ensure_go
+	go install github.com/fatih/gomodifytags@${vers}
 
 }
 
@@ -2666,7 +2756,12 @@ gup_install_gomodifytags_command() {
 gup_install_goplay_command() {
 
 	# src/install_goplay_command.sh
-	go install github.com/haya14busa/goplay/cmd/goplay@latest
+	APP="goplay"
+	REPO="haya14busa/goplay"
+	vers=$(gup_get_latest_release "${REPO}")
+
+	gup_ensure_go
+	go install github.com/haya14busa/goplay/cmd/goplay@${vers}
 
 }
 
@@ -2674,7 +2769,12 @@ gup_install_goplay_command() {
 gup_install_gopls_command() {
 
 	# src/install_gopls_command.sh
-	go install golang.org/x/tools/gopls@latest
+	APP="gopls"
+	REPO="golang/tools"
+	vers=$(gup_get_latest_release "${REPO}")
+
+	gup_ensure_go
+	go install golang.org/x/tools/gopls@${vers}
 
 }
 
@@ -2682,7 +2782,12 @@ gup_install_gopls_command() {
 gup_install_gotests_command() {
 
 	# src/install_gotests_command.sh
-	go install github.com/cweill/gotests/gotests@latest
+	APP="gotests"
+	REPO="cweill/gotests"
+	vers=$(gup_get_latest_release "${REPO}")
+
+	gup_ensure_go
+	go install github.com/cweill/gotests/gotests@${vers}
 
 }
 
@@ -2690,7 +2795,12 @@ gup_install_gotests_command() {
 gup_install_govulncheck_command() {
 
 	# src/install_govulncheck_command.sh
-	go install golang.org/x/vuln/cmd/govulncheck@latest
+	APP="govulncheck"
+	REPO="golang/vuln"
+	vers=$(gup_get_latest_release "${REPO}")
+
+	gup_ensure_go
+	go install golang.org/x/vuln/cmd/govulncheck@${vers}
 
 }
 
@@ -2698,14 +2808,24 @@ gup_install_govulncheck_command() {
 gup_install_gowebly_command() {
 
 	# src/install_gowebly_command.sh
-	go install github.com/gowebly/gowebly/v2@latest
+	APP="gowebly"
+	REPO="gowebly/gowebly"
+	vers=$(gup_get_latest_release "${REPO}")
+
+	gup_ensure_go
+	go install github.com/gowebly/gowebly/v2@${vers}
 }
 
 # :command.function
 gup_install_impl_command() {
 
 	# src/install_impl_command.sh
-	go install github.com/josharian/impl@latest
+	APP="impl"
+	REPO="josharian/impl"
+	vers=$(gup_get_latest_release "${REPO}")
+
+	gup_ensure_go
+	go install github.com/josharian/impl@${vers}
 
 }
 
@@ -2713,14 +2833,24 @@ gup_install_impl_command() {
 gup_install_nilaway_command() {
 
 	# src/install_nilaway_command.sh
-	go install go.uber.org/nilaway/cmd/nilaway@latest
+	APP="nilaway"
+	REPO="uber-go/nilaway"
+	vers=$(gup_get_latest_release "${REPO}")
+
+	gup_ensure_go
+	go install go.uber.org/nilaway/cmd/nilaway@${vers}
 }
 
 # :command.function
 gup_install_staticcheck_command() {
 
 	# src/install_staticcheck_command.sh
-	go install honnef.co/go/tools/cmd/staticcheck@latest
+	APP="staticcheck"
+	REPO="dominikh/go-tools"
+	vers=$(gup_get_latest_release "${REPO}")
+
+	gup_ensure_go
+	go install honnef.co/go/tools/cmd/staticcheck@${vers}
 
 }
 
@@ -2728,14 +2858,24 @@ gup_install_staticcheck_command() {
 gup_install_swag_command() {
 
 	# src/install_swag_command.sh
-	go install github.com/swaggo/swag/cmd/swag@latest
+	APP="swag"
+	REPO="swaggo/swag"
+	vers=$(gup_get_latest_release "${REPO}")
+
+	gup_ensure_go
+	go install github.com/swaggo/swag/cmd/swag@${vers}
 }
 
 # :command.function
 gup_install_templ_command() {
 
 	# src/install_templ_command.sh
-	go install github.com/a-h/templ/cmd/templ@latest
+	APP="templ"
+	REPO="a-h/templ"
+	vers=$(gup_get_latest_release "${REPO}")
+
+	gup_ensure_go
+	go install github.com/a-h/templ/cmd/templ@${vers}
 
 }
 
@@ -3415,27 +3555,27 @@ gup_install_caddy2_command() {
 	APP="caddy"
 	REPO="caddyserver/caddy"
 	RURL="https://api.github.com/repos/${REPO}/releases/latest"
-	vers=$(wget -qO- "${RURL}" | jq .tag_name | tr -d '"' | tr -d 'v')
+	vers=$(gup_get_latest_release "${REPO}")
 	DL=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | (contains(".sig") | not) and contains("linux_amd64.tar.gz")) | .browser_download_url' | tr -d '"')
 	FN=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | (contains(".sig") | not) and contains("linux_amd64.tar.gz")) | .name' | tr -d '"')
 
 	download() {
 			echo "download $1 version"
 			echo "installing ${vers}"
-			rm -f /tmp/"${FN}" /tmp/"${APP}_${vers}"
-			wget -qc "${DL}" -O /tmp/"${FN}"
-			mkdir -p /tmp/"${APP}_${vers}"
-			tar axf /tmp/"${FN}" -C /tmp/"${APP}_${vers}"
-			if [ "$(id -u)" == 0 ]; then
-					BDIR="/usr/local/bin"
-					sudo rm -f "${BDIR}"/${APP}
-					sudo install /tmp/"${APP}_${vers}"/${APP} "${BDIR}"
-			else
-					BDIR="${HOME}/.local/bin"
-					rm -f "${BDIR}"/${APP}
-					install /tmp/"${APP}_${vers}"/${APP} "${BDIR}"
-			fi
-			rm -rf /tmp/"${FN}" /tmp/"${APP}_${vers}"
+			# rm -f /tmp/"${FN}" /tmp/"${APP}_${vers}"
+			# wget -qc "${DL}" -O /tmp/"${FN}"
+			# mkdir -p /tmp/"${APP}_${vers}"
+			# tar axf /tmp/"${FN}" -C /tmp/"${APP}_${vers}"
+			# if [ "$(id -u)" == 0 ]; then
+			#     BDIR="/usr/local/bin"
+			#     sudo rm -f "${BDIR}"/${APP}
+			#     sudo install /tmp/"${APP}_${vers}"/${APP} "${BDIR}"
+			# else
+			#     BDIR="${HOME}/.local/bin"
+			#     rm -f "${BDIR}"/${APP}
+			#     install /tmp/"${APP}_${vers}"/${APP} "${BDIR}"
+			# fi
+			# rm -rf /tmp/"${FN}" /tmp/"${APP}_${vers}"
 	}
 
 	if [ -z "$(command -v ${APP})" ]; then
@@ -3533,21 +3673,36 @@ gup_install_hugo_command() {
 gup_install_duf_command() {
 
 	# src/install_duf_command.sh
-	go install github.com/muesli/duf@latest
+	APP="duf"
+	REPO="muesli/duf"
+	vers=$(gup_get_latest_release "${REPO}")
+
+	gup_ensure_go
+	go install github.com/muesli/duf@${vers}
 }
 
 # :command.function
 gup_install_gdu_command() {
 
 	# src/install_gdu_command.sh
-	go install github.com/dundee/gdu/v5/cmd/gdu@latest
+	APP="gdu"
+	REPO="dundee/gdu"
+	vers=$(gup_get_latest_release "${REPO}")
+
+	gup_ensure_go
+	go install github.com/dundee/gdu/v5/cmd/gdu@${vers}
 }
 
 # :command.function
 gup_install_gum_command() {
 
 	# src/install_gum_command.sh
-	go install github.com/charmbracelet/gum@latest
+	APP="gum"
+	REPO="charmbracelet/gum"
+	vers=$(gup_get_latest_release "${REPO}")
+
+	gup_ensure_go
+	go install github.com/charmbracelet/gum@${vers}
 }
 
 # :command.function
@@ -3596,7 +3751,12 @@ gup_install_marp_command() {
 gup_install_muffet_command() {
 
 	# src/install_muffet_command.sh
-	go install github.com/raviqqe/muffet/v2@latest
+	APP="muffet"
+	REPO="raviqqe/muffet"
+	vers=$(gup_get_latest_release "${REPO}")
+
+	gup_ensure_go
+	go install github.com/raviqqe/muffet/v2@${vers}
 }
 
 # :command.function
@@ -3605,8 +3765,7 @@ gup_install_s5cmd_command() {
 	# src/install_s5cmd_command.sh
 	APP="s5cmd"
 	REPO="peak/s5cmd"
-	RURL="https://api.github.com/repos/${REPO}/releases/latest"
-	vers=$(wget -qO- "${RURL}" | jq .tag_name | tr -d '"')
+	vers=$(gup_get_latest_release "${REPO}")
 
 	go install github.com/peak/s5cmd/v2@${vers}
 }
@@ -3615,6 +3774,7 @@ gup_install_s5cmd_command() {
 gup_install_sshconfig_command() {
 
 	# src/install_sshconfig_command.sh
+	gup_ensure_go
 	go install github.com/ppreeper/sshconfig@latest
 }
 
@@ -8596,6 +8756,25 @@ initialize() {
 	declare -g version="0.1.0"
 	set -e
 
+	# src/initialize.sh
+	# default prefix (can be overridden)
+	: "${GUP_PREFIX:=${HOME}/.local}"
+
+	gup_ensure_deps() {
+			local missing_deps=()
+			for dep in git wget jq tar unzip; do
+					if ! command -v "$dep" >/dev/null 2>&1; then
+							echo $dep
+							missing_deps+=("$dep")
+					fi
+			done
+
+			if [ ${#missing_deps[@]} -ne 0 ]; then
+					echo "Error: Missing dependencies: ${missing_deps[*]}" >&2
+					exit 1
+			fi
+	}
+	gup_ensure_deps
 }
 
 # :command.run

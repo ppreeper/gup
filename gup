@@ -72,7 +72,6 @@ gup_install_usage() {
 	printf "  %s   zig programming language\n" "zig              "
 	echo
 	printf "%s\n" "Go Development Tools Commands:"
-	printf "  %s   go development helpers (gopls,gotests,gomodifytags,impl,goplay,dlv,staticcheck)\n" "gohelpers        "
 	printf "  %s   Go-blueprint allows users to spin up a quick Go project using a popular framework\n" "go-blueprint     "
 	printf "  %s   CLI tool to create amazing web applications with Go\n" "gowebly          "
 	printf "  %s   The Go Playground client\n" "goplay           "
@@ -410,28 +409,6 @@ gup_install_zig_usage() {
 	printf "%s\n" "Usage:"
 	printf "  gup install zig\n"
 	printf "  gup install zig --help | -h\n"
-	echo
-
-	# :command.long_usage
-	if [[ -n "$long_usage" ]]; then
-		# :command.usage_options
-		printf "%s\n" "Options:"
-
-		# :command.usage_fixed_flags
-		printf "  %s\n" "--help, -h"
-		printf "    Show this help\n"
-		echo
-
-	fi
-}
-
-# :command.usage
-gup_install_gohelpers_usage() {
-	printf "gup install gohelpers - go development helpers (gopls,gotests,gomodifytags,impl,goplay,dlv,staticcheck)\n\n"
-
-	printf "%s\n" "Usage:"
-	printf "  gup install gohelpers\n"
-	printf "  gup install gohelpers --help | -h\n"
 	echo
 
 	# :command.long_usage
@@ -2443,56 +2420,6 @@ gup_install_zig_command() {
 }
 
 # :command.function
-gup_install_gohelpers_command() {
-
-	# src/install_gohelpers_command.sh
-	# gopls
-	echo "installing gopls"
-	go install golang.org/x/tools/gopls@latest
-
-	# gotests
-	echo "installing gotests"
-	go install github.com/cweill/gotests/gotests@latest
-
-	# gomodifytags
-	echo "installing gomodifytags"
-	go install github.com/fatih/gomodifytags@latest
-
-	# impl
-	echo "installing impl"
-	go install github.com/josharian/impl@latest
-
-	# goplay
-	echo "installing goplay"
-	go install github.com/haya14busa/goplay/cmd/goplay@latest
-
-	# dlv
-	echo "installing dlv"
-	go install github.com/go-delve/delve/cmd/dlv@latest
-
-	# staticcheck
-	echo "installing staticcheck"
-	go install honnef.co/go/tools/cmd/staticcheck@latest
-
-	# govulncheck
-	echo "installing govulncheck"
-	go install golang.org/x/vuln/cmd/govulncheck@latest
-
-	# air
-	echo "installing air"
-	go install github.com/air-verse/air@latest
-
-	# templ
-	echo "installing templ"
-	go install github.com/a-h/templ/cmd/templ@latest
-
-	# swag
-	echo "installing swag"
-	go install github.com/swaggo/swag/cmd/swag@latest
-
-}
-
-# :command.function
 gup_install_go_blueprint_command() {
 
 	# src/install_go_blueprint_command.sh
@@ -4386,13 +4313,6 @@ gup_install_parse_requirements() {
 			shift $#
 			;;
 
-		gohelpers)
-			action="gohelpers"
-			shift
-			gup_install_gohelpers_parse_requirements "$@"
-			shift $#
-			;;
-
 		go-blueprint)
 			action="go-blueprint"
 			shift
@@ -5370,53 +5290,6 @@ gup_install_zig_parse_requirements() {
 
 	# :command.command_filter
 	action="install zig"
-
-	# :command.parse_requirements_while
-	while [[ $# -gt 0 ]]; do
-		key="$1"
-		case "$key" in
-
-			-?*)
-				printf "invalid option: %s\n" "$key" >&2
-				exit 1
-				;;
-
-			*)
-				# :command.parse_requirements_case
-				# :command.parse_requirements_case_simple
-				printf "invalid argument: %s\n" "$key" >&2
-				exit 1
-
-				;;
-
-		esac
-	done
-
-}
-
-# :command.parse_requirements
-gup_install_gohelpers_parse_requirements() {
-	local key
-
-	# :command.fixed_flags_filter
-	while [[ $# -gt 0 ]]; do
-		key="$1"
-		case "$key" in
-			--help | -h)
-				long_usage=yes
-				gup_install_gohelpers_usage
-				exit
-				;;
-
-			*)
-				break
-				;;
-
-		esac
-	done
-
-	# :command.command_filter
-	action="install gohelpers"
 
 	# :command.parse_requirements_while
 	while [[ $# -gt 0 ]]; do
@@ -8812,7 +8685,6 @@ run() {
 		"install uv") gup_install_uv_command ;;
 		"install rust") gup_install_rust_command ;;
 		"install zig") gup_install_zig_command ;;
-		"install gohelpers") gup_install_gohelpers_command ;;
 		"install go-blueprint") gup_install_go_blueprint_command ;;
 		"install gowebly") gup_install_gowebly_command ;;
 		"install goplay") gup_install_goplay_command ;;

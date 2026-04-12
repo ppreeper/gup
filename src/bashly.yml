@@ -46,9 +46,6 @@ commands:
         help: zig programming language
         group: Language Development
       # Go Development Tools
-      - name: gohelpers
-        help: go development helpers (gopls,gotests,gomodifytags,impl,goplay,dlv,staticcheck)
-        group: Go Development Tools
       - name: go-blueprint
         help: Go-blueprint allows users to spin up a quick Go project using a popular framework
         group: Go Development Tools

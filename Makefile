@@ -14,5 +14,5 @@ fix-permissions:
 		docker.io/alpine:latest \
 		chown -R $(UID):$(GID) /app
 
-.PHONY: bashly fix-permissions
+.PHONY: all
 all: bashly fix-permissions

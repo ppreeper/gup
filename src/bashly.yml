@@ -13,247 +13,252 @@ commands:
         help: install gup command
       - name: update
         help: update script for apt update
+      # Language Development - Go
+      - name: go
+        help: go programming language
+        group: Language Development
+      - name: tinygo
+        help: tinygo is a Go compiler for small places
+        group: Language Development
+      # Language Development - JavaScript
+      - name: nodejs
+        help: nodejs js engine
+        group: Language Development
+      - name: nvm
+        help: Node Version Manager
+        group: Language Development
+      - name: deno
+        help: deno js engine
+        group: Language Development
+      - name: bun
+        help: bun js engine
+        group: Language Development
+      # Language Development - Python
+      - name: uv
+        help: extremely fast Python package installer and resolver
+        group: Language Development
+      # Language Development - Rust
+      - name: rust
+        help: rust programming language
+        group: Language Development
+      # Language Development - Zig
+      - name: zig
+        help: zig programming language
+        group: Language Development
+      # Go Development Tools
+      - name: gohelpers
+        help: go development helpers (gopls,gotests,gomodifytags,impl,goplay,dlv,staticcheck)
+        group: Go Development Tools
+      - name: go-blueprint
+        help: Go-blueprint allows users to spin up a quick Go project using a popular framework
+        group: Go Development Tools
+      - name: gowebly
+        help: CLI tool to create amazing web applications with Go
+        group: Go Development Tools
+      - name: goplay
+        help: The Go Playground client
+        group: Go Development Tools
+      - name: gotests
+        help: Generate Go tests from your source code
+        group: Go Development Tools
+      - name: impl
+        help: impl generates method stubs for implementing an interface
+        group: Go Development Tools
+      - name: gomodifytags
+        help: Go tool to modify/update field tags in structs
+        group: Go Development Tools
+      - name: air
+        help: Live reload for Go apps
+        group: Go Development Tools
+      - name: gofumpt
+        help: gofumpt is a stricter gofmt
+        group: Go Development Tools
+      - name: goimports
+        help: Go tool to format Go source code and manage imports
+        group: Go Development Tools
+      - name: golangci-lint
+        help: golangci-lint is a linters aggregator for Go
+        group: Go Development Tools
+      - name: staticcheck
+        help: The advanced Go linter
+        group: Go Development Tools
+      - name: nilaway
+        help: nilaway is a tool to detect nil pointer dereferences in Go code
+        group: Go Development Tools
+      - name: swag
+        help: Automatically generate RESTful API documentation with Swagger 2.0 for Go
+        group: Go Development Tools
+      - name: templ
+        help: An HTML templating language for Go that has great developer tooling
+        group: Go Development Tools
+      # Linter / Formatter / Code Quality
+      - name: ruff
+        help: an extremely fast Python linter and code formatter
+        group: Linter / Formatter / Code Quality
+      - name: scc
+        help: Sloc Cloc and Code (scc)
+        group: Linter / Formatter / Code Quality
+      - name: yamlfmt
+        help: an extensible command line tool or library to format yaml files.
+        group: Linter / Formatter / Code Quality
+      # Language Servers & Debuggers
+      - name: gopls
+        help: Go language server
+        group: Language Servers & Debuggers
+      - name: dlv
+        help: Delve is a source level debugger for Go programs
+        group: Language Servers & Debuggers
+      - name: zls
+        help: zig language server
+        group: Language Servers & Debuggers
+      # Editors & IDEs
+      - name: neovim
+        help: NeoVIM
+        group: Editors & IDEs
+      - name: helix
+        help: helix text editor
+        group: Editors & IDEs
+      # Observability & Monitoring
+      - name: prometheus
+        help: prometheus
+        group: Observability & Monitoring
+      - name: grafana
+        help: grafana
+        group: Observability & Monitoring
+      - name: loki
+        help: loki
+        group: Observability & Monitoring
+      - name: node_exporter
+        help: node_exporter
+        group: Observability & Monitoring
+      - name: postgres_exporter
+        help: postgres_exporter
+        group: Observability & Monitoring
+      - name: blackbox_exporter
+        help: blackbox_exporter
+        group: Observability & Monitoring
+      - name: snmp_exporter
+        help: snmp_exporter
+        group: Observability & Monitoring
+      - name: btop
+        help: btop
+        group: Observability & Monitoring
+      - name: gotop
+        help: gotop terminal based graphical activity monitor
+        group: Observability & Monitoring
+      # Containers & Orchestration
+      - name: lazydocker
+        help: A simple terminal UI for docker and docker-compose
+        group: Containers & Orchestration
+      - name: minikube
+        help: minikube
+        group: Containers & Orchestration
+      - name: kubectl
+        help: kubectl
+        group: Containers & Orchestration
+      - name: k9s
+        help: Kubernetes CLI
+        group: Containers & Orchestration
+      - name: etcd
+        help: etcd
+        group: Containers & Orchestration
+      - name: vagrant
+        help: HashiCorp Vagrant
+        group: Containers & Orchestration
+      # Cloud / Hosting CLI Tools
+      - name: doctl
+        help: DigitalOcean cli tool
+        group: Cloud / Hosting CLI Tools
+      - name: b2
+        help: Backblaze B2 cli tool
+        group: Cloud / Hosting CLI Tools
+      - name: githubcli
+        help: github cli
+        group: Cloud / Hosting CLI Tools
+      - name: forgejocli
+        help: forgejo cli
+        group: Cloud / Hosting CLI Tools
+      # Web / Frontend / Site / Proxies
+      - name: caddy2
+        help: caddy2 web server
+        group: Web / Frontend / Site / Proxies
+      - name: traefik
+        help: traefik
+        group: Web / Frontend / Site / Proxies
+      - name: hugo
+        help: hugo website generator
+        group: Web / Frontend / Site / Proxies
+      - name: tailwindcss
+        help: tailwindcss cli
+        group: Web / Frontend / Site / Proxies
+      - name: marp
+        help: Marp CLI is a Markdown presentation tool
+        group: Web / Frontend / Site / Proxies
+      # Utilities & CLI Helpers
+      - name: duf
+        help: Disk Usage/Free Utility
+        group: Utilities & CLI Helpers
+      - name: gdu
+        help: Fast disk usage analyzer with console interface written in Go
+        group: Utilities & CLI Helpers
+      - name: gum
+        help: A tool for glamorous shell scripts
+        group: Utilities & CLI Helpers
+      - name: lazygit
+        help: A simple terminal UI for git commands
+        group: Utilities & CLI Helpers
+      - name: muffet
+        help: A fast, concurrent web link checker
+        group: Utilities & CLI Helpers
+      - name: s5cmd
+        help: s5cmd is a super fast and highly parallel S3 and local filesystem execution
+        group: Utilities & CLI Helpers
+      - name: sshconfig
+        help: A tool to manage SSH configuration
+        group: Utilities & CLI Helpers
+      - name: task
+        help: A task runner / simpler Make alternative written in Go
+        group: Utilities & CLI Helpers
+      - name: timer
+        help: A sleep command with a progress bar
+        group: Utilities & CLI Helpers
+      - name: ytdlp
+        help: A command-line program to download videos from YouTube and other sites
+        group: Utilities & CLI Helpers
+      - name: zfsnap
+        help: A portable, performant script to make rolling ZFS snapshots easy
+        group: Utilities & CLI Helpers
+      # Infrastructure & DevOps
+      - name: terraform
+        help: Terraform is an open-source infrastructure as code software tool
+        group: Infrastructure & DevOps
+      - name: distrobuilder
+        help: Distrobuilder is a tool to build Linux distributions and images
+        group: Infrastructure & DevOps
+      # Packaging / Binary Tools
+      - name: upx
+        help: Ultimate Packer for eXecutables
+        group: Packaging / Binary Tools
+      # Database & Code Generation
+      - name: sqlc
+        help: Generate type-safe code from SQL
+        group: Database & Code Generation
+      # Security & Vulnerability Scanning
+      - name: mkcert
+        help: mkcert is a simple tool for making locally-trusted development certificates
+        group: Security & Vulnerability Scanning
+      - name: govulncheck
+        help: Go vulnerability checker
+        group: Security & Vulnerability Scanning
+      # Fonts & Assets
       - name: nerdfonts
         help: nerdfonts installer
+        group: Fonts & Assets
         args:
           - name: font
             required: true
             repeatable: true
             allowed: [Ubuntu, UbuntuMono, Hack, FiraMono, Noto]
-      # Cloud Commands
-      - name: b2
-        help: Backblaze B2 cli tool
-        group: Cloud
-      - name: doctl
-        help: DigitalOcean cli tool
-        group: Cloud
-      # Infrastructure
-      - name: distrobuilder
-        help: Distrobuilder is a tool to build Linux distributions and images
-        group: Infrastructure
-      - name: terraform
-        help: Terraform is an open-source infrastructure as code software tool
-        group: Infrastructure
-      # Development
-      - name: githubcli
-        help: github cli
-        group: Development
-      - name: forgejocli
-        help: forgejo cli
-        group: Development
-      - name: lazygit
-        help: A simple terminal UI for git commands
-        group: Development
-      - name: mkcert
-        help: mkcert is a simple tool for making locally-trusted development certificates
-        group: Development
-      - name: scc
-        help: Sloc Cloc and Code (scc)
-        group: Development
-      - name: sqlc
-        help: Generate type-safe code from SQL
-        group: Development
-      - name: upx
-        help: Ultimate Packer for eXecutables
-        group: Development
-      - name: tailwindcss
-        help: tailwindcss cli
-        group: Development
-      - name: yamlfmt
-        help: an extensible command line tool or library to format yaml files.
-        group: Development
-      # Go Development
-      - name: go
-        help: go programming language
-        group: Go Development
-      - name: tinygo
-        help: tinygo is a Go compiler for small places
-        group: Go Development
-      - name: godevenv
-        help: go development helpers (gopls,gotests,gomodifytags,impl,goplay,dlv,staticcheck)
-        group: Go Development
-      - name: air
-        help: Live reload for Go apps
-        group: Go Development
-      - name: dlv
-        help: Delve is a source level debugger for Go programs
-        group: Go Development
-      - name: go-blueprint
-        help: Go-blueprint allows users to spin up a quick Go project using a popular framework
-        group: Go Development
-      - name: gofumpt
-        help: gofumpt is a stricter gofmt
-        group: Go Development
-      - name: goimports
-        help: Go tool to format Go source code and manage imports
-        group: Go Development
-      - name: golangci-lint
-        help: golangci-lint is a linters aggregator for Go
-        group: Go Development
-      - name: gomodifytags
-        help: Go tool to modify/update field tags in structs
-        group: Go Development
-      - name: goplay
-        help: The Go Playground client
-        group: Go Development
-      - name: gopls
-        help: Go language server
-        group: Go Development
-      - name: gotests
-        help: Generate Go tests from your source code
-        group: Go Development
-      - name: govulncheck
-        help: Go vulnerability checker
-        group: Go Development
-      - name: gowebly
-        help: CLI tool to create amazing web applications with Go
-        group: Go Development
-      - name: impl
-        help: impl generates method stubs for implementing an interface
-        group: Go Development
-      - name: nilaway
-        help: nilaway is a tool to detect nil pointer dereferences in Go code
-        group: Go Development
-      - name: staticcheck
-        help: The advanced Go linter
-        group: Go Development
-      - name: swag
-        help: Automatically generate RESTful API documentation with Swagger 2.0 for Go
-        group: Go Development
-      - name: templ
-        help: An HTML templating language for Go that has great developer tooling
-        group: Go Development
-      # JavaScript Development
-      - name: nvm
-        help: Node Version Manager
-        group: JavaScript Development
-      - name: nodejs
-        help: nodejs js engine
-        group: JavaScript Development
-      - name: deno
-        help: deno js engine
-        group: JavaScript Development
-      - name: bun
-        help: bun js engine
-        group: JavaScript Development
-      # Python Development
-      - name: ruff
-        help: an extremely fast Python linter and code formatter
-        group: Python Development
-      - name: uv
-        help: extremely fast Python package installer and resolver
-        group: Python Development
-      # Rust Development
-      - name: rust
-        help: rust programming language
-        group: Rust Development
-      # Zig Development
-      - name: zig
-        help: zig programming language
-        group: Zig Development
-      - name: zls
-        help: zig language server
-        group: Zig Development
-      # Monitoring
-      - name: btop
-        help: btop
-        group: Monitoring
-      - name: gotop
-        help: gotop terminal based graphical activity monitor
-        group: Monitoring
-      # Prometheus
-      - name: blackbox_exporter
-        help: blackbox_exporter
-        group: Prometheus
-      - name: grafana
-        help: grafana
-        group: Prometheus
-      - name: loki
-        help: loki
-        group: Prometheus
-      - name: node_exporter
-        help: node_exporter
-        group: Prometheus
-      - name: postgres_exporter
-        help: postgres_exporter
-        group: Prometheus
-      - name: prometheus
-        help: prometheus
-        group: Prometheus
-      - name: snmp_exporter
-        help: snmp_exporter
-        group: Prometheus
-      # Web Server
-      - name: caddy2
-        help: caddy2 web server
-        group: Web Server
-      - name: traefik
-        help: traefik
-        group: Web Server
-      - name: hugo
-        help: hugo website generator
-        group: Web Server
-      # Utilities
-      - name: duf
-        help: Disk Usage/Free Utility
-        group: Utilities
-      - name: gdu
-        help: Fast disk usage analyzer with console interface written in Go
-        group: Utilities
-      - name: gum
-        help: A tool for glamorous shell scripts
-        group: Utilities
-      - name: marp
-        help: Marp CLI is a Markdown presentation tool
-        group: Utilities
-      - name: muffet
-        help: A fast, concurrent web link checker
-        group: Utilities
-      - name: s5cmd
-        help: s5cmd is a super fast and highly parallel S3 and local filesystem execution
-        group: Utilities
-      - name: sshconfig
-        help: A tool to manage SSH configuration
-        group: Utilities
-      - name: task
-        help: A task runner / simpler Make alternative written in Go
-        group: Utilities
-      - name: timer
-        help: A sleep command with a progress bar
-        group: Utilities
-      - name: ytdlp
-        help: A command-line program to download videos from YouTube and other sites
-        group: Utilities
-      - name: zfsnap
-        help: A portable, performant script to make rolling ZFS snapshots easy
-        group: Utilities
-      # Containers
-      - name: lazydocker
-        help: A simple terminal UI for docker and docker-compose
-        group: Containers
-      - name: vagrant
-        help: HashiCorp Vagrant
-        group: Containers
-      # Kubernetes
-      - name: etcd
-        help: etcd
-        group: Kubernetes
-      - name: k9s
-        help: Kubernetes CLI
-        group: Kubernetes
-      - name: kubectl
-        help: kubectl
-        group: Kubernetes
-      - name: minikube
-        help: minikube
-        group: Kubernetes
-      # Editors
-      - name: neovim
-        help: NeoVIM
-        group: Editors
-      - name: helix
-        help: helix text editor
-        group: Editors
       # end
   - name: remove
     help: remove an application and settings

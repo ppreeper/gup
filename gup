@@ -59,89 +59,86 @@ gup_install_usage() {
 	printf "%s\n" "Commands:"
 	printf "  %s   install gup command\n" "gup              "
 	printf "  %s   update script for apt update\n" "update           "
-	printf "  %s   nerdfonts installer\n" "nerdfonts        "
 	echo
-	printf "%s\n" "Cloud Commands:"
-	printf "  %s   Backblaze B2 cli tool\n" "b2               "
-	printf "  %s   DigitalOcean cli tool\n" "doctl            "
-	echo
-	printf "%s\n" "Infrastructure Commands:"
-	printf "  %s   Distrobuilder is a tool to build Linux distributions and images\n" "distrobuilder    "
-	printf "  %s   Terraform is an open-source infrastructure as code software tool\n" "terraform        "
-	echo
-	printf "%s\n" "Development Commands:"
-	printf "  %s   github cli\n" "githubcli        "
-	printf "  %s   forgejo cli\n" "forgejocli       "
-	printf "  %s   A simple terminal UI for git commands\n" "lazygit          "
-	printf "  %s   mkcert is a simple tool for making locally-trusted development certificates\n" "mkcert           "
-	printf "  %s   Sloc Cloc and Code (scc)\n" "scc              "
-	printf "  %s   Generate type-safe code from SQL\n" "sqlc             "
-	printf "  %s   Ultimate Packer for eXecutables\n" "upx              "
-	printf "  %s   tailwindcss cli\n" "tailwindcss      "
-	printf "  %s   an extensible command line tool or library to format yaml files.\n" "yamlfmt          "
-	echo
-	printf "%s\n" "Go Development Commands:"
+	printf "%s\n" "Language Development Commands:"
 	printf "  %s   go programming language\n" "go               "
 	printf "  %s   tinygo is a Go compiler for small places\n" "tinygo           "
-	printf "  %s   go development helpers (gopls,gotests,gomodifytags,impl,goplay,dlv,staticcheck)\n" "godevenv         "
-	printf "  %s   Live reload for Go apps\n" "air              "
-	printf "  %s   Delve is a source level debugger for Go programs\n" "dlv              "
+	printf "  %s   nodejs js engine\n" "nodejs           "
+	printf "  %s   Node Version Manager\n" "nvm              "
+	printf "  %s   deno js engine\n" "deno             "
+	printf "  %s   bun js engine\n" "bun              "
+	printf "  %s   extremely fast Python package installer and resolver\n" "uv               "
+	printf "  %s   rust programming language\n" "rust             "
+	printf "  %s   zig programming language\n" "zig              "
+	echo
+	printf "%s\n" "Go Development Tools Commands:"
+	printf "  %s   go development helpers (gopls,gotests,gomodifytags,impl,goplay,dlv,staticcheck)\n" "gohelpers        "
 	printf "  %s   Go-blueprint allows users to spin up a quick Go project using a popular framework\n" "go-blueprint     "
+	printf "  %s   CLI tool to create amazing web applications with Go\n" "gowebly          "
+	printf "  %s   The Go Playground client\n" "goplay           "
+	printf "  %s   Generate Go tests from your source code\n" "gotests          "
+	printf "  %s   impl generates method stubs for implementing an interface\n" "impl             "
+	printf "  %s   Go tool to modify/update field tags in structs\n" "gomodifytags     "
+	printf "  %s   Live reload for Go apps\n" "air              "
 	printf "  %s   gofumpt is a stricter gofmt\n" "gofumpt          "
 	printf "  %s   Go tool to format Go source code and manage imports\n" "goimports        "
 	printf "  %s   golangci-lint is a linters aggregator for Go\n" "golangci-lint    "
-	printf "  %s   Go tool to modify/update field tags in structs\n" "gomodifytags     "
-	printf "  %s   The Go Playground client\n" "goplay           "
-	printf "  %s   Go language server\n" "gopls            "
-	printf "  %s   Generate Go tests from your source code\n" "gotests          "
-	printf "  %s   Go vulnerability checker\n" "govulncheck      "
-	printf "  %s   CLI tool to create amazing web applications with Go\n" "gowebly          "
-	printf "  %s   impl generates method stubs for implementing an interface\n" "impl             "
-	printf "  %s   nilaway is a tool to detect nil pointer dereferences in Go code\n" "nilaway          "
 	printf "  %s   The advanced Go linter\n" "staticcheck      "
+	printf "  %s   nilaway is a tool to detect nil pointer dereferences in Go code\n" "nilaway          "
 	printf "  %s   Automatically generate RESTful API documentation with Swagger 2.0 for Go\n" "swag             "
 	printf "  %s   An HTML templating language for Go that has great developer tooling\n" "templ            "
 	echo
-	printf "%s\n" "JavaScript Development Commands:"
-	printf "  %s   Node Version Manager\n" "nvm              "
-	printf "  %s   nodejs js engine\n" "nodejs           "
-	printf "  %s   deno js engine\n" "deno             "
-	printf "  %s   bun js engine\n" "bun              "
-	echo
-	printf "%s\n" "Python Development Commands:"
+	printf "%s\n" "Linter / Formatter / Code Quality Commands:"
 	printf "  %s   an extremely fast Python linter and code formatter\n" "ruff             "
-	printf "  %s   extremely fast Python package installer and resolver\n" "uv               "
+	printf "  %s   Sloc Cloc and Code (scc)\n" "scc              "
+	printf "  %s   an extensible command line tool or library to format yaml files.\n" "yamlfmt          "
 	echo
-	printf "%s\n" "Rust Development Commands:"
-	printf "  %s   rust programming language\n" "rust             "
-	echo
-	printf "%s\n" "Zig Development Commands:"
-	printf "  %s   zig programming language\n" "zig              "
+	printf "%s\n" "Language Servers & Debuggers Commands:"
+	printf "  %s   Go language server\n" "gopls            "
+	printf "  %s   Delve is a source level debugger for Go programs\n" "dlv              "
 	printf "  %s   zig language server\n" "zls              "
 	echo
-	printf "%s\n" "Monitoring Commands:"
-	printf "  %s   btop\n" "btop             "
-	printf "  %s   gotop terminal based graphical activity monitor\n" "gotop            "
+	printf "%s\n" "Editors & IDEs Commands:"
+	printf "  %s   NeoVIM\n" "neovim           "
+	printf "  %s   helix text editor\n" "helix            "
 	echo
-	printf "%s\n" "Prometheus Commands:"
-	printf "  %s   blackbox_exporter\n" "blackbox_exporter"
+	printf "%s\n" "Observability & Monitoring Commands:"
+	printf "  %s   prometheus\n" "prometheus       "
 	printf "  %s   grafana\n" "grafana          "
 	printf "  %s   loki\n" "loki             "
 	printf "  %s   node_exporter\n" "node_exporter    "
 	printf "  %s   postgres_exporter\n" "postgres_exporter"
-	printf "  %s   prometheus\n" "prometheus       "
+	printf "  %s   blackbox_exporter\n" "blackbox_exporter"
 	printf "  %s   snmp_exporter\n" "snmp_exporter    "
+	printf "  %s   btop\n" "btop             "
+	printf "  %s   gotop terminal based graphical activity monitor\n" "gotop            "
 	echo
-	printf "%s\n" "Web Server Commands:"
+	printf "%s\n" "Containers & Orchestration Commands:"
+	printf "  %s   A simple terminal UI for docker and docker-compose\n" "lazydocker       "
+	printf "  %s   minikube\n" "minikube         "
+	printf "  %s   kubectl\n" "kubectl          "
+	printf "  %s   Kubernetes CLI\n" "k9s              "
+	printf "  %s   etcd\n" "etcd             "
+	printf "  %s   HashiCorp Vagrant\n" "vagrant          "
+	echo
+	printf "%s\n" "Cloud / Hosting CLI Tools Commands:"
+	printf "  %s   DigitalOcean cli tool\n" "doctl            "
+	printf "  %s   Backblaze B2 cli tool\n" "b2               "
+	printf "  %s   github cli\n" "githubcli        "
+	printf "  %s   forgejo cli\n" "forgejocli       "
+	echo
+	printf "%s\n" "Web / Frontend / Site / Proxies Commands:"
 	printf "  %s   caddy2 web server\n" "caddy2           "
 	printf "  %s   traefik\n" "traefik          "
 	printf "  %s   hugo website generator\n" "hugo             "
+	printf "  %s   tailwindcss cli\n" "tailwindcss      "
+	printf "  %s   Marp CLI is a Markdown presentation tool\n" "marp             "
 	echo
-	printf "%s\n" "Utilities Commands:"
+	printf "%s\n" "Utilities & CLI Helpers Commands:"
 	printf "  %s   Disk Usage/Free Utility\n" "duf              "
 	printf "  %s   Fast disk usage analyzer with console interface written in Go\n" "gdu              "
 	printf "  %s   A tool for glamorous shell scripts\n" "gum              "
-	printf "  %s   Marp CLI is a Markdown presentation tool\n" "marp             "
+	printf "  %s   A simple terminal UI for git commands\n" "lazygit          "
 	printf "  %s   A fast, concurrent web link checker\n" "muffet           "
 	printf "  %s   s5cmd is a super fast and highly parallel S3 and local filesystem execution\n" "s5cmd            "
 	printf "  %s   A tool to manage SSH configuration\n" "sshconfig        "
@@ -150,19 +147,22 @@ gup_install_usage() {
 	printf "  %s   A command-line program to download videos from YouTube and other sites\n" "ytdlp            "
 	printf "  %s   A portable, performant script to make rolling ZFS snapshots easy\n" "zfsnap           "
 	echo
-	printf "%s\n" "Containers Commands:"
-	printf "  %s   A simple terminal UI for docker and docker-compose\n" "lazydocker       "
-	printf "  %s   HashiCorp Vagrant\n" "vagrant          "
+	printf "%s\n" "Infrastructure & DevOps Commands:"
+	printf "  %s   Terraform is an open-source infrastructure as code software tool\n" "terraform        "
+	printf "  %s   Distrobuilder is a tool to build Linux distributions and images\n" "distrobuilder    "
 	echo
-	printf "%s\n" "Kubernetes Commands:"
-	printf "  %s   etcd\n" "etcd             "
-	printf "  %s   Kubernetes CLI\n" "k9s              "
-	printf "  %s   kubectl\n" "kubectl          "
-	printf "  %s   minikube\n" "minikube         "
+	printf "%s\n" "Packaging / Binary Tools Commands:"
+	printf "  %s   Ultimate Packer for eXecutables\n" "upx              "
 	echo
-	printf "%s\n" "Editors Commands:"
-	printf "  %s   NeoVIM\n" "neovim           "
-	printf "  %s   helix text editor\n" "helix            "
+	printf "%s\n" "Database & Code Generation Commands:"
+	printf "  %s   Generate type-safe code from SQL\n" "sqlc             "
+	echo
+	printf "%s\n" "Security & Vulnerability Scanning Commands:"
+	printf "  %s   mkcert is a simple tool for making locally-trusted development certificates\n" "mkcert           "
+	printf "  %s   Go vulnerability checker\n" "govulncheck      "
+	echo
+	printf "%s\n" "Fonts & Assets Commands:"
+	printf "  %s   nerdfonts installer\n" "nerdfonts        "
 	echo
 
 	# :command.long_usage
@@ -228,323 +228,6 @@ gup_install_update_usage() {
 }
 
 # :command.usage
-gup_install_nerdfonts_usage() {
-	printf "gup install nerdfonts - nerdfonts installer\n\n"
-
-	printf "%s\n" "Usage:"
-	printf "  gup install nerdfonts FONT...\n"
-	printf "  gup install nerdfonts --help | -h\n"
-	echo
-
-	# :command.long_usage
-	if [[ -n "$long_usage" ]]; then
-		# :command.usage_options
-		printf "%s\n" "Options:"
-
-		# :command.usage_fixed_flags
-		printf "  %s\n" "--help, -h"
-		printf "    Show this help\n"
-		echo
-
-		# :command.usage_args
-		printf "%s\n" "Arguments:"
-
-		# :argument.usage
-		printf "  %s\n" "FONT..."
-		printf "\n"
-		printf "    %s\n" "Allowed: Ubuntu, UbuntuMono, Hack, FiraMono, Noto"
-		echo
-
-	fi
-}
-
-# :command.usage
-gup_install_b2_usage() {
-	printf "gup install b2 - Backblaze B2 cli tool\n\n"
-
-	printf "%s\n" "Usage:"
-	printf "  gup install b2\n"
-	printf "  gup install b2 --help | -h\n"
-	echo
-
-	# :command.long_usage
-	if [[ -n "$long_usage" ]]; then
-		# :command.usage_options
-		printf "%s\n" "Options:"
-
-		# :command.usage_fixed_flags
-		printf "  %s\n" "--help, -h"
-		printf "    Show this help\n"
-		echo
-
-	fi
-}
-
-# :command.usage
-gup_install_doctl_usage() {
-	printf "gup install doctl - DigitalOcean cli tool\n\n"
-
-	printf "%s\n" "Usage:"
-	printf "  gup install doctl\n"
-	printf "  gup install doctl --help | -h\n"
-	echo
-
-	# :command.long_usage
-	if [[ -n "$long_usage" ]]; then
-		# :command.usage_options
-		printf "%s\n" "Options:"
-
-		# :command.usage_fixed_flags
-		printf "  %s\n" "--help, -h"
-		printf "    Show this help\n"
-		echo
-
-	fi
-}
-
-# :command.usage
-gup_install_distrobuilder_usage() {
-	printf "gup install distrobuilder - Distrobuilder is a tool to build Linux distributions and images\n\n"
-
-	printf "%s\n" "Usage:"
-	printf "  gup install distrobuilder\n"
-	printf "  gup install distrobuilder --help | -h\n"
-	echo
-
-	# :command.long_usage
-	if [[ -n "$long_usage" ]]; then
-		# :command.usage_options
-		printf "%s\n" "Options:"
-
-		# :command.usage_fixed_flags
-		printf "  %s\n" "--help, -h"
-		printf "    Show this help\n"
-		echo
-
-	fi
-}
-
-# :command.usage
-gup_install_terraform_usage() {
-	printf "gup install terraform - Terraform is an open-source infrastructure as code software tool\n\n"
-
-	printf "%s\n" "Usage:"
-	printf "  gup install terraform\n"
-	printf "  gup install terraform --help | -h\n"
-	echo
-
-	# :command.long_usage
-	if [[ -n "$long_usage" ]]; then
-		# :command.usage_options
-		printf "%s\n" "Options:"
-
-		# :command.usage_fixed_flags
-		printf "  %s\n" "--help, -h"
-		printf "    Show this help\n"
-		echo
-
-	fi
-}
-
-# :command.usage
-gup_install_githubcli_usage() {
-	printf "gup install githubcli - github cli\n\n"
-
-	printf "%s\n" "Usage:"
-	printf "  gup install githubcli\n"
-	printf "  gup install githubcli --help | -h\n"
-	echo
-
-	# :command.long_usage
-	if [[ -n "$long_usage" ]]; then
-		# :command.usage_options
-		printf "%s\n" "Options:"
-
-		# :command.usage_fixed_flags
-		printf "  %s\n" "--help, -h"
-		printf "    Show this help\n"
-		echo
-
-	fi
-}
-
-# :command.usage
-gup_install_forgejocli_usage() {
-	printf "gup install forgejocli - forgejo cli\n\n"
-
-	printf "%s\n" "Usage:"
-	printf "  gup install forgejocli\n"
-	printf "  gup install forgejocli --help | -h\n"
-	echo
-
-	# :command.long_usage
-	if [[ -n "$long_usage" ]]; then
-		# :command.usage_options
-		printf "%s\n" "Options:"
-
-		# :command.usage_fixed_flags
-		printf "  %s\n" "--help, -h"
-		printf "    Show this help\n"
-		echo
-
-	fi
-}
-
-# :command.usage
-gup_install_lazygit_usage() {
-	printf "gup install lazygit - A simple terminal UI for git commands\n\n"
-
-	printf "%s\n" "Usage:"
-	printf "  gup install lazygit\n"
-	printf "  gup install lazygit --help | -h\n"
-	echo
-
-	# :command.long_usage
-	if [[ -n "$long_usage" ]]; then
-		# :command.usage_options
-		printf "%s\n" "Options:"
-
-		# :command.usage_fixed_flags
-		printf "  %s\n" "--help, -h"
-		printf "    Show this help\n"
-		echo
-
-	fi
-}
-
-# :command.usage
-gup_install_mkcert_usage() {
-	printf "gup install mkcert - mkcert is a simple tool for making locally-trusted development certificates\n\n"
-
-	printf "%s\n" "Usage:"
-	printf "  gup install mkcert\n"
-	printf "  gup install mkcert --help | -h\n"
-	echo
-
-	# :command.long_usage
-	if [[ -n "$long_usage" ]]; then
-		# :command.usage_options
-		printf "%s\n" "Options:"
-
-		# :command.usage_fixed_flags
-		printf "  %s\n" "--help, -h"
-		printf "    Show this help\n"
-		echo
-
-	fi
-}
-
-# :command.usage
-gup_install_scc_usage() {
-	printf "gup install scc - Sloc Cloc and Code (scc)\n\n"
-
-	printf "%s\n" "Usage:"
-	printf "  gup install scc\n"
-	printf "  gup install scc --help | -h\n"
-	echo
-
-	# :command.long_usage
-	if [[ -n "$long_usage" ]]; then
-		# :command.usage_options
-		printf "%s\n" "Options:"
-
-		# :command.usage_fixed_flags
-		printf "  %s\n" "--help, -h"
-		printf "    Show this help\n"
-		echo
-
-	fi
-}
-
-# :command.usage
-gup_install_sqlc_usage() {
-	printf "gup install sqlc - Generate type-safe code from SQL\n\n"
-
-	printf "%s\n" "Usage:"
-	printf "  gup install sqlc\n"
-	printf "  gup install sqlc --help | -h\n"
-	echo
-
-	# :command.long_usage
-	if [[ -n "$long_usage" ]]; then
-		# :command.usage_options
-		printf "%s\n" "Options:"
-
-		# :command.usage_fixed_flags
-		printf "  %s\n" "--help, -h"
-		printf "    Show this help\n"
-		echo
-
-	fi
-}
-
-# :command.usage
-gup_install_upx_usage() {
-	printf "gup install upx - Ultimate Packer for eXecutables\n\n"
-
-	printf "%s\n" "Usage:"
-	printf "  gup install upx\n"
-	printf "  gup install upx --help | -h\n"
-	echo
-
-	# :command.long_usage
-	if [[ -n "$long_usage" ]]; then
-		# :command.usage_options
-		printf "%s\n" "Options:"
-
-		# :command.usage_fixed_flags
-		printf "  %s\n" "--help, -h"
-		printf "    Show this help\n"
-		echo
-
-	fi
-}
-
-# :command.usage
-gup_install_tailwindcss_usage() {
-	printf "gup install tailwindcss - tailwindcss cli\n\n"
-
-	printf "%s\n" "Usage:"
-	printf "  gup install tailwindcss\n"
-	printf "  gup install tailwindcss --help | -h\n"
-	echo
-
-	# :command.long_usage
-	if [[ -n "$long_usage" ]]; then
-		# :command.usage_options
-		printf "%s\n" "Options:"
-
-		# :command.usage_fixed_flags
-		printf "  %s\n" "--help, -h"
-		printf "    Show this help\n"
-		echo
-
-	fi
-}
-
-# :command.usage
-gup_install_yamlfmt_usage() {
-	printf "gup install yamlfmt - an extensible command line tool or library to format yaml files.\n\n"
-
-	printf "%s\n" "Usage:"
-	printf "  gup install yamlfmt\n"
-	printf "  gup install yamlfmt --help | -h\n"
-	echo
-
-	# :command.long_usage
-	if [[ -n "$long_usage" ]]; then
-		# :command.usage_options
-		printf "%s\n" "Options:"
-
-		# :command.usage_fixed_flags
-		printf "  %s\n" "--help, -h"
-		printf "    Show this help\n"
-		echo
-
-	fi
-}
-
-# :command.usage
 gup_install_go_usage() {
 	printf "gup install go - go programming language\n\n"
 
@@ -589,386 +272,12 @@ gup_install_tinygo_usage() {
 }
 
 # :command.usage
-gup_install_godevenv_usage() {
-	printf "gup install godevenv - go development helpers (gopls,gotests,gomodifytags,impl,goplay,dlv,staticcheck)\n\n"
+gup_install_nodejs_usage() {
+	printf "gup install nodejs - nodejs js engine\n\n"
 
 	printf "%s\n" "Usage:"
-	printf "  gup install godevenv\n"
-	printf "  gup install godevenv --help | -h\n"
-	echo
-
-	# :command.long_usage
-	if [[ -n "$long_usage" ]]; then
-		# :command.usage_options
-		printf "%s\n" "Options:"
-
-		# :command.usage_fixed_flags
-		printf "  %s\n" "--help, -h"
-		printf "    Show this help\n"
-		echo
-
-	fi
-}
-
-# :command.usage
-gup_install_air_usage() {
-	printf "gup install air - Live reload for Go apps\n\n"
-
-	printf "%s\n" "Usage:"
-	printf "  gup install air\n"
-	printf "  gup install air --help | -h\n"
-	echo
-
-	# :command.long_usage
-	if [[ -n "$long_usage" ]]; then
-		# :command.usage_options
-		printf "%s\n" "Options:"
-
-		# :command.usage_fixed_flags
-		printf "  %s\n" "--help, -h"
-		printf "    Show this help\n"
-		echo
-
-	fi
-}
-
-# :command.usage
-gup_install_dlv_usage() {
-	printf "gup install dlv - Delve is a source level debugger for Go programs\n\n"
-
-	printf "%s\n" "Usage:"
-	printf "  gup install dlv\n"
-	printf "  gup install dlv --help | -h\n"
-	echo
-
-	# :command.long_usage
-	if [[ -n "$long_usage" ]]; then
-		# :command.usage_options
-		printf "%s\n" "Options:"
-
-		# :command.usage_fixed_flags
-		printf "  %s\n" "--help, -h"
-		printf "    Show this help\n"
-		echo
-
-	fi
-}
-
-# :command.usage
-gup_install_go_blueprint_usage() {
-	printf "gup install go-blueprint - Go-blueprint allows users to spin up a quick Go project using a popular framework\n\n"
-
-	printf "%s\n" "Usage:"
-	printf "  gup install go-blueprint\n"
-	printf "  gup install go-blueprint --help | -h\n"
-	echo
-
-	# :command.long_usage
-	if [[ -n "$long_usage" ]]; then
-		# :command.usage_options
-		printf "%s\n" "Options:"
-
-		# :command.usage_fixed_flags
-		printf "  %s\n" "--help, -h"
-		printf "    Show this help\n"
-		echo
-
-	fi
-}
-
-# :command.usage
-gup_install_gofumpt_usage() {
-	printf "gup install gofumpt - gofumpt is a stricter gofmt\n\n"
-
-	printf "%s\n" "Usage:"
-	printf "  gup install gofumpt\n"
-	printf "  gup install gofumpt --help | -h\n"
-	echo
-
-	# :command.long_usage
-	if [[ -n "$long_usage" ]]; then
-		# :command.usage_options
-		printf "%s\n" "Options:"
-
-		# :command.usage_fixed_flags
-		printf "  %s\n" "--help, -h"
-		printf "    Show this help\n"
-		echo
-
-	fi
-}
-
-# :command.usage
-gup_install_goimports_usage() {
-	printf "gup install goimports - Go tool to format Go source code and manage imports\n\n"
-
-	printf "%s\n" "Usage:"
-	printf "  gup install goimports\n"
-	printf "  gup install goimports --help | -h\n"
-	echo
-
-	# :command.long_usage
-	if [[ -n "$long_usage" ]]; then
-		# :command.usage_options
-		printf "%s\n" "Options:"
-
-		# :command.usage_fixed_flags
-		printf "  %s\n" "--help, -h"
-		printf "    Show this help\n"
-		echo
-
-	fi
-}
-
-# :command.usage
-gup_install_golangci_lint_usage() {
-	printf "gup install golangci-lint - golangci-lint is a linters aggregator for Go\n\n"
-
-	printf "%s\n" "Usage:"
-	printf "  gup install golangci-lint\n"
-	printf "  gup install golangci-lint --help | -h\n"
-	echo
-
-	# :command.long_usage
-	if [[ -n "$long_usage" ]]; then
-		# :command.usage_options
-		printf "%s\n" "Options:"
-
-		# :command.usage_fixed_flags
-		printf "  %s\n" "--help, -h"
-		printf "    Show this help\n"
-		echo
-
-	fi
-}
-
-# :command.usage
-gup_install_gomodifytags_usage() {
-	printf "gup install gomodifytags - Go tool to modify/update field tags in structs\n\n"
-
-	printf "%s\n" "Usage:"
-	printf "  gup install gomodifytags\n"
-	printf "  gup install gomodifytags --help | -h\n"
-	echo
-
-	# :command.long_usage
-	if [[ -n "$long_usage" ]]; then
-		# :command.usage_options
-		printf "%s\n" "Options:"
-
-		# :command.usage_fixed_flags
-		printf "  %s\n" "--help, -h"
-		printf "    Show this help\n"
-		echo
-
-	fi
-}
-
-# :command.usage
-gup_install_goplay_usage() {
-	printf "gup install goplay - The Go Playground client\n\n"
-
-	printf "%s\n" "Usage:"
-	printf "  gup install goplay\n"
-	printf "  gup install goplay --help | -h\n"
-	echo
-
-	# :command.long_usage
-	if [[ -n "$long_usage" ]]; then
-		# :command.usage_options
-		printf "%s\n" "Options:"
-
-		# :command.usage_fixed_flags
-		printf "  %s\n" "--help, -h"
-		printf "    Show this help\n"
-		echo
-
-	fi
-}
-
-# :command.usage
-gup_install_gopls_usage() {
-	printf "gup install gopls - Go language server\n\n"
-
-	printf "%s\n" "Usage:"
-	printf "  gup install gopls\n"
-	printf "  gup install gopls --help | -h\n"
-	echo
-
-	# :command.long_usage
-	if [[ -n "$long_usage" ]]; then
-		# :command.usage_options
-		printf "%s\n" "Options:"
-
-		# :command.usage_fixed_flags
-		printf "  %s\n" "--help, -h"
-		printf "    Show this help\n"
-		echo
-
-	fi
-}
-
-# :command.usage
-gup_install_gotests_usage() {
-	printf "gup install gotests - Generate Go tests from your source code\n\n"
-
-	printf "%s\n" "Usage:"
-	printf "  gup install gotests\n"
-	printf "  gup install gotests --help | -h\n"
-	echo
-
-	# :command.long_usage
-	if [[ -n "$long_usage" ]]; then
-		# :command.usage_options
-		printf "%s\n" "Options:"
-
-		# :command.usage_fixed_flags
-		printf "  %s\n" "--help, -h"
-		printf "    Show this help\n"
-		echo
-
-	fi
-}
-
-# :command.usage
-gup_install_govulncheck_usage() {
-	printf "gup install govulncheck - Go vulnerability checker\n\n"
-
-	printf "%s\n" "Usage:"
-	printf "  gup install govulncheck\n"
-	printf "  gup install govulncheck --help | -h\n"
-	echo
-
-	# :command.long_usage
-	if [[ -n "$long_usage" ]]; then
-		# :command.usage_options
-		printf "%s\n" "Options:"
-
-		# :command.usage_fixed_flags
-		printf "  %s\n" "--help, -h"
-		printf "    Show this help\n"
-		echo
-
-	fi
-}
-
-# :command.usage
-gup_install_gowebly_usage() {
-	printf "gup install gowebly - CLI tool to create amazing web applications with Go\n\n"
-
-	printf "%s\n" "Usage:"
-	printf "  gup install gowebly\n"
-	printf "  gup install gowebly --help | -h\n"
-	echo
-
-	# :command.long_usage
-	if [[ -n "$long_usage" ]]; then
-		# :command.usage_options
-		printf "%s\n" "Options:"
-
-		# :command.usage_fixed_flags
-		printf "  %s\n" "--help, -h"
-		printf "    Show this help\n"
-		echo
-
-	fi
-}
-
-# :command.usage
-gup_install_impl_usage() {
-	printf "gup install impl - impl generates method stubs for implementing an interface\n\n"
-
-	printf "%s\n" "Usage:"
-	printf "  gup install impl\n"
-	printf "  gup install impl --help | -h\n"
-	echo
-
-	# :command.long_usage
-	if [[ -n "$long_usage" ]]; then
-		# :command.usage_options
-		printf "%s\n" "Options:"
-
-		# :command.usage_fixed_flags
-		printf "  %s\n" "--help, -h"
-		printf "    Show this help\n"
-		echo
-
-	fi
-}
-
-# :command.usage
-gup_install_nilaway_usage() {
-	printf "gup install nilaway - nilaway is a tool to detect nil pointer dereferences in Go code\n\n"
-
-	printf "%s\n" "Usage:"
-	printf "  gup install nilaway\n"
-	printf "  gup install nilaway --help | -h\n"
-	echo
-
-	# :command.long_usage
-	if [[ -n "$long_usage" ]]; then
-		# :command.usage_options
-		printf "%s\n" "Options:"
-
-		# :command.usage_fixed_flags
-		printf "  %s\n" "--help, -h"
-		printf "    Show this help\n"
-		echo
-
-	fi
-}
-
-# :command.usage
-gup_install_staticcheck_usage() {
-	printf "gup install staticcheck - The advanced Go linter\n\n"
-
-	printf "%s\n" "Usage:"
-	printf "  gup install staticcheck\n"
-	printf "  gup install staticcheck --help | -h\n"
-	echo
-
-	# :command.long_usage
-	if [[ -n "$long_usage" ]]; then
-		# :command.usage_options
-		printf "%s\n" "Options:"
-
-		# :command.usage_fixed_flags
-		printf "  %s\n" "--help, -h"
-		printf "    Show this help\n"
-		echo
-
-	fi
-}
-
-# :command.usage
-gup_install_swag_usage() {
-	printf "gup install swag - Automatically generate RESTful API documentation with Swagger 2.0 for Go\n\n"
-
-	printf "%s\n" "Usage:"
-	printf "  gup install swag\n"
-	printf "  gup install swag --help | -h\n"
-	echo
-
-	# :command.long_usage
-	if [[ -n "$long_usage" ]]; then
-		# :command.usage_options
-		printf "%s\n" "Options:"
-
-		# :command.usage_fixed_flags
-		printf "  %s\n" "--help, -h"
-		printf "    Show this help\n"
-		echo
-
-	fi
-}
-
-# :command.usage
-gup_install_templ_usage() {
-	printf "gup install templ - An HTML templating language for Go that has great developer tooling\n\n"
-
-	printf "%s\n" "Usage:"
-	printf "  gup install templ\n"
-	printf "  gup install templ --help | -h\n"
+	printf "  gup install nodejs\n"
+	printf "  gup install nodejs --help | -h\n"
 	echo
 
 	# :command.long_usage
@@ -991,28 +300,6 @@ gup_install_nvm_usage() {
 	printf "%s\n" "Usage:"
 	printf "  gup install nvm\n"
 	printf "  gup install nvm --help | -h\n"
-	echo
-
-	# :command.long_usage
-	if [[ -n "$long_usage" ]]; then
-		# :command.usage_options
-		printf "%s\n" "Options:"
-
-		# :command.usage_fixed_flags
-		printf "  %s\n" "--help, -h"
-		printf "    Show this help\n"
-		echo
-
-	fi
-}
-
-# :command.usage
-gup_install_nodejs_usage() {
-	printf "gup install nodejs - nodejs js engine\n\n"
-
-	printf "%s\n" "Usage:"
-	printf "  gup install nodejs\n"
-	printf "  gup install nodejs --help | -h\n"
 	echo
 
 	# :command.long_usage
@@ -1057,28 +344,6 @@ gup_install_bun_usage() {
 	printf "%s\n" "Usage:"
 	printf "  gup install bun\n"
 	printf "  gup install bun --help | -h\n"
-	echo
-
-	# :command.long_usage
-	if [[ -n "$long_usage" ]]; then
-		# :command.usage_options
-		printf "%s\n" "Options:"
-
-		# :command.usage_fixed_flags
-		printf "  %s\n" "--help, -h"
-		printf "    Show this help\n"
-		echo
-
-	fi
-}
-
-# :command.usage
-gup_install_ruff_usage() {
-	printf "gup install ruff - an extremely fast Python linter and code formatter\n\n"
-
-	printf "%s\n" "Usage:"
-	printf "  gup install ruff\n"
-	printf "  gup install ruff --help | -h\n"
 	echo
 
 	# :command.long_usage
@@ -1161,6 +426,446 @@ gup_install_zig_usage() {
 }
 
 # :command.usage
+gup_install_gohelpers_usage() {
+	printf "gup install gohelpers - go development helpers (gopls,gotests,gomodifytags,impl,goplay,dlv,staticcheck)\n\n"
+
+	printf "%s\n" "Usage:"
+	printf "  gup install gohelpers\n"
+	printf "  gup install gohelpers --help | -h\n"
+	echo
+
+	# :command.long_usage
+	if [[ -n "$long_usage" ]]; then
+		# :command.usage_options
+		printf "%s\n" "Options:"
+
+		# :command.usage_fixed_flags
+		printf "  %s\n" "--help, -h"
+		printf "    Show this help\n"
+		echo
+
+	fi
+}
+
+# :command.usage
+gup_install_go_blueprint_usage() {
+	printf "gup install go-blueprint - Go-blueprint allows users to spin up a quick Go project using a popular framework\n\n"
+
+	printf "%s\n" "Usage:"
+	printf "  gup install go-blueprint\n"
+	printf "  gup install go-blueprint --help | -h\n"
+	echo
+
+	# :command.long_usage
+	if [[ -n "$long_usage" ]]; then
+		# :command.usage_options
+		printf "%s\n" "Options:"
+
+		# :command.usage_fixed_flags
+		printf "  %s\n" "--help, -h"
+		printf "    Show this help\n"
+		echo
+
+	fi
+}
+
+# :command.usage
+gup_install_gowebly_usage() {
+	printf "gup install gowebly - CLI tool to create amazing web applications with Go\n\n"
+
+	printf "%s\n" "Usage:"
+	printf "  gup install gowebly\n"
+	printf "  gup install gowebly --help | -h\n"
+	echo
+
+	# :command.long_usage
+	if [[ -n "$long_usage" ]]; then
+		# :command.usage_options
+		printf "%s\n" "Options:"
+
+		# :command.usage_fixed_flags
+		printf "  %s\n" "--help, -h"
+		printf "    Show this help\n"
+		echo
+
+	fi
+}
+
+# :command.usage
+gup_install_goplay_usage() {
+	printf "gup install goplay - The Go Playground client\n\n"
+
+	printf "%s\n" "Usage:"
+	printf "  gup install goplay\n"
+	printf "  gup install goplay --help | -h\n"
+	echo
+
+	# :command.long_usage
+	if [[ -n "$long_usage" ]]; then
+		# :command.usage_options
+		printf "%s\n" "Options:"
+
+		# :command.usage_fixed_flags
+		printf "  %s\n" "--help, -h"
+		printf "    Show this help\n"
+		echo
+
+	fi
+}
+
+# :command.usage
+gup_install_gotests_usage() {
+	printf "gup install gotests - Generate Go tests from your source code\n\n"
+
+	printf "%s\n" "Usage:"
+	printf "  gup install gotests\n"
+	printf "  gup install gotests --help | -h\n"
+	echo
+
+	# :command.long_usage
+	if [[ -n "$long_usage" ]]; then
+		# :command.usage_options
+		printf "%s\n" "Options:"
+
+		# :command.usage_fixed_flags
+		printf "  %s\n" "--help, -h"
+		printf "    Show this help\n"
+		echo
+
+	fi
+}
+
+# :command.usage
+gup_install_impl_usage() {
+	printf "gup install impl - impl generates method stubs for implementing an interface\n\n"
+
+	printf "%s\n" "Usage:"
+	printf "  gup install impl\n"
+	printf "  gup install impl --help | -h\n"
+	echo
+
+	# :command.long_usage
+	if [[ -n "$long_usage" ]]; then
+		# :command.usage_options
+		printf "%s\n" "Options:"
+
+		# :command.usage_fixed_flags
+		printf "  %s\n" "--help, -h"
+		printf "    Show this help\n"
+		echo
+
+	fi
+}
+
+# :command.usage
+gup_install_gomodifytags_usage() {
+	printf "gup install gomodifytags - Go tool to modify/update field tags in structs\n\n"
+
+	printf "%s\n" "Usage:"
+	printf "  gup install gomodifytags\n"
+	printf "  gup install gomodifytags --help | -h\n"
+	echo
+
+	# :command.long_usage
+	if [[ -n "$long_usage" ]]; then
+		# :command.usage_options
+		printf "%s\n" "Options:"
+
+		# :command.usage_fixed_flags
+		printf "  %s\n" "--help, -h"
+		printf "    Show this help\n"
+		echo
+
+	fi
+}
+
+# :command.usage
+gup_install_air_usage() {
+	printf "gup install air - Live reload for Go apps\n\n"
+
+	printf "%s\n" "Usage:"
+	printf "  gup install air\n"
+	printf "  gup install air --help | -h\n"
+	echo
+
+	# :command.long_usage
+	if [[ -n "$long_usage" ]]; then
+		# :command.usage_options
+		printf "%s\n" "Options:"
+
+		# :command.usage_fixed_flags
+		printf "  %s\n" "--help, -h"
+		printf "    Show this help\n"
+		echo
+
+	fi
+}
+
+# :command.usage
+gup_install_gofumpt_usage() {
+	printf "gup install gofumpt - gofumpt is a stricter gofmt\n\n"
+
+	printf "%s\n" "Usage:"
+	printf "  gup install gofumpt\n"
+	printf "  gup install gofumpt --help | -h\n"
+	echo
+
+	# :command.long_usage
+	if [[ -n "$long_usage" ]]; then
+		# :command.usage_options
+		printf "%s\n" "Options:"
+
+		# :command.usage_fixed_flags
+		printf "  %s\n" "--help, -h"
+		printf "    Show this help\n"
+		echo
+
+	fi
+}
+
+# :command.usage
+gup_install_goimports_usage() {
+	printf "gup install goimports - Go tool to format Go source code and manage imports\n\n"
+
+	printf "%s\n" "Usage:"
+	printf "  gup install goimports\n"
+	printf "  gup install goimports --help | -h\n"
+	echo
+
+	# :command.long_usage
+	if [[ -n "$long_usage" ]]; then
+		# :command.usage_options
+		printf "%s\n" "Options:"
+
+		# :command.usage_fixed_flags
+		printf "  %s\n" "--help, -h"
+		printf "    Show this help\n"
+		echo
+
+	fi
+}
+
+# :command.usage
+gup_install_golangci_lint_usage() {
+	printf "gup install golangci-lint - golangci-lint is a linters aggregator for Go\n\n"
+
+	printf "%s\n" "Usage:"
+	printf "  gup install golangci-lint\n"
+	printf "  gup install golangci-lint --help | -h\n"
+	echo
+
+	# :command.long_usage
+	if [[ -n "$long_usage" ]]; then
+		# :command.usage_options
+		printf "%s\n" "Options:"
+
+		# :command.usage_fixed_flags
+		printf "  %s\n" "--help, -h"
+		printf "    Show this help\n"
+		echo
+
+	fi
+}
+
+# :command.usage
+gup_install_staticcheck_usage() {
+	printf "gup install staticcheck - The advanced Go linter\n\n"
+
+	printf "%s\n" "Usage:"
+	printf "  gup install staticcheck\n"
+	printf "  gup install staticcheck --help | -h\n"
+	echo
+
+	# :command.long_usage
+	if [[ -n "$long_usage" ]]; then
+		# :command.usage_options
+		printf "%s\n" "Options:"
+
+		# :command.usage_fixed_flags
+		printf "  %s\n" "--help, -h"
+		printf "    Show this help\n"
+		echo
+
+	fi
+}
+
+# :command.usage
+gup_install_nilaway_usage() {
+	printf "gup install nilaway - nilaway is a tool to detect nil pointer dereferences in Go code\n\n"
+
+	printf "%s\n" "Usage:"
+	printf "  gup install nilaway\n"
+	printf "  gup install nilaway --help | -h\n"
+	echo
+
+	# :command.long_usage
+	if [[ -n "$long_usage" ]]; then
+		# :command.usage_options
+		printf "%s\n" "Options:"
+
+		# :command.usage_fixed_flags
+		printf "  %s\n" "--help, -h"
+		printf "    Show this help\n"
+		echo
+
+	fi
+}
+
+# :command.usage
+gup_install_swag_usage() {
+	printf "gup install swag - Automatically generate RESTful API documentation with Swagger 2.0 for Go\n\n"
+
+	printf "%s\n" "Usage:"
+	printf "  gup install swag\n"
+	printf "  gup install swag --help | -h\n"
+	echo
+
+	# :command.long_usage
+	if [[ -n "$long_usage" ]]; then
+		# :command.usage_options
+		printf "%s\n" "Options:"
+
+		# :command.usage_fixed_flags
+		printf "  %s\n" "--help, -h"
+		printf "    Show this help\n"
+		echo
+
+	fi
+}
+
+# :command.usage
+gup_install_templ_usage() {
+	printf "gup install templ - An HTML templating language for Go that has great developer tooling\n\n"
+
+	printf "%s\n" "Usage:"
+	printf "  gup install templ\n"
+	printf "  gup install templ --help | -h\n"
+	echo
+
+	# :command.long_usage
+	if [[ -n "$long_usage" ]]; then
+		# :command.usage_options
+		printf "%s\n" "Options:"
+
+		# :command.usage_fixed_flags
+		printf "  %s\n" "--help, -h"
+		printf "    Show this help\n"
+		echo
+
+	fi
+}
+
+# :command.usage
+gup_install_ruff_usage() {
+	printf "gup install ruff - an extremely fast Python linter and code formatter\n\n"
+
+	printf "%s\n" "Usage:"
+	printf "  gup install ruff\n"
+	printf "  gup install ruff --help | -h\n"
+	echo
+
+	# :command.long_usage
+	if [[ -n "$long_usage" ]]; then
+		# :command.usage_options
+		printf "%s\n" "Options:"
+
+		# :command.usage_fixed_flags
+		printf "  %s\n" "--help, -h"
+		printf "    Show this help\n"
+		echo
+
+	fi
+}
+
+# :command.usage
+gup_install_scc_usage() {
+	printf "gup install scc - Sloc Cloc and Code (scc)\n\n"
+
+	printf "%s\n" "Usage:"
+	printf "  gup install scc\n"
+	printf "  gup install scc --help | -h\n"
+	echo
+
+	# :command.long_usage
+	if [[ -n "$long_usage" ]]; then
+		# :command.usage_options
+		printf "%s\n" "Options:"
+
+		# :command.usage_fixed_flags
+		printf "  %s\n" "--help, -h"
+		printf "    Show this help\n"
+		echo
+
+	fi
+}
+
+# :command.usage
+gup_install_yamlfmt_usage() {
+	printf "gup install yamlfmt - an extensible command line tool or library to format yaml files.\n\n"
+
+	printf "%s\n" "Usage:"
+	printf "  gup install yamlfmt\n"
+	printf "  gup install yamlfmt --help | -h\n"
+	echo
+
+	# :command.long_usage
+	if [[ -n "$long_usage" ]]; then
+		# :command.usage_options
+		printf "%s\n" "Options:"
+
+		# :command.usage_fixed_flags
+		printf "  %s\n" "--help, -h"
+		printf "    Show this help\n"
+		echo
+
+	fi
+}
+
+# :command.usage
+gup_install_gopls_usage() {
+	printf "gup install gopls - Go language server\n\n"
+
+	printf "%s\n" "Usage:"
+	printf "  gup install gopls\n"
+	printf "  gup install gopls --help | -h\n"
+	echo
+
+	# :command.long_usage
+	if [[ -n "$long_usage" ]]; then
+		# :command.usage_options
+		printf "%s\n" "Options:"
+
+		# :command.usage_fixed_flags
+		printf "  %s\n" "--help, -h"
+		printf "    Show this help\n"
+		echo
+
+	fi
+}
+
+# :command.usage
+gup_install_dlv_usage() {
+	printf "gup install dlv - Delve is a source level debugger for Go programs\n\n"
+
+	printf "%s\n" "Usage:"
+	printf "  gup install dlv\n"
+	printf "  gup install dlv --help | -h\n"
+	echo
+
+	# :command.long_usage
+	if [[ -n "$long_usage" ]]; then
+		# :command.usage_options
+		printf "%s\n" "Options:"
+
+		# :command.usage_fixed_flags
+		printf "  %s\n" "--help, -h"
+		printf "    Show this help\n"
+		echo
+
+	fi
+}
+
+# :command.usage
 gup_install_zls_usage() {
 	printf "gup install zls - zig language server\n\n"
 
@@ -1183,12 +888,12 @@ gup_install_zls_usage() {
 }
 
 # :command.usage
-gup_install_btop_usage() {
-	printf "gup install btop - btop\n\n"
+gup_install_neovim_usage() {
+	printf "gup install neovim - NeoVIM\n\n"
 
 	printf "%s\n" "Usage:"
-	printf "  gup install btop\n"
-	printf "  gup install btop --help | -h\n"
+	printf "  gup install neovim\n"
+	printf "  gup install neovim --help | -h\n"
 	echo
 
 	# :command.long_usage
@@ -1205,12 +910,12 @@ gup_install_btop_usage() {
 }
 
 # :command.usage
-gup_install_gotop_usage() {
-	printf "gup install gotop - gotop terminal based graphical activity monitor\n\n"
+gup_install_helix_usage() {
+	printf "gup install helix - helix text editor\n\n"
 
 	printf "%s\n" "Usage:"
-	printf "  gup install gotop\n"
-	printf "  gup install gotop --help | -h\n"
+	printf "  gup install helix\n"
+	printf "  gup install helix --help | -h\n"
 	echo
 
 	# :command.long_usage
@@ -1227,12 +932,12 @@ gup_install_gotop_usage() {
 }
 
 # :command.usage
-gup_install_blackbox_exporter_usage() {
-	printf "gup install blackbox_exporter - blackbox_exporter\n\n"
+gup_install_prometheus_usage() {
+	printf "gup install prometheus - prometheus\n\n"
 
 	printf "%s\n" "Usage:"
-	printf "  gup install blackbox_exporter\n"
-	printf "  gup install blackbox_exporter --help | -h\n"
+	printf "  gup install prometheus\n"
+	printf "  gup install prometheus --help | -h\n"
 	echo
 
 	# :command.long_usage
@@ -1337,12 +1042,12 @@ gup_install_postgres_exporter_usage() {
 }
 
 # :command.usage
-gup_install_prometheus_usage() {
-	printf "gup install prometheus - prometheus\n\n"
+gup_install_blackbox_exporter_usage() {
+	printf "gup install blackbox_exporter - blackbox_exporter\n\n"
 
 	printf "%s\n" "Usage:"
-	printf "  gup install prometheus\n"
-	printf "  gup install prometheus --help | -h\n"
+	printf "  gup install blackbox_exporter\n"
+	printf "  gup install blackbox_exporter --help | -h\n"
 	echo
 
 	# :command.long_usage
@@ -1365,6 +1070,270 @@ gup_install_snmp_exporter_usage() {
 	printf "%s\n" "Usage:"
 	printf "  gup install snmp_exporter\n"
 	printf "  gup install snmp_exporter --help | -h\n"
+	echo
+
+	# :command.long_usage
+	if [[ -n "$long_usage" ]]; then
+		# :command.usage_options
+		printf "%s\n" "Options:"
+
+		# :command.usage_fixed_flags
+		printf "  %s\n" "--help, -h"
+		printf "    Show this help\n"
+		echo
+
+	fi
+}
+
+# :command.usage
+gup_install_btop_usage() {
+	printf "gup install btop - btop\n\n"
+
+	printf "%s\n" "Usage:"
+	printf "  gup install btop\n"
+	printf "  gup install btop --help | -h\n"
+	echo
+
+	# :command.long_usage
+	if [[ -n "$long_usage" ]]; then
+		# :command.usage_options
+		printf "%s\n" "Options:"
+
+		# :command.usage_fixed_flags
+		printf "  %s\n" "--help, -h"
+		printf "    Show this help\n"
+		echo
+
+	fi
+}
+
+# :command.usage
+gup_install_gotop_usage() {
+	printf "gup install gotop - gotop terminal based graphical activity monitor\n\n"
+
+	printf "%s\n" "Usage:"
+	printf "  gup install gotop\n"
+	printf "  gup install gotop --help | -h\n"
+	echo
+
+	# :command.long_usage
+	if [[ -n "$long_usage" ]]; then
+		# :command.usage_options
+		printf "%s\n" "Options:"
+
+		# :command.usage_fixed_flags
+		printf "  %s\n" "--help, -h"
+		printf "    Show this help\n"
+		echo
+
+	fi
+}
+
+# :command.usage
+gup_install_lazydocker_usage() {
+	printf "gup install lazydocker - A simple terminal UI for docker and docker-compose\n\n"
+
+	printf "%s\n" "Usage:"
+	printf "  gup install lazydocker\n"
+	printf "  gup install lazydocker --help | -h\n"
+	echo
+
+	# :command.long_usage
+	if [[ -n "$long_usage" ]]; then
+		# :command.usage_options
+		printf "%s\n" "Options:"
+
+		# :command.usage_fixed_flags
+		printf "  %s\n" "--help, -h"
+		printf "    Show this help\n"
+		echo
+
+	fi
+}
+
+# :command.usage
+gup_install_minikube_usage() {
+	printf "gup install minikube - minikube\n\n"
+
+	printf "%s\n" "Usage:"
+	printf "  gup install minikube\n"
+	printf "  gup install minikube --help | -h\n"
+	echo
+
+	# :command.long_usage
+	if [[ -n "$long_usage" ]]; then
+		# :command.usage_options
+		printf "%s\n" "Options:"
+
+		# :command.usage_fixed_flags
+		printf "  %s\n" "--help, -h"
+		printf "    Show this help\n"
+		echo
+
+	fi
+}
+
+# :command.usage
+gup_install_kubectl_usage() {
+	printf "gup install kubectl - kubectl\n\n"
+
+	printf "%s\n" "Usage:"
+	printf "  gup install kubectl\n"
+	printf "  gup install kubectl --help | -h\n"
+	echo
+
+	# :command.long_usage
+	if [[ -n "$long_usage" ]]; then
+		# :command.usage_options
+		printf "%s\n" "Options:"
+
+		# :command.usage_fixed_flags
+		printf "  %s\n" "--help, -h"
+		printf "    Show this help\n"
+		echo
+
+	fi
+}
+
+# :command.usage
+gup_install_k9s_usage() {
+	printf "gup install k9s - Kubernetes CLI\n\n"
+
+	printf "%s\n" "Usage:"
+	printf "  gup install k9s\n"
+	printf "  gup install k9s --help | -h\n"
+	echo
+
+	# :command.long_usage
+	if [[ -n "$long_usage" ]]; then
+		# :command.usage_options
+		printf "%s\n" "Options:"
+
+		# :command.usage_fixed_flags
+		printf "  %s\n" "--help, -h"
+		printf "    Show this help\n"
+		echo
+
+	fi
+}
+
+# :command.usage
+gup_install_etcd_usage() {
+	printf "gup install etcd - etcd\n\n"
+
+	printf "%s\n" "Usage:"
+	printf "  gup install etcd\n"
+	printf "  gup install etcd --help | -h\n"
+	echo
+
+	# :command.long_usage
+	if [[ -n "$long_usage" ]]; then
+		# :command.usage_options
+		printf "%s\n" "Options:"
+
+		# :command.usage_fixed_flags
+		printf "  %s\n" "--help, -h"
+		printf "    Show this help\n"
+		echo
+
+	fi
+}
+
+# :command.usage
+gup_install_vagrant_usage() {
+	printf "gup install vagrant - HashiCorp Vagrant\n\n"
+
+	printf "%s\n" "Usage:"
+	printf "  gup install vagrant\n"
+	printf "  gup install vagrant --help | -h\n"
+	echo
+
+	# :command.long_usage
+	if [[ -n "$long_usage" ]]; then
+		# :command.usage_options
+		printf "%s\n" "Options:"
+
+		# :command.usage_fixed_flags
+		printf "  %s\n" "--help, -h"
+		printf "    Show this help\n"
+		echo
+
+	fi
+}
+
+# :command.usage
+gup_install_doctl_usage() {
+	printf "gup install doctl - DigitalOcean cli tool\n\n"
+
+	printf "%s\n" "Usage:"
+	printf "  gup install doctl\n"
+	printf "  gup install doctl --help | -h\n"
+	echo
+
+	# :command.long_usage
+	if [[ -n "$long_usage" ]]; then
+		# :command.usage_options
+		printf "%s\n" "Options:"
+
+		# :command.usage_fixed_flags
+		printf "  %s\n" "--help, -h"
+		printf "    Show this help\n"
+		echo
+
+	fi
+}
+
+# :command.usage
+gup_install_b2_usage() {
+	printf "gup install b2 - Backblaze B2 cli tool\n\n"
+
+	printf "%s\n" "Usage:"
+	printf "  gup install b2\n"
+	printf "  gup install b2 --help | -h\n"
+	echo
+
+	# :command.long_usage
+	if [[ -n "$long_usage" ]]; then
+		# :command.usage_options
+		printf "%s\n" "Options:"
+
+		# :command.usage_fixed_flags
+		printf "  %s\n" "--help, -h"
+		printf "    Show this help\n"
+		echo
+
+	fi
+}
+
+# :command.usage
+gup_install_githubcli_usage() {
+	printf "gup install githubcli - github cli\n\n"
+
+	printf "%s\n" "Usage:"
+	printf "  gup install githubcli\n"
+	printf "  gup install githubcli --help | -h\n"
+	echo
+
+	# :command.long_usage
+	if [[ -n "$long_usage" ]]; then
+		# :command.usage_options
+		printf "%s\n" "Options:"
+
+		# :command.usage_fixed_flags
+		printf "  %s\n" "--help, -h"
+		printf "    Show this help\n"
+		echo
+
+	fi
+}
+
+# :command.usage
+gup_install_forgejocli_usage() {
+	printf "gup install forgejocli - forgejo cli\n\n"
+
+	printf "%s\n" "Usage:"
+	printf "  gup install forgejocli\n"
+	printf "  gup install forgejocli --help | -h\n"
 	echo
 
 	# :command.long_usage
@@ -1447,6 +1416,50 @@ gup_install_hugo_usage() {
 }
 
 # :command.usage
+gup_install_tailwindcss_usage() {
+	printf "gup install tailwindcss - tailwindcss cli\n\n"
+
+	printf "%s\n" "Usage:"
+	printf "  gup install tailwindcss\n"
+	printf "  gup install tailwindcss --help | -h\n"
+	echo
+
+	# :command.long_usage
+	if [[ -n "$long_usage" ]]; then
+		# :command.usage_options
+		printf "%s\n" "Options:"
+
+		# :command.usage_fixed_flags
+		printf "  %s\n" "--help, -h"
+		printf "    Show this help\n"
+		echo
+
+	fi
+}
+
+# :command.usage
+gup_install_marp_usage() {
+	printf "gup install marp - Marp CLI is a Markdown presentation tool\n\n"
+
+	printf "%s\n" "Usage:"
+	printf "  gup install marp\n"
+	printf "  gup install marp --help | -h\n"
+	echo
+
+	# :command.long_usage
+	if [[ -n "$long_usage" ]]; then
+		# :command.usage_options
+		printf "%s\n" "Options:"
+
+		# :command.usage_fixed_flags
+		printf "  %s\n" "--help, -h"
+		printf "    Show this help\n"
+		echo
+
+	fi
+}
+
+# :command.usage
 gup_install_duf_usage() {
 	printf "gup install duf - Disk Usage/Free Utility\n\n"
 
@@ -1513,12 +1526,12 @@ gup_install_gum_usage() {
 }
 
 # :command.usage
-gup_install_marp_usage() {
-	printf "gup install marp - Marp CLI is a Markdown presentation tool\n\n"
+gup_install_lazygit_usage() {
+	printf "gup install lazygit - A simple terminal UI for git commands\n\n"
 
 	printf "%s\n" "Usage:"
-	printf "  gup install marp\n"
-	printf "  gup install marp --help | -h\n"
+	printf "  gup install lazygit\n"
+	printf "  gup install lazygit --help | -h\n"
 	echo
 
 	# :command.long_usage
@@ -1689,12 +1702,12 @@ gup_install_zfsnap_usage() {
 }
 
 # :command.usage
-gup_install_lazydocker_usage() {
-	printf "gup install lazydocker - A simple terminal UI for docker and docker-compose\n\n"
+gup_install_terraform_usage() {
+	printf "gup install terraform - Terraform is an open-source infrastructure as code software tool\n\n"
 
 	printf "%s\n" "Usage:"
-	printf "  gup install lazydocker\n"
-	printf "  gup install lazydocker --help | -h\n"
+	printf "  gup install terraform\n"
+	printf "  gup install terraform --help | -h\n"
 	echo
 
 	# :command.long_usage
@@ -1711,12 +1724,12 @@ gup_install_lazydocker_usage() {
 }
 
 # :command.usage
-gup_install_vagrant_usage() {
-	printf "gup install vagrant - HashiCorp Vagrant\n\n"
+gup_install_distrobuilder_usage() {
+	printf "gup install distrobuilder - Distrobuilder is a tool to build Linux distributions and images\n\n"
 
 	printf "%s\n" "Usage:"
-	printf "  gup install vagrant\n"
-	printf "  gup install vagrant --help | -h\n"
+	printf "  gup install distrobuilder\n"
+	printf "  gup install distrobuilder --help | -h\n"
 	echo
 
 	# :command.long_usage
@@ -1733,12 +1746,12 @@ gup_install_vagrant_usage() {
 }
 
 # :command.usage
-gup_install_etcd_usage() {
-	printf "gup install etcd - etcd\n\n"
+gup_install_upx_usage() {
+	printf "gup install upx - Ultimate Packer for eXecutables\n\n"
 
 	printf "%s\n" "Usage:"
-	printf "  gup install etcd\n"
-	printf "  gup install etcd --help | -h\n"
+	printf "  gup install upx\n"
+	printf "  gup install upx --help | -h\n"
 	echo
 
 	# :command.long_usage
@@ -1755,12 +1768,12 @@ gup_install_etcd_usage() {
 }
 
 # :command.usage
-gup_install_k9s_usage() {
-	printf "gup install k9s - Kubernetes CLI\n\n"
+gup_install_sqlc_usage() {
+	printf "gup install sqlc - Generate type-safe code from SQL\n\n"
 
 	printf "%s\n" "Usage:"
-	printf "  gup install k9s\n"
-	printf "  gup install k9s --help | -h\n"
+	printf "  gup install sqlc\n"
+	printf "  gup install sqlc --help | -h\n"
 	echo
 
 	# :command.long_usage
@@ -1777,12 +1790,12 @@ gup_install_k9s_usage() {
 }
 
 # :command.usage
-gup_install_kubectl_usage() {
-	printf "gup install kubectl - kubectl\n\n"
+gup_install_mkcert_usage() {
+	printf "gup install mkcert - mkcert is a simple tool for making locally-trusted development certificates\n\n"
 
 	printf "%s\n" "Usage:"
-	printf "  gup install kubectl\n"
-	printf "  gup install kubectl --help | -h\n"
+	printf "  gup install mkcert\n"
+	printf "  gup install mkcert --help | -h\n"
 	echo
 
 	# :command.long_usage
@@ -1799,12 +1812,12 @@ gup_install_kubectl_usage() {
 }
 
 # :command.usage
-gup_install_minikube_usage() {
-	printf "gup install minikube - minikube\n\n"
+gup_install_govulncheck_usage() {
+	printf "gup install govulncheck - Go vulnerability checker\n\n"
 
 	printf "%s\n" "Usage:"
-	printf "  gup install minikube\n"
-	printf "  gup install minikube --help | -h\n"
+	printf "  gup install govulncheck\n"
+	printf "  gup install govulncheck --help | -h\n"
 	echo
 
 	# :command.long_usage
@@ -1821,12 +1834,12 @@ gup_install_minikube_usage() {
 }
 
 # :command.usage
-gup_install_neovim_usage() {
-	printf "gup install neovim - NeoVIM\n\n"
+gup_install_nerdfonts_usage() {
+	printf "gup install nerdfonts - nerdfonts installer\n\n"
 
 	printf "%s\n" "Usage:"
-	printf "  gup install neovim\n"
-	printf "  gup install neovim --help | -h\n"
+	printf "  gup install nerdfonts FONT...\n"
+	printf "  gup install nerdfonts --help | -h\n"
 	echo
 
 	# :command.long_usage
@@ -1839,26 +1852,13 @@ gup_install_neovim_usage() {
 		printf "    Show this help\n"
 		echo
 
-	fi
-}
+		# :command.usage_args
+		printf "%s\n" "Arguments:"
 
-# :command.usage
-gup_install_helix_usage() {
-	printf "gup install helix - helix text editor\n\n"
-
-	printf "%s\n" "Usage:"
-	printf "  gup install helix\n"
-	printf "  gup install helix --help | -h\n"
-	echo
-
-	# :command.long_usage
-	if [[ -n "$long_usage" ]]; then
-		# :command.usage_options
-		printf "%s\n" "Options:"
-
-		# :command.usage_fixed_flags
-		printf "  %s\n" "--help, -h"
-		printf "    Show this help\n"
+		# :argument.usage
+		printf "  %s\n" "FONT..."
+		printf "\n"
+		printf "    %s\n" "Allowed: Ubuntu, UbuntuMono, Hack, FiraMono, Noto"
 		echo
 
 	fi
@@ -2134,395 +2134,6 @@ _EOF_
 }
 
 # :command.function
-gup_install_nerdfonts_command() {
-
-	# src/install_nerdfonts_command.sh
-	REPO="ryanoasis/nerd-fonts"
-	RURL="https://api.github.com/repos/${REPO}/releases/latest"
-	FONTDIR="${HOME}/.local/share/fonts"
-
-	download() {
-			echo "installing $1 font"
-			DL=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains("tar.xz")) | .browser_download_url' | tr -d '"' | grep "$1")
-			for font in ${DL}; do
-					rm -f /tmp/font.tar.xz
-					wget -qc "${font}" -O /tmp/font.tar.xz
-					tar -xf /tmp/font.tar.xz -C "${FONTDIR}" --wildcards "*ttf"
-					rm -f /tmp/font.tar.xz
-			done
-	}
-
-	fonts="${args[font]}"
-	for font in ${fonts}; do
-		download "$font"
-	done
-
-}
-
-# :command.function
-gup_install_b2_command() {
-
-	# src/install_b2_command.sh
-	APP="b2"
-	DL="https://github.com/Backblaze/B2_Command_Line_Tool/releases/latest/download/b2-linux"
-
-	download() {
-			local tmpdir out bdir
-			tmpdir=$(mktemp -d) || { printf 'failed to create tempdir\n' >&2; return 1; }
-			trap 'rm -rf "${tmpdir}"' RETURN
-			out="${tmpdir}/${APP}"
-
-			printf "download %s ...\n" "${APP}"
-			gup_download "${DL}" "${out}" || { printf 'download failed\n' >&2; return 1; }
-
-			chmod +x "${out}"
-
-			if (( EUID == 0 )); then
-					bdir="/usr/local/bin"
-					rm -f "${bdir}"/"${APP}"
-					install -m 0755 "${out}" "${bdir}"/"${APP}"
-			else
-					bdir="${HOME}/.local/bin"
-					mkdir -p "${bdir}"
-					rm -f "${bdir}"/"${APP}"
-					install -m 0755 "${out}" "${bdir}"/"${APP}"
-			fi
-	}
-
-	download "${APP}"
-
-}
-
-# :command.function
-gup_install_doctl_command() {
-
-	# src/install_doctl_command.sh
-	APP="doctl"
-	REPO="digitalocean/doctl"
-	RURL="https://api.github.com/repos/${REPO}/releases/latest"
-	vers=$(wget -qO- "${RURL}" | jq .tag_name | tr -d '"' | tr -d 'v')
-	DL=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains ("linux-amd64")) | .browser_download_url' | tr -d '"')
-	FN=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains ("linux-amd64")) | .name' | tr -d '"')
-
-	function download() {
-			echo "download $1 version"
-			echo "installing ${vers}"
-			wget -qc "${DL}" -O /tmp/"${FN}"
-			if [ "$(id -u)" == 0 ]; then
-					BDIR="/usr/local/bin"
-					sudo tar -axf /tmp/"${FN}" -C "${BDIR}" "${APP}"
-			else
-					BDIR="${HOME}/.local/bin"
-					tar -axf /tmp/"${FN}" -C "${BDIR}" "${APP}"
-			fi
-			chmod +x "${BDIR}"/"${APP}"
-			rm -f /tmp/"${FN}"
-	}
-
-	if [ -z "$(command -v ${APP})" ]; then
-			download new
-	else
-			APPVER=$($(command -v ${APP}) version 2>&1 | grep "doctl version" | awk '{print $3}' | awk -F'-' '{print $1}')
-			if [ "${APPVER}" = "${vers}" ]; then
-					echo "${APP} version is current"
-			else
-					download "${vers}"
-			fi
-	fi
-}
-
-# :command.function
-gup_install_distrobuilder_command() {
-
-	# src/install_distrobuilder_command.sh
-	PWD=$(pwd)
-	REPO="https://github.com/lxc/distrobuilder"
-	rm -rf /tmp/distrobuilder
-	git clone "${REPO}" /tmp/distrobuilder
-	cd /tmp/distrobuilder
-	make
-	cd "$PWD"
-	rm -rf /tmp/distrobuilder
-
-}
-
-# :command.function
-gup_install_terraform_command() {
-
-	# src/install_terraform_command.sh
-	APP="terraform"
-	REPO="hashicorp/terraform"
-	RURL="https://api.github.com/repos/${REPO}/releases/latest"
-	vers=$(wget -qO- "${RURL}" | jq .tag_name | tr -d '"' | tr -d 'v')
-
-	DLREPO="https://releases.hashicorp.com/terraform"
-	FN="${APP}_${vers}_linux_amd64.zip"
-	DL="${DLREPO}/${vers}/${FN}"
-
-	function download() {
-			echo "download $1 version"
-			echo "installing ${vers}"
-			rm -rf /tmp/"${FN}" /tmp/"${APP}_${vers}"
-			wget -qc "${DL}" -O /tmp/"${FN}"
-			mkdir -p /tmp/"${APP}_${vers}"
-			unzip /tmp/"${FN}" -d /tmp/"${APP}_${vers}"
-			if [ "$(id -u)" == 0 ]; then
-					BDIR="/usr/local/bin"
-					sudo install /tmp/"${APP}_${vers}"/"${APP}" "${BDIR}/${APP}"
-			else
-					BDIR="${HOME}/.local/bin"
-					install /tmp/"${APP}_${vers}"/"${APP}" "${BDIR}/${APP}"
-			fi
-			rm -rf /tmp/"${FN}"
-	}
-
-	if [ -z "$(command -v ${APP})" ]; then
-			download new
-	else
-			APPVER=$($(command -v ${APP}) version 2>&1 | grep -i "^${APP}" | awk '{print $2}' | tr -d 'v')
-			if [ "${APPVER}" = "${vers}" ]; then
-					echo "${APP} version is current"
-			else
-					download "${vers}"
-			fi
-	fi
-}
-
-# :command.function
-gup_install_githubcli_command() {
-
-	# src/install_githubcli_command.sh
-	APP="gh"
-	REPO="cli/cli"
-	RURL="https://api.github.com/repos/${REPO}/releases/latest"
-	vers=$(wget -qO- "${RURL}" | jq .tag_name | tr -d '"' | tr -d 'v')
-	DL=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains ("linux_amd64.tar.gz")) | .browser_download_url' | tr -d '"')
-	FN=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains ("linux_amd64.tar.gz")) | .name' | tr -d '"')
-
-	IDIR=/usr/local/lib
-	BDIR=/usr/local/bin
-
-	function download() {
-			echo "download $1 version"
-			echo "installing ${vers}"
-			sudo rm -f /tmp/"${FN}"
-			wget -qc "${DL}" -O /tmp/"${FN}"
-			sudo rm -rf "${IDIR}/${APP}"
-			sudo mkdir -p "${IDIR}/${APP}"
-			sudo tar -axf /tmp/"${FN}" --strip-components=1 -C "${IDIR}/${APP}"
-			sudo ls "${IDIR}/${APP}/bin" | sudo xargs -I {} ln -sf "${IDIR}/${APP}/bin/{}" "${BDIR}/{}"
-			sudo rm -f /tmp/"${FN}"
-	}
-
-	if [ -z "$(command -v ${APP})" ]; then
-			download new
-	else
-			APPVER=$($(command -v ${APP}) version 2>&1 | awk '{print $3}')
-			if [ "${APPVER}" = "${vers}" ]; then
-					echo "${APP} version is current"
-			else
-					download "${vers}"
-			fi
-	fi
-}
-
-# :command.function
-gup_install_forgejocli_command() {
-
-	# src/install_forgejocli_command.sh
-	APP="fj"
-	DL="https://codeberg.org/forgejo-contrib/forgejo-cli/releases/download/latest/forgejo-cli-linux.tar.gz"
-	FN="forgejo-cli-linux.tar.gz"
-
-	BDIR=/usr/local/bin
-
-	function download() {
-			echo "download $1 version"
-			echo "installing ${vers}"
-			sudo rm -f /tmp/"${FN}"
-			sudo rm -f /tmp/"${APP}"
-			wget -qc "${DL}" -O /tmp/"${FN}"
-			sudo tar -axf /tmp/"${FN}" -C /tmp
-			ls -l /tmp
-			sudo rm -rf "${BDIR}/${APP}"
-			sudo install -Dm755 /tmp/"${APP}" "${BDIR}/${APP}"
-			sudo rm -f /tmp/"${FN}"
-			sudo rm -f /tmp/"${APP}"
-	}
-
-	download new
-}
-
-# :command.function
-gup_install_lazygit_command() {
-
-	# src/install_lazygit_command.sh
-	APP="lazygit"
-	REPO="jesseduffield/lazygit"
-	RURL="https://api.github.com/repos/${REPO}/releases/latest"
-	vers=$(wget -qO- "${RURL}" | jq .tag_name | tr -d '"' | tr -d 'v')
-	DL=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains("linux_x86_64")) | .browser_download_url' | tr -d '"')
-	FN=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains("linux_x86_64")) | .name' | tr -d '"')
-
-	function download() {
-			echo "download $1 version"
-			echo "installing ${vers}"
-			rm -rf /tmp/lazygit /tmp/"${FN}"
-			wget -qc "${DL}" -O /tmp/"${FN}"
-			tar axf /tmp/"${FN}" lazygit
-			if [ "$(id -u)" == 0 ]; then
-					IDIR="/usr/local/bin"
-					sudo mkdir -p "${IDIR}"
-					sudo install lazygit "${IDIR}"
-			else
-					IDIR="${HOME}/.local/bin"
-					mkdir -p "${IDIR}"
-					install lazygit "${IDIR}"
-			fi
-			rm -rf lazygit /tmp/"${FN}"
-	}
-
-	if [ -z "$(command -v ${APP})" ]; then
-			download new
-	else
-		APPVER=$($(command -v ${APP}) --version 2>&1 | awk '{print $6}' | sed 's/,//g' | awk -F'=' '{print $2}')
-		if [ "${APPVER}" = "${vers}" ]; then
-				echo "${APP} version is current"
-		else
-				download "${vers}"
-		fi
-	fi
-
-}
-
-# :command.function
-gup_install_mkcert_command() {
-
-	# src/install_mkcert_command.sh
-	APP="mkcert"
-
-	sudo apt update -y && \
-	sudo apt install -y libnss3-tools && \
-	sudo wget -O "/usr/local/bin/${APP}" "https://dl.filippo.io/mkcert/latest?for=linux/amd64" && \
-	sudo chmod +x "/usr/local/bin/${APP}"
-
-}
-
-# :command.function
-gup_install_scc_command() {
-
-	# src/install_scc_command.sh
-	APP="scc"
-	REPO="boyter/scc"
-	vers=$(gup_get_latest_release "${REPO}")
-
-	gup_ensure_go
-	go install github.com/boyter/scc/v3@${vers}
-}
-
-# :command.function
-gup_install_sqlc_command() {
-
-	# src/install_sqlc_command.sh
-	APP="sqlc"
-	REPO="sqlc-dev/sqlc"
-	vers=$(gup_get_latest_release "${REPO}")
-
-	gup_ensure_go
-	go install github.com/sqlc-dev/sqlc/cmd/sqlc@${vers}
-}
-
-# :command.function
-gup_install_upx_command() {
-
-	# src/install_upx_command.sh
-	APP="upx"
-	REPO="upx/upx"
-	RURL="https://api.github.com/repos/${REPO}/releases/latest"
-	vers=$(wget -qO- "${RURL}" | jq .tag_name | tr -d '"' | tr -d 'v')
-	DL=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | (contains("sha256") | not) and contains("amd64_linux.tar.xz")) | .browser_download_url' | tr -d '"')
-	FN=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | (contains("sha256") | not) and contains("amd64_linux.tar.xz")) | .name' | tr -d '"')
-
-	function download() {
-			echo "download $1 version"
-			echo "installing ${vers}"
-			rm -rf /tmp/"${FN}" /tmp/"${APP}_${vers}"
-			wget -qc "${DL}" -O /tmp/"${FN}"
-			mkdir -p /tmp/"${APP}_${vers}"
-			tar -axf /tmp/"${FN}" -C /tmp/"${APP}_${vers}" --strip-components=1
-			if [ "$(id -u)" == 0 ]; then
-					BDIR="/usr/local/bin"
-					sudo rm -f "${BDIR}/${APP}"
-					sudo install /tmp/"${APP}_${vers}/${APP}" "${BDIR}/${APP}"
-			else
-					BDIR="${HOME}/.local/bin"
-					rm -f "${BDIR}/${APP}"
-					install /tmp/"${APP}_${vers}/${APP}" "${BDIR}/${APP}"
-			fi
-			rm -rf /tmp/"${FN}" /tmp/"${APP}_${vers}"
-	}
-
-	if [ -z "$(command -v "${APP}")" ]; then
-			download new
-	else
-			APPVER=$($(command -v "${APP}") -V 2>&1 | grep -e "^${APP}" | awk '{print $2}')
-			if [ "${APPVER}" = "${vers}" ]; then
-					echo "${APP} version is current"
-			else
-					download "${vers}"
-			fi
-	fi
-}
-
-# :command.function
-gup_install_tailwindcss_command() {
-
-	# src/install_tailwindcss_command.sh
-	APP="tailwindcss"
-	REPO="tailwindlabs/tailwindcss"
-	RURL="https://api.github.com/repos/${REPO}/releases/latest"
-	vers=$(wget -qO- "${RURL}" | jq .tag_name | tr -d '"' | tr -d 'v')
-	DL=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains("linux-x64") and (contains("musl") | not)) | .browser_download_url' | tr -d '"')
-	FN=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains("linux-x64") and (contains("musl") | not)) | .name' | tr -d '"')
-
-	download() {
-			echo "download $1 version"
-			echo "installing ${vers}"
-			rm -rf /tmp/"${FN}"
-			wget -qc "${DL}" -O /tmp/"${FN}"
-			if [ "$(id -u)" == 0 ]; then
-					BDIR="/usr/local/bin"
-					sudo rm -f "${BDIR}/${APP}"
-					sudo install /tmp/"${FN}" "${BDIR}/${APP}"
-			else
-					BDIR="${HOME}/.local/bin"
-					rm -f "${BDIR}/${APP}"
-					install /tmp/"${FN}" "${BDIR}/${APP}"
-			fi
-			rm -rf /tmp/"${FN}"
-	}
-
-	if [ -z "$(command -v ${APP})" ]; then
-			download new
-	else
-			APPVER=$($(command -v ${APP}) --help 2>&1 | grep "${APP}.*v" | awk '{print $3}' | tr -d 'v')
-			if [ "${APPVER}" = "${vers}" ]; then
-					echo "${APP} version is current"
-			else
-					download "${vers}"
-			fi
-	fi
-
-}
-
-# :command.function
-gup_install_yamlfmt_command() {
-
-	# src/install_yamlfmt_command.sh
-	go install github.com/google/yamlfmt/cmd/yamlfmt@latest
-}
-
-# :command.function
 gup_install_go_command() {
 
 	# src/install_go_command.sh
@@ -2616,283 +2227,6 @@ gup_install_tinygo_command() {
 }
 
 # :command.function
-gup_install_godevenv_command() {
-
-	# src/install_godevenv_command.sh
-	# gopls
-	echo "installing gopls"
-	go install golang.org/x/tools/gopls@latest
-
-	# gotests
-	echo "installing gotests"
-	go install github.com/cweill/gotests/gotests@latest
-
-	# gomodifytags
-	echo "installing gomodifytags"
-	go install github.com/fatih/gomodifytags@latest
-
-	# impl
-	echo "installing impl"
-	go install github.com/josharian/impl@latest
-
-	# goplay
-	echo "installing goplay"
-	go install github.com/haya14busa/goplay/cmd/goplay@latest
-
-	# dlv
-	echo "installing dlv"
-	go install github.com/go-delve/delve/cmd/dlv@latest
-
-	# staticcheck
-	echo "installing staticcheck"
-	go install honnef.co/go/tools/cmd/staticcheck@latest
-
-	# govulncheck
-	echo "installing govulncheck"
-	go install golang.org/x/vuln/cmd/govulncheck@latest
-
-	# air
-	echo "installing air"
-	go install github.com/air-verse/air@latest
-
-	# templ
-	echo "installing templ"
-	go install github.com/a-h/templ/cmd/templ@latest
-
-	# swag
-	echo "installing swag"
-	go install github.com/swaggo/swag/cmd/swag@latest
-
-}
-
-# :command.function
-gup_install_air_command() {
-
-	# src/install_air_command.sh
-	APP="air"
-	REPO="cosmtrek/air"
-	vers=$(gup_get_latest_release "${REPO}")
-
-	gup_ensure_go
-	go install github.com/cosmtrek/air@${vers}
-
-}
-
-# :command.function
-gup_install_dlv_command() {
-
-	# src/install_dlv_command.sh
-	APP="dlv"
-	REPO="go-delve/delve"
-	vers=$(gup_get_latest_release "${REPO}")
-
-	gup_ensure_go
-	go install github.com/go-delve/delve/cmd/dlv@${vers}
-
-}
-
-# :command.function
-gup_install_go_blueprint_command() {
-
-	# src/install_go_blueprint_command.sh
-	APP="go-blueprint"
-	REPO="melkeydev/go-blueprint"
-	vers=$(gup_get_latest_release "${REPO}")
-
-	gup_ensure_go
-	go install github.com/melkeydev/go-blueprint@${vers}
-}
-
-# :command.function
-gup_install_gofumpt_command() {
-
-	# src/install_gofumpt_command.sh
-	APP="gofumpt"
-	REPO="mvdan/gofumpt"
-	vers=$(gup_get_latest_release "${REPO}")
-
-	gup_ensure_go
-	go install mvdan.cc/gofumpt@${vers}
-}
-
-# :command.function
-gup_install_goimports_command() {
-
-	# src/install_goimports_command.sh
-	APP="goimports"
-	REPO="golang/tools"
-	vers=$(gup_get_latest_release "${REPO}")
-
-	gup_ensure_go
-	go install golang.org/x/tools/cmd/goimports@${vers}
-}
-
-# :command.function
-gup_install_golangci_lint_command() {
-
-	# src/install_golangci_lint_command.sh
-	APP="golangci-lint"
-	REPO="golangci/golangci-lint"
-	vers=$(gup_get_latest_release "${REPO}")
-
-	gup_ensure_go
-	go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@${vers}
-}
-
-# :command.function
-gup_install_gomodifytags_command() {
-
-	# src/install_gomodifytags_command.sh
-	APP="gomodifytags"
-	REPO="fatih/gomodifytags"
-	vers=$(gup_get_latest_release "${REPO}")
-
-	gup_ensure_go
-	go install github.com/fatih/gomodifytags@${vers}
-
-}
-
-# :command.function
-gup_install_goplay_command() {
-
-	# src/install_goplay_command.sh
-	APP="goplay"
-	REPO="haya14busa/goplay"
-	vers=$(gup_get_latest_release "${REPO}")
-
-	gup_ensure_go
-	go install github.com/haya14busa/goplay/cmd/goplay@${vers}
-
-}
-
-# :command.function
-gup_install_gopls_command() {
-
-	# src/install_gopls_command.sh
-	APP="gopls"
-	REPO="golang/tools"
-	vers=$(gup_get_latest_release "${REPO}")
-
-	gup_ensure_go
-	go install golang.org/x/tools/gopls@${vers}
-
-}
-
-# :command.function
-gup_install_gotests_command() {
-
-	# src/install_gotests_command.sh
-	APP="gotests"
-	REPO="cweill/gotests"
-	vers=$(gup_get_latest_release "${REPO}")
-
-	gup_ensure_go
-	go install github.com/cweill/gotests/gotests@${vers}
-
-}
-
-# :command.function
-gup_install_govulncheck_command() {
-
-	# src/install_govulncheck_command.sh
-	APP="govulncheck"
-	REPO="golang/vuln"
-	vers=$(gup_get_latest_release "${REPO}")
-
-	gup_ensure_go
-	go install golang.org/x/vuln/cmd/govulncheck@${vers}
-
-}
-
-# :command.function
-gup_install_gowebly_command() {
-
-	# src/install_gowebly_command.sh
-	APP="gowebly"
-	REPO="gowebly/gowebly"
-	vers=$(gup_get_latest_release "${REPO}")
-
-	gup_ensure_go
-	go install github.com/gowebly/gowebly/v2@${vers}
-}
-
-# :command.function
-gup_install_impl_command() {
-
-	# src/install_impl_command.sh
-	APP="impl"
-	REPO="josharian/impl"
-	vers=$(gup_get_latest_release "${REPO}")
-
-	gup_ensure_go
-	go install github.com/josharian/impl@${vers}
-
-}
-
-# :command.function
-gup_install_nilaway_command() {
-
-	# src/install_nilaway_command.sh
-	APP="nilaway"
-	REPO="uber-go/nilaway"
-	vers=$(gup_get_latest_release "${REPO}")
-
-	gup_ensure_go
-	go install go.uber.org/nilaway/cmd/nilaway@${vers}
-}
-
-# :command.function
-gup_install_staticcheck_command() {
-
-	# src/install_staticcheck_command.sh
-	APP="staticcheck"
-	REPO="dominikh/go-tools"
-	vers=$(gup_get_latest_release "${REPO}")
-
-	gup_ensure_go
-	go install honnef.co/go/tools/cmd/staticcheck@${vers}
-
-}
-
-# :command.function
-gup_install_swag_command() {
-
-	# src/install_swag_command.sh
-	APP="swag"
-	REPO="swaggo/swag"
-	vers=$(gup_get_latest_release "${REPO}")
-
-	gup_ensure_go
-	go install github.com/swaggo/swag/cmd/swag@${vers}
-}
-
-# :command.function
-gup_install_templ_command() {
-
-	# src/install_templ_command.sh
-	APP="templ"
-	REPO="a-h/templ"
-	vers=$(gup_get_latest_release "${REPO}")
-
-	gup_ensure_go
-	go install github.com/a-h/templ/cmd/templ@${vers}
-
-}
-
-# :command.function
-gup_install_nvm_command() {
-
-	# src/install_nvm_command.sh
-	REPO="nvm-sh/nvm"
-	RURL="https://api.github.com/repos/${REPO}/releases/latest"
-	vers=$(wget -qO- "${RURL}" | jq .tag_name | tr -d '"' | tr -d 'v')
-
-	DLREPO="https://raw.githubusercontent.com/nvm-sh/nvm"
-	wget -qO- "${DLREPO}/${vers}/install.sh" | bash
-
-}
-
-# :command.function
 gup_install_nodejs_command() {
 
 	# src/install_nodejs_command.sh
@@ -2918,6 +2252,19 @@ gup_install_nodejs_command() {
 	sudo ln -s /usr/local/share/node/bin/npx /usr/local/bin/npx
 	sudo rm -f /usr/local/bin/corepack
 	sudo ln -s /usr/local/share/node/bin/corepack /usr/local/bin/corepack
+
+}
+
+# :command.function
+gup_install_nvm_command() {
+
+	# src/install_nvm_command.sh
+	REPO="nvm-sh/nvm"
+	RURL="https://api.github.com/repos/${REPO}/releases/latest"
+	vers=$(wget -qO- "${RURL}" | jq .tag_name | tr -d '"' | tr -d 'v')
+
+	DLREPO="https://raw.githubusercontent.com/nvm-sh/nvm"
+	wget -qO- "${DLREPO}/${vers}/install.sh" | bash
 
 }
 
@@ -2991,48 +2338,6 @@ gup_install_bun_command() {
 			fi
 	fi
 
-}
-
-# :command.function
-gup_install_ruff_command() {
-
-	# src/install_ruff_command.sh
-	APP="ruff"
-	REPO="astral-sh/ruff"
-	RURL="https://api.github.com/repos/${REPO}/releases/latest"
-	vers=$(wget -qO- "${RURL}" | jq .tag_name | tr -d '"' | tr -d 'v')
-	DL=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | (contains("sha256") | not) and contains("x86_64-unknown-linux-gnu.tar.gz")) | .browser_download_url' | tr -d '"')
-	FN=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | (contains("sha256") | not) and contains("x86_64-unknown-linux-gnu.tar.gz")) | .name' | tr -d '"')
-
-	function download() {
-			echo "download $1 version"
-			echo "installing ${vers}"
-			rm -rf /tmp/"${FN}" /tmp/"${APP}_${vers}"
-			wget -qc "${DL}" -O /tmp/"${FN}"
-			mkdir -p /tmp/"${APP}_${vers}"
-			tar -axf /tmp/"${FN}" -C /tmp/"${APP}_${vers}" --strip-components=1
-			if [ "$(id -u)" == 0 ]; then
-					BDIR="/usr/local/bin"
-					sudo rm -f "${BDIR}/${APP}"
-					sudo install /tmp/"${APP}_${vers}"/"${APP}" "${BDIR}/${APP}"
-			else
-					BDIR="${HOME}/.local/bin"
-					rm -f "${BDIR}/${APP}"
-					install /tmp/"${APP}_${vers}"/"${APP}" "${BDIR}/${APP}"
-			fi
-			rm -rf /tmp/"${FN}" /tmp/"${APP}_${vers}"
-	}
-
-	if [ -z "$(command -v ${APP})" ]; then
-			download new
-	else
-			APPVER=$($(command -v ${APP}) --version 2>&1 | grep "^${APP}" | awk '{print $2}')
-			if [ "${APPVER}" = "${vers}" ]; then
-					echo "${APP} version is current"
-			else
-					download "${vers}"
-			fi
-	fi
 }
 
 # :command.function
@@ -3138,6 +2443,323 @@ gup_install_zig_command() {
 }
 
 # :command.function
+gup_install_gohelpers_command() {
+
+	# src/install_gohelpers_command.sh
+	# gopls
+	echo "installing gopls"
+	go install golang.org/x/tools/gopls@latest
+
+	# gotests
+	echo "installing gotests"
+	go install github.com/cweill/gotests/gotests@latest
+
+	# gomodifytags
+	echo "installing gomodifytags"
+	go install github.com/fatih/gomodifytags@latest
+
+	# impl
+	echo "installing impl"
+	go install github.com/josharian/impl@latest
+
+	# goplay
+	echo "installing goplay"
+	go install github.com/haya14busa/goplay/cmd/goplay@latest
+
+	# dlv
+	echo "installing dlv"
+	go install github.com/go-delve/delve/cmd/dlv@latest
+
+	# staticcheck
+	echo "installing staticcheck"
+	go install honnef.co/go/tools/cmd/staticcheck@latest
+
+	# govulncheck
+	echo "installing govulncheck"
+	go install golang.org/x/vuln/cmd/govulncheck@latest
+
+	# air
+	echo "installing air"
+	go install github.com/air-verse/air@latest
+
+	# templ
+	echo "installing templ"
+	go install github.com/a-h/templ/cmd/templ@latest
+
+	# swag
+	echo "installing swag"
+	go install github.com/swaggo/swag/cmd/swag@latest
+
+}
+
+# :command.function
+gup_install_go_blueprint_command() {
+
+	# src/install_go_blueprint_command.sh
+	APP="go-blueprint"
+	REPO="melkeydev/go-blueprint"
+	vers=$(gup_get_latest_release "${REPO}")
+
+	gup_ensure_go
+	go install github.com/melkeydev/go-blueprint@${vers}
+}
+
+# :command.function
+gup_install_gowebly_command() {
+
+	# src/install_gowebly_command.sh
+	APP="gowebly"
+	REPO="gowebly/gowebly"
+	vers=$(gup_get_latest_release "${REPO}")
+
+	gup_ensure_go
+	go install github.com/gowebly/gowebly/v2@${vers}
+}
+
+# :command.function
+gup_install_goplay_command() {
+
+	# src/install_goplay_command.sh
+	APP="goplay"
+	REPO="haya14busa/goplay"
+	vers=$(gup_get_latest_release "${REPO}")
+
+	gup_ensure_go
+	go install github.com/haya14busa/goplay/cmd/goplay@${vers}
+
+}
+
+# :command.function
+gup_install_gotests_command() {
+
+	# src/install_gotests_command.sh
+	APP="gotests"
+	REPO="cweill/gotests"
+	vers=$(gup_get_latest_release "${REPO}")
+
+	gup_ensure_go
+	go install github.com/cweill/gotests/gotests@${vers}
+
+}
+
+# :command.function
+gup_install_impl_command() {
+
+	# src/install_impl_command.sh
+	APP="impl"
+	REPO="josharian/impl"
+	vers=$(gup_get_latest_release "${REPO}")
+
+	gup_ensure_go
+	go install github.com/josharian/impl@${vers}
+
+}
+
+# :command.function
+gup_install_gomodifytags_command() {
+
+	# src/install_gomodifytags_command.sh
+	APP="gomodifytags"
+	REPO="fatih/gomodifytags"
+	vers=$(gup_get_latest_release "${REPO}")
+
+	gup_ensure_go
+	go install github.com/fatih/gomodifytags@${vers}
+
+}
+
+# :command.function
+gup_install_air_command() {
+
+	# src/install_air_command.sh
+	APP="air"
+	REPO="cosmtrek/air"
+	vers=$(gup_get_latest_release "${REPO}")
+
+	gup_ensure_go
+	go install github.com/cosmtrek/air@${vers}
+
+}
+
+# :command.function
+gup_install_gofumpt_command() {
+
+	# src/install_gofumpt_command.sh
+	APP="gofumpt"
+	REPO="mvdan/gofumpt"
+	vers=$(gup_get_latest_release "${REPO}")
+
+	gup_ensure_go
+	go install mvdan.cc/gofumpt@${vers}
+}
+
+# :command.function
+gup_install_goimports_command() {
+
+	# src/install_goimports_command.sh
+	APP="goimports"
+	REPO="golang/tools"
+	vers=$(gup_get_latest_release "${REPO}")
+
+	gup_ensure_go
+	go install golang.org/x/tools/cmd/goimports@${vers}
+}
+
+# :command.function
+gup_install_golangci_lint_command() {
+
+	# src/install_golangci_lint_command.sh
+	APP="golangci-lint"
+	REPO="golangci/golangci-lint"
+	vers=$(gup_get_latest_release "${REPO}")
+
+	gup_ensure_go
+	go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@${vers}
+}
+
+# :command.function
+gup_install_staticcheck_command() {
+
+	# src/install_staticcheck_command.sh
+	APP="staticcheck"
+	REPO="dominikh/go-tools"
+	vers=$(gup_get_latest_release "${REPO}")
+
+	gup_ensure_go
+	go install honnef.co/go/tools/cmd/staticcheck@${vers}
+
+}
+
+# :command.function
+gup_install_nilaway_command() {
+
+	# src/install_nilaway_command.sh
+	APP="nilaway"
+	REPO="uber-go/nilaway"
+	vers=$(gup_get_latest_release "${REPO}")
+
+	gup_ensure_go
+	go install go.uber.org/nilaway/cmd/nilaway@${vers}
+}
+
+# :command.function
+gup_install_swag_command() {
+
+	# src/install_swag_command.sh
+	APP="swag"
+	REPO="swaggo/swag"
+	vers=$(gup_get_latest_release "${REPO}")
+
+	gup_ensure_go
+	go install github.com/swaggo/swag/cmd/swag@${vers}
+}
+
+# :command.function
+gup_install_templ_command() {
+
+	# src/install_templ_command.sh
+	APP="templ"
+	REPO="a-h/templ"
+	vers=$(gup_get_latest_release "${REPO}")
+
+	gup_ensure_go
+	go install github.com/a-h/templ/cmd/templ@${vers}
+
+}
+
+# :command.function
+gup_install_ruff_command() {
+
+	# src/install_ruff_command.sh
+	APP="ruff"
+	REPO="astral-sh/ruff"
+	RURL="https://api.github.com/repos/${REPO}/releases/latest"
+	vers=$(wget -qO- "${RURL}" | jq .tag_name | tr -d '"' | tr -d 'v')
+	DL=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | (contains("sha256") | not) and contains("x86_64-unknown-linux-gnu.tar.gz")) | .browser_download_url' | tr -d '"')
+	FN=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | (contains("sha256") | not) and contains("x86_64-unknown-linux-gnu.tar.gz")) | .name' | tr -d '"')
+
+	function download() {
+			echo "download $1 version"
+			echo "installing ${vers}"
+			rm -rf /tmp/"${FN}" /tmp/"${APP}_${vers}"
+			wget -qc "${DL}" -O /tmp/"${FN}"
+			mkdir -p /tmp/"${APP}_${vers}"
+			tar -axf /tmp/"${FN}" -C /tmp/"${APP}_${vers}" --strip-components=1
+			if [ "$(id -u)" == 0 ]; then
+					BDIR="/usr/local/bin"
+					sudo rm -f "${BDIR}/${APP}"
+					sudo install /tmp/"${APP}_${vers}"/"${APP}" "${BDIR}/${APP}"
+			else
+					BDIR="${HOME}/.local/bin"
+					rm -f "${BDIR}/${APP}"
+					install /tmp/"${APP}_${vers}"/"${APP}" "${BDIR}/${APP}"
+			fi
+			rm -rf /tmp/"${FN}" /tmp/"${APP}_${vers}"
+	}
+
+	if [ -z "$(command -v ${APP})" ]; then
+			download new
+	else
+			APPVER=$($(command -v ${APP}) --version 2>&1 | grep "^${APP}" | awk '{print $2}')
+			if [ "${APPVER}" = "${vers}" ]; then
+					echo "${APP} version is current"
+			else
+					download "${vers}"
+			fi
+	fi
+}
+
+# :command.function
+gup_install_scc_command() {
+
+	# src/install_scc_command.sh
+	APP="scc"
+	REPO="boyter/scc"
+	vers=$(gup_get_latest_release "${REPO}")
+
+	gup_ensure_go
+	go install github.com/boyter/scc/v3@${vers}
+}
+
+# :command.function
+gup_install_yamlfmt_command() {
+
+	# src/install_yamlfmt_command.sh
+	APP="yamlfmt"
+	REPO="google/yamlfmt"
+	vers=$(gup_get_latest_release "${REPO}")
+
+	gup_ensure_go
+	go install github.com/google/yamlfmt/cmd/yamlfmt@${vers}
+}
+
+# :command.function
+gup_install_gopls_command() {
+
+	# src/install_gopls_command.sh
+	APP="gopls"
+	REPO="golang/tools"
+	vers=$(gup_get_latest_release "${REPO}")
+
+	gup_ensure_go
+	go install golang.org/x/tools/gopls@${vers}
+
+}
+
+# :command.function
+gup_install_dlv_command() {
+
+	# src/install_dlv_command.sh
+	APP="dlv"
+	REPO="go-delve/delve"
+	vers=$(gup_get_latest_release "${REPO}")
+
+	gup_ensure_go
+	go install github.com/go-delve/delve/cmd/dlv@${vers}
+
+}
+
+# :command.function
 gup_install_zls_command() {
 
 	# src/install_zls_command.sh
@@ -3175,123 +2797,96 @@ gup_install_zls_command() {
 }
 
 # :command.function
-gup_install_btop_command() {
+gup_install_neovim_command() {
 
-	# src/install_btop_command.sh
-	APP="btop"
-	REPO="aristocratos/btop"
-	RURL="https://api.github.com/repos/${REPO}/releases/latest"
-	vers=$(wget -qO- "${RURL}" | jq .tag_name | tr -d '"')
-	DL=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains ("x86_64-linux")) | .browser_download_url' | tr -d '"')
-	FN=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains ("x86_64-linux")) | .name' | tr -d '"')
-
-	PREFIX="/usr/local"
-
-	function download() {
-			echo "download $1 version"
-			echo "installing ${vers}"
-
-			rm -f /tmp/"${FN}"
-			wget -qO /tmp/"${FN}" "${DL}"
-
-			rm -f /tmp/"${APP}"
-			mkdir -p /tmp/"${APP}"
-			tar -xjf /tmp/"${FN}" -C /tmp/"${APP}" --strip-components=2
-
-			# required directories
-			sudo mkdir -p "${PREFIX}/bin"
-			sudo mkdir -p "${PREFIX}/share/${APP}"
-			sudo mkdir -p "${PREFIX}/share/${APP}/themes"
-			sudo mkdir -p "${PREFIX}/share/applications"
-			sudo mkdir -p "${PREFIX}/share/icons/hicolor/48x48/apps"
-			sudo mkdir -p "${PREFIX}/share/icons/hicolor/scalable/apps"
-
-			# btop binary
-			sudo mkdir -p "${PREFIX}/bin"
-			sudo install /tmp/btop/bin/btop "${PREFIX}/bin/btop"
-
-			# doc
-			sudo cp /tmp/btop/README.md "${PREFIX}/share/${APP}/README.md"
-
-			# Themes
-			sudo cp /tmp/btop/themes/* "${PREFIX}/share/${APP}/themes/"
-
-			# desktop file
-			sudo cp /tmp/btop/btop.desktop "${PREFIX}/share/applications/btop.desktop"
-
-			# icons
-			sudo cp /tmp/btop/Img/icon.png "${PREFIX}/share/icons/hicolor/48x48/apps/btop.png"
-			sudo cp /tmp/btop/Img/icon.svg "${PREFIX}/share/icons/hicolor/scalable/apps/btop.svg"
-
-			# cleanup
-			rm -f /tmp/"${APP}"
-			rm -f /tmp/"${FN}"
-	}
-
-	if [ -z "$(command -v ${APP})" ]; then
-			download new
-	else
-			APPVER=$($(command -v ${APP}) --version | grep "^btop version:" | awk -F':' '{print $2}' | sed -E 's/\x1B\[[0-9;]*[a-zA-Z]//g' | awk '{$1=$1; print}')
-			version=$(echo "${vers}" | sed 's/^v//')
-			if [ "${APPVER}" = "${version}" ]; then
-					echo "${APP} version is current"
-			else
-					download "${vers}"
-			fi
-	fi
-}
-
-# :command.function
-gup_install_gotop_command() {
-
-	# src/install_gotop_command.sh
-	APP="gotop"
-	REPO="xxxserxxx/gotop"
+	# src/install_neovim_command.sh
+	APP="nvim"
+	REPO="neovim/neovim"
 	RURL="https://api.github.com/repos/${REPO}/releases/latest"
 	vers=$(wget -qO- "${RURL}" | jq .tag_name | tr -d '"' | tr -d 'v')
+	DL=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains("linux-x86_64.tar.gz")) | .browser_download_url' | tr -d '"')
+	FN=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains("linux-x86_64.tar.gz")) | .name' | tr -d '"')
+
+	IDIR=${HOME}/.local/nvim
+	BDIR=${HOME}/.local/bin
 
 	function download() {
 			echo "download $1 version"
 			echo "installing ${vers}"
-			DL=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains ("linux_amd64.tgz")) | .browser_download_url' | tr -d '"')
-			FN=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains ("linux_amd64.tgz")) | .name' | tr -d '"')
 			rm -f /tmp/"${FN}"
 			wget -qc "${DL}" -O /tmp/"${FN}"
-			rm -f "${BDIR}/${APP}"
-			if [ "$(id -u)" == 0 ]; then
-					BDIR="/usr/local/bin"
-					tar axf /tmp/"${FN}" -C "${BDIR}"
-			else
-					BDIR="${HOME}/.local/bin"
-					tar axf /tmp/"${FN}" -C "${BDIR}"
-			fi
+			rm -rf "${IDIR:?}"
+			mkdir -p "${IDIR}"
+			tar -zxf /tmp/"${FN}" --strip-components=1 -C "${IDIR}"
+			ln -sf "${IDIR}/bin/nvim" "${BDIR}/nvim"
 			rm -f /tmp/"${FN}"
 	}
 
 	if [ -z "$(command -v ${APP})" ]; then
 			download new
 	else
-			APPVER=$($(command -v ${APP}) --version 2>&1 | grep ^${APP} | awk '{print $2}')
+			APPVER=$($(command -v "${APP}") --version 2>&1 | grep -i "^${APP}" | awk '{print $2}' | tr -d 'v')
 			if [ "${APPVER}" = "${vers}" ]; then
 					echo "${APP} version is current"
 			else
 					download "${vers}"
 			fi
 	fi
+
 }
 
 # :command.function
-gup_install_blackbox_exporter_command() {
+gup_install_helix_command() {
 
-	# src/install_blackbox_exporter_command.sh
-	APP="blackbox_exporter"
-	REPO="prometheus/blackbox_exporter"
+	# src/install_helix_command.sh
+	APP="hx"
+	REPO="helix-editor/helix"
 	RURL="https://api.github.com/repos/${REPO}/releases/latest"
 	vers=$(wget -qO- "${RURL}" | jq .tag_name | tr -d '"' | tr -d 'v')
-	DL=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | (contains("sha256") | not) and contains("linux-amd64.tar.gz")) | .browser_download_url' | tr -d '"')
-	FN=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | (contains("sha256") | not) and contains("linux-amd64.tar.gz")) | .name' | tr -d '"')
+	DL=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains ("x86_64-linux")) | .browser_download_url' | tr -d '"')
+	FN=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains ("x86_64-linux")) | .name' | tr -d '"')
+
+	IDIR=${HOME}/.config/helix
+	BDIR=${HOME}/.local/helix
 
 	function download() {
+			echo "download $1 version"
+			echo "installing ${vers}"
+			mkdir -p "${IDIR}" "${BDIR}"
+			touch "${IDIR}/config.toml"
+			rm -f /tmp/"${FN}"
+			wget -qc "${DL}" -O /tmp/"${FN}"
+			rm -rf "${BDIR:?}"/*
+			tar axf /tmp/"${FN}" --strip-components=1 -C "${BDIR}"
+			ln -sf "${BDIR}/hx" "${HOME}/.local/bin/hx"
+			rm -f /tmp/"${FN}"
+	}
+
+	if [ -z "$(command -v ${APP})" ]; then
+			download new
+	else
+			APPVER=$($(command -v ${APP}) -V 2>&1 | grep -e "^helix" | awk '{print $2}')
+			if [ "${APPVER}" = "${vers}" ]; then
+					echo "${APP} version is current"
+			else
+					download "${vers}"
+			fi
+	fi
+
+}
+
+# :command.function
+gup_install_prometheus_command() {
+
+	# src/install_prometheus_command.sh
+	APP="prometheus"
+	REPO="prometheus/prometheus"
+	RURL="https://api.github.com/repos/${REPO}/releases/latest"
+	vers=$(wget -qO- "${RURL}" | jq .tag_name | tr -d '"' | tr -d 'v')
+	DL=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains("linux-amd64.tar.gz")) | .browser_download_url' | tr -d '"')
+	FN=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains("linux-amd64.tar.gz")) | .name' | tr -d '"')
+
+	download() {
 			echo "download $1 version"
 			echo "installing ${vers}"
 			rm -rf /tmp/"${FN}" /tmp/"${APP}_${vers}"
@@ -3301,11 +2896,15 @@ gup_install_blackbox_exporter_command() {
 			if [ "$(id -u)" == 0 ]; then
 					BDIR="/usr/local/bin"
 					sudo rm -f "${BDIR}/${APP}"
+					sudo rm -f "${BDIR}/promtool"
 					sudo install /tmp/"${APP}_${vers}"/"${APP}" "${BDIR}/${APP}"
+					sudo install /tmp/"${APP}_${vers}"/promtool "${BDIR}/promtool"
 			else
 					BDIR="${HOME}/.local/bin"
 					rm -f "${BDIR}/${APP}"
+					rm -f "${BDIR}/promtool"
 					install /tmp/"${APP}_${vers}"/"${APP}" "${BDIR}/${APP}"
+					install /tmp/"${APP}_${vers}"/promtool "${BDIR}/promtool"
 			fi
 			rm -rf /tmp/"${FN}" /tmp/"${APP}_${vers}"
 	}
@@ -3313,13 +2912,14 @@ gup_install_blackbox_exporter_command() {
 	if [ -z "$(command -v ${APP})" ]; then
 			download new
 	else
-			APPVER=$($(command -v ${APP}) --version 2>&1 | grep -i "^${APP}" | awk '{print $3}')
+			APPVER=$($(command -v ${APP}) --version 2>&1 | grep -i ^${APP} | awk '{print $3}')
 			if [ "${APPVER}" = "${vers}" ]; then
 					echo "${APP} version is current"
 			else
 					download "${vers}"
 			fi
 	fi
+
 }
 
 # :command.function
@@ -3462,17 +3062,17 @@ gup_install_postgres_exporter_command() {
 }
 
 # :command.function
-gup_install_prometheus_command() {
+gup_install_blackbox_exporter_command() {
 
-	# src/install_prometheus_command.sh
-	APP="prometheus"
-	REPO="prometheus/prometheus"
+	# src/install_blackbox_exporter_command.sh
+	APP="blackbox_exporter"
+	REPO="prometheus/blackbox_exporter"
 	RURL="https://api.github.com/repos/${REPO}/releases/latest"
 	vers=$(wget -qO- "${RURL}" | jq .tag_name | tr -d '"' | tr -d 'v')
-	DL=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains("linux-amd64.tar.gz")) | .browser_download_url' | tr -d '"')
-	FN=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains("linux-amd64.tar.gz")) | .name' | tr -d '"')
+	DL=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | (contains("sha256") | not) and contains("linux-amd64.tar.gz")) | .browser_download_url' | tr -d '"')
+	FN=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | (contains("sha256") | not) and contains("linux-amd64.tar.gz")) | .name' | tr -d '"')
 
-	download() {
+	function download() {
 			echo "download $1 version"
 			echo "installing ${vers}"
 			rm -rf /tmp/"${FN}" /tmp/"${APP}_${vers}"
@@ -3482,15 +3082,11 @@ gup_install_prometheus_command() {
 			if [ "$(id -u)" == 0 ]; then
 					BDIR="/usr/local/bin"
 					sudo rm -f "${BDIR}/${APP}"
-					sudo rm -f "${BDIR}/promtool"
 					sudo install /tmp/"${APP}_${vers}"/"${APP}" "${BDIR}/${APP}"
-					sudo install /tmp/"${APP}_${vers}"/promtool "${BDIR}/promtool"
 			else
 					BDIR="${HOME}/.local/bin"
 					rm -f "${BDIR}/${APP}"
-					rm -f "${BDIR}/promtool"
 					install /tmp/"${APP}_${vers}"/"${APP}" "${BDIR}/${APP}"
-					install /tmp/"${APP}_${vers}"/promtool "${BDIR}/promtool"
 			fi
 			rm -rf /tmp/"${FN}" /tmp/"${APP}_${vers}"
 	}
@@ -3498,14 +3094,13 @@ gup_install_prometheus_command() {
 	if [ -z "$(command -v ${APP})" ]; then
 			download new
 	else
-			APPVER=$($(command -v ${APP}) --version 2>&1 | grep -i ^${APP} | awk '{print $3}')
+			APPVER=$($(command -v ${APP}) --version 2>&1 | grep -i "^${APP}" | awk '{print $3}')
 			if [ "${APPVER}" = "${vers}" ]; then
 					echo "${APP} version is current"
 			else
 					download "${vers}"
 			fi
 	fi
-
 }
 
 # :command.function
@@ -3546,6 +3141,401 @@ gup_install_snmp_exporter_command() {
 					download "${vers}"
 			fi
 	fi
+}
+
+# :command.function
+gup_install_btop_command() {
+
+	# src/install_btop_command.sh
+	APP="btop"
+	REPO="aristocratos/btop"
+	RURL="https://api.github.com/repos/${REPO}/releases/latest"
+	vers=$(wget -qO- "${RURL}" | jq .tag_name | tr -d '"')
+	DL=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains ("x86_64-linux")) | .browser_download_url' | tr -d '"')
+	FN=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains ("x86_64-linux")) | .name' | tr -d '"')
+
+	PREFIX="/usr/local"
+
+	function download() {
+			echo "download $1 version"
+			echo "installing ${vers}"
+
+			rm -f /tmp/"${FN}"
+			wget -qO /tmp/"${FN}" "${DL}"
+
+			rm -f /tmp/"${APP}"
+			mkdir -p /tmp/"${APP}"
+			tar -xjf /tmp/"${FN}" -C /tmp/"${APP}" --strip-components=2
+
+			# required directories
+			sudo mkdir -p "${PREFIX}/bin"
+			sudo mkdir -p "${PREFIX}/share/${APP}"
+			sudo mkdir -p "${PREFIX}/share/${APP}/themes"
+			sudo mkdir -p "${PREFIX}/share/applications"
+			sudo mkdir -p "${PREFIX}/share/icons/hicolor/48x48/apps"
+			sudo mkdir -p "${PREFIX}/share/icons/hicolor/scalable/apps"
+
+			# btop binary
+			sudo mkdir -p "${PREFIX}/bin"
+			sudo install /tmp/btop/bin/btop "${PREFIX}/bin/btop"
+
+			# doc
+			sudo cp /tmp/btop/README.md "${PREFIX}/share/${APP}/README.md"
+
+			# Themes
+			sudo cp /tmp/btop/themes/* "${PREFIX}/share/${APP}/themes/"
+
+			# desktop file
+			sudo cp /tmp/btop/btop.desktop "${PREFIX}/share/applications/btop.desktop"
+
+			# icons
+			sudo cp /tmp/btop/Img/icon.png "${PREFIX}/share/icons/hicolor/48x48/apps/btop.png"
+			sudo cp /tmp/btop/Img/icon.svg "${PREFIX}/share/icons/hicolor/scalable/apps/btop.svg"
+
+			# cleanup
+			rm -f /tmp/"${APP}"
+			rm -f /tmp/"${FN}"
+	}
+
+	if [ -z "$(command -v ${APP})" ]; then
+			download new
+	else
+			APPVER=$($(command -v ${APP}) --version | grep "^btop version:" | awk -F':' '{print $2}' | sed -E 's/\x1B\[[0-9;]*[a-zA-Z]//g' | awk '{$1=$1; print}')
+			version=$(echo "${vers}" | sed 's/^v//')
+			if [ "${APPVER}" = "${version}" ]; then
+					echo "${APP} version is current"
+			else
+					download "${vers}"
+			fi
+	fi
+}
+
+# :command.function
+gup_install_gotop_command() {
+
+	# src/install_gotop_command.sh
+	APP="gotop"
+	REPO="xxxserxxx/gotop"
+	RURL="https://api.github.com/repos/${REPO}/releases/latest"
+	vers=$(wget -qO- "${RURL}" | jq .tag_name | tr -d '"' | tr -d 'v')
+
+	function download() {
+			echo "download $1 version"
+			echo "installing ${vers}"
+			DL=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains ("linux_amd64.tgz")) | .browser_download_url' | tr -d '"')
+			FN=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains ("linux_amd64.tgz")) | .name' | tr -d '"')
+			rm -f /tmp/"${FN}"
+			wget -qc "${DL}" -O /tmp/"${FN}"
+			rm -f "${BDIR}/${APP}"
+			if [ "$(id -u)" == 0 ]; then
+					BDIR="/usr/local/bin"
+					tar axf /tmp/"${FN}" -C "${BDIR}"
+			else
+					BDIR="${HOME}/.local/bin"
+					tar axf /tmp/"${FN}" -C "${BDIR}"
+			fi
+			rm -f /tmp/"${FN}"
+	}
+
+	if [ -z "$(command -v ${APP})" ]; then
+			download new
+	else
+			APPVER=$($(command -v ${APP}) --version 2>&1 | grep ^${APP} | awk '{print $2}')
+			if [ "${APPVER}" = "${vers}" ]; then
+					echo "${APP} version is current"
+			else
+					download "${vers}"
+			fi
+	fi
+}
+
+# :command.function
+gup_install_lazydocker_command() {
+
+	# src/install_lazydocker_command.sh
+	APP="lazydocker"
+	REPO="jesseduffield/lazydocker"
+	RURL="https://api.github.com/repos/${REPO}/releases/latest"
+	vers=$(wget -qO- "${RURL}" | jq .tag_name | tr -d '"' | tr -d 'v')
+	DL=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains("inux_x86_64")) | .browser_download_url' | tr -d '"')
+	FN=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains("inux_x86_64")) | .name' | tr -d '"')
+
+	function download() {
+			echo "download $1 version"
+			echo "installing ${vers}"
+			rm -rf /tmp/lazydocker /tmp/"${FN}"
+			wget -qc "${DL}" -O /tmp/"${FN}"
+			tar axf /tmp/"${FN}" lazydocker
+			if [ "$(id -u)" == 0 ]; then
+					IDIR="/usr/local/bin"
+					sudo mkdir -p "${IDIR}"
+					sudo install lazydocker "${IDIR}"
+			else
+					IDIR="${HOME}/.local/bin"
+					mkdir -p "${IDIR}"
+					install lazydocker "${IDIR}"
+			fi
+			rm -rf lazydocker /tmp/"${FN}"
+	}
+
+	if [ -z "$(command -v ${APP})" ]; then
+			download new
+	else
+		APPVER=$($(command -v ${APP}) --version 2>&1 | awk '{print $6}' | sed 's/,//g' | awk -F'=' '{print $2}')
+		if [ "${APPVER}" = "${vers}" ]; then
+				echo "${APP} version is current"
+		else
+				download "${vers}"
+		fi
+	fi
+
+}
+
+# :command.function
+gup_install_minikube_command() {
+
+	# src/install_minikube_command.sh
+	curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+	sudo install minikube-linux-amd64 /usr/local/bin/minikube
+	rm minikube-linux-amd64
+
+}
+
+# :command.function
+gup_install_kubectl_command() {
+
+	# src/install_kubectl_command.sh
+	curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
+	sudo install kubectl /usr/local/bin
+	rm kubectl
+
+}
+
+# :command.function
+gup_install_k9s_command() {
+
+	# src/install_k9s_command.sh
+	APP="k9s"
+	REPO="derailed/k9s"
+	RURL="https://api.github.com/repos/${REPO}/releases/latest"
+	vers=$(wget -qO- "${RURL}" | jq .tag_name | tr -d '"' | tr -d 'v')
+	DL=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | (contains("json") | not) and contains("Linux") and contains("amd64")) | .browser_download_url' | tr -d '"')
+	FN=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | (contains("json") | not) and contains("Linux") and contains("amd64")) | .name' | tr -d '"')
+
+	function download() {
+			echo "download $1 version"
+			echo "installing ${vers}"
+			rm -rf /tmp/"${FN}" /tmp/k9s
+			wget -qc "${DL}" -O /tmp/"${FN}"
+			tar axf /tmp/"${FN}" k9s
+			if [ "$(id -u)" == 0 ]; then
+					IDIR="/usr/local/bin"
+					mkdir -p "${IDIR}"
+					install k9s "$IDIR"
+			else
+					IDIR="${HOME}/.local/bin"
+					mkdir -p "${IDIR}"
+					install k9s "$IDIR"
+			fi
+			rm -rf k9s /tmp/"${FN}"
+	}
+
+	if [ -z "$(command -v ${APP})" ]; then
+			download new
+	else
+		APPVER=$($(command -v ${APP}) version 2>&1 | grep Version | awk '{print $2}' | tr -d 'v')
+		if [ "${APPVER}" = "${vers}" ]; then
+				echo "${APP} version is current"
+		else
+				download "${vers}"
+		fi
+	fi
+
+}
+
+# :command.function
+gup_install_etcd_command() {
+
+	# src/install_etcd_command.sh
+	APP="etcd"
+	REPO="etcd-io/etcd"
+	RURL="https://api.github.com/repos/${REPO}/releases/latest"
+	vers=$(wget -qO- "${RURL}" | jq .tag_name | tr -d '"' | tr -d 'v')
+
+	BDIR="/usr/local/bin"
+
+	download() {
+			echo "download $1 version"
+			echo "installing ${vers}"
+			DL=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains ("linux-amd64")) | .browser_download_url' | tr -d '"')
+			FN=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains ("linux-amd64")) | .name' | tr -d '"')
+			rm -rf /tmp/etcd
+			wget -qc "${DL}" -O "/tmp/${FN}"
+			mkdir -p /tmp/etcd
+			tar -axf "/tmp/${FN}" -C /tmp/etcd --strip-components=1
+			sudo install /tmp/etcd/etcd* "${BDIR}"/.
+			rm -rf /tmp/etcd
+			rm -f "/tmp/${FN}"
+	}
+
+	if [ -z "$(command -v ${APP})" ]; then
+			download new
+	else
+			APPVER=$($(command -v ${APP}) --version 2>&1 | grep "etcd.*Version" | awk '{print $3}' | sed 's/^v//')
+			if [ "${APPVER}" = "${vers}" ]; then
+					echo "${APP} version is current"
+			else
+					download "${vers}"
+			fi
+	fi
+
+}
+
+# :command.function
+gup_install_vagrant_command() {
+
+	# src/install_vagrant_command.sh
+	lsb=$(grep VERSION_CODENAME /etc/os-release | awk -F'=' '{print $2}')
+	wget -O- https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
+	echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com ${lsb} main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
+	sudo apt update -y && sudo apt install vagrant
+}
+
+# :command.function
+gup_install_doctl_command() {
+
+	# src/install_doctl_command.sh
+	APP="doctl"
+	REPO="digitalocean/doctl"
+	RURL="https://api.github.com/repos/${REPO}/releases/latest"
+	vers=$(wget -qO- "${RURL}" | jq .tag_name | tr -d '"' | tr -d 'v')
+	DL=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains ("linux-amd64")) | .browser_download_url' | tr -d '"')
+	FN=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains ("linux-amd64")) | .name' | tr -d '"')
+
+	function download() {
+			echo "download $1 version"
+			echo "installing ${vers}"
+			wget -qc "${DL}" -O /tmp/"${FN}"
+			if [ "$(id -u)" == 0 ]; then
+					BDIR="/usr/local/bin"
+					sudo tar -axf /tmp/"${FN}" -C "${BDIR}" "${APP}"
+			else
+					BDIR="${HOME}/.local/bin"
+					tar -axf /tmp/"${FN}" -C "${BDIR}" "${APP}"
+			fi
+			chmod +x "${BDIR}"/"${APP}"
+			rm -f /tmp/"${FN}"
+	}
+
+	if [ -z "$(command -v ${APP})" ]; then
+			download new
+	else
+			APPVER=$($(command -v ${APP}) version 2>&1 | grep "doctl version" | awk '{print $3}' | awk -F'-' '{print $1}')
+			if [ "${APPVER}" = "${vers}" ]; then
+					echo "${APP} version is current"
+			else
+					download "${vers}"
+			fi
+	fi
+}
+
+# :command.function
+gup_install_b2_command() {
+
+	# src/install_b2_command.sh
+	APP="b2"
+	DL="https://github.com/Backblaze/B2_Command_Line_Tool/releases/latest/download/b2-linux"
+
+	download() {
+			local tmpdir out bdir
+			tmpdir=$(mktemp -d) || { printf 'failed to create tempdir\n' >&2; return 1; }
+			trap 'rm -rf "${tmpdir}"' RETURN
+			out="${tmpdir}/${APP}"
+
+			printf "download %s ...\n" "${APP}"
+			gup_download "${DL}" "${out}" || { printf 'download failed\n' >&2; return 1; }
+
+			chmod +x "${out}"
+
+			if (( EUID == 0 )); then
+					bdir="/usr/local/bin"
+					rm -f "${bdir}"/"${APP}"
+					install -m 0755 "${out}" "${bdir}"/"${APP}"
+			else
+					bdir="${HOME}/.local/bin"
+					mkdir -p "${bdir}"
+					rm -f "${bdir}"/"${APP}"
+					install -m 0755 "${out}" "${bdir}"/"${APP}"
+			fi
+	}
+
+	download "${APP}"
+
+}
+
+# :command.function
+gup_install_githubcli_command() {
+
+	# src/install_githubcli_command.sh
+	APP="gh"
+	REPO="cli/cli"
+	RURL="https://api.github.com/repos/${REPO}/releases/latest"
+	vers=$(wget -qO- "${RURL}" | jq .tag_name | tr -d '"' | tr -d 'v')
+	DL=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains ("linux_amd64.tar.gz")) | .browser_download_url' | tr -d '"')
+	FN=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains ("linux_amd64.tar.gz")) | .name' | tr -d '"')
+
+	IDIR=/usr/local/lib
+	BDIR=/usr/local/bin
+
+	function download() {
+			echo "download $1 version"
+			echo "installing ${vers}"
+			sudo rm -f /tmp/"${FN}"
+			wget -qc "${DL}" -O /tmp/"${FN}"
+			sudo rm -rf "${IDIR}/${APP}"
+			sudo mkdir -p "${IDIR}/${APP}"
+			sudo tar -axf /tmp/"${FN}" --strip-components=1 -C "${IDIR}/${APP}"
+			sudo ls "${IDIR}/${APP}/bin" | sudo xargs -I {} ln -sf "${IDIR}/${APP}/bin/{}" "${BDIR}/{}"
+			sudo rm -f /tmp/"${FN}"
+	}
+
+	if [ -z "$(command -v ${APP})" ]; then
+			download new
+	else
+			APPVER=$($(command -v ${APP}) version 2>&1 | awk '{print $3}')
+			if [ "${APPVER}" = "${vers}" ]; then
+					echo "${APP} version is current"
+			else
+					download "${vers}"
+			fi
+	fi
+}
+
+# :command.function
+gup_install_forgejocli_command() {
+
+	# src/install_forgejocli_command.sh
+	APP="fj"
+	DL="https://codeberg.org/forgejo-contrib/forgejo-cli/releases/download/latest/forgejo-cli-linux.tar.gz"
+	FN="forgejo-cli-linux.tar.gz"
+
+	BDIR=/usr/local/bin
+
+	function download() {
+			echo "download $1 version"
+			echo "installing ${vers}"
+			sudo rm -f /tmp/"${FN}"
+			sudo rm -f /tmp/"${APP}"
+			wget -qc "${DL}" -O /tmp/"${FN}"
+			sudo tar -axf /tmp/"${FN}" -C /tmp
+			ls -l /tmp
+			sudo rm -rf "${BDIR}/${APP}"
+			sudo install -Dm755 /tmp/"${APP}" "${BDIR}/${APP}"
+			sudo rm -f /tmp/"${FN}"
+			sudo rm -f /tmp/"${APP}"
+	}
+
+	download new
 }
 
 # :command.function
@@ -3670,39 +3660,44 @@ gup_install_hugo_command() {
 }
 
 # :command.function
-gup_install_duf_command() {
+gup_install_tailwindcss_command() {
 
-	# src/install_duf_command.sh
-	APP="duf"
-	REPO="muesli/duf"
-	vers=$(gup_get_latest_release "${REPO}")
+	# src/install_tailwindcss_command.sh
+	APP="tailwindcss"
+	REPO="tailwindlabs/tailwindcss"
+	RURL="https://api.github.com/repos/${REPO}/releases/latest"
+	vers=$(wget -qO- "${RURL}" | jq .tag_name | tr -d '"' | tr -d 'v')
+	DL=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains("linux-x64") and (contains("musl") | not)) | .browser_download_url' | tr -d '"')
+	FN=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains("linux-x64") and (contains("musl") | not)) | .name' | tr -d '"')
 
-	gup_ensure_go
-	go install github.com/muesli/duf@${vers}
-}
+	download() {
+			echo "download $1 version"
+			echo "installing ${vers}"
+			rm -rf /tmp/"${FN}"
+			wget -qc "${DL}" -O /tmp/"${FN}"
+			if [ "$(id -u)" == 0 ]; then
+					BDIR="/usr/local/bin"
+					sudo rm -f "${BDIR}/${APP}"
+					sudo install /tmp/"${FN}" "${BDIR}/${APP}"
+			else
+					BDIR="${HOME}/.local/bin"
+					rm -f "${BDIR}/${APP}"
+					install /tmp/"${FN}" "${BDIR}/${APP}"
+			fi
+			rm -rf /tmp/"${FN}"
+	}
 
-# :command.function
-gup_install_gdu_command() {
+	if [ -z "$(command -v ${APP})" ]; then
+			download new
+	else
+			APPVER=$($(command -v ${APP}) --help 2>&1 | grep "${APP}.*v" | awk '{print $3}' | tr -d 'v')
+			if [ "${APPVER}" = "${vers}" ]; then
+					echo "${APP} version is current"
+			else
+					download "${vers}"
+			fi
+	fi
 
-	# src/install_gdu_command.sh
-	APP="gdu"
-	REPO="dundee/gdu"
-	vers=$(gup_get_latest_release "${REPO}")
-
-	gup_ensure_go
-	go install github.com/dundee/gdu/v5/cmd/gdu@${vers}
-}
-
-# :command.function
-gup_install_gum_command() {
-
-	# src/install_gum_command.sh
-	APP="gum"
-	REPO="charmbracelet/gum"
-	vers=$(gup_get_latest_release "${REPO}")
-
-	gup_ensure_go
-	go install github.com/charmbracelet/gum@${vers}
 }
 
 # :command.function
@@ -3743,6 +3738,84 @@ gup_install_marp_command() {
 			else
 					download "${vers}"
 			fi
+	fi
+
+}
+
+# :command.function
+gup_install_duf_command() {
+
+	# src/install_duf_command.sh
+	APP="duf"
+	REPO="muesli/duf"
+	vers=$(gup_get_latest_release "${REPO}")
+
+	gup_ensure_go
+	go install github.com/muesli/duf@${vers}
+}
+
+# :command.function
+gup_install_gdu_command() {
+
+	# src/install_gdu_command.sh
+	APP="gdu"
+	REPO="dundee/gdu"
+	vers=$(gup_get_latest_release "${REPO}")
+
+	gup_ensure_go
+	go install github.com/dundee/gdu/v5/cmd/gdu@${vers}
+}
+
+# :command.function
+gup_install_gum_command() {
+
+	# src/install_gum_command.sh
+	APP="gum"
+	REPO="charmbracelet/gum"
+	vers=$(gup_get_latest_release "${REPO}")
+
+	gup_ensure_go
+	go install github.com/charmbracelet/gum@${vers}
+}
+
+# :command.function
+gup_install_lazygit_command() {
+
+	# src/install_lazygit_command.sh
+	APP="lazygit"
+	REPO="jesseduffield/lazygit"
+	RURL="https://api.github.com/repos/${REPO}/releases/latest"
+	vers=$(wget -qO- "${RURL}" | jq .tag_name | tr -d '"' | tr -d 'v')
+	DL=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains("linux_x86_64")) | .browser_download_url' | tr -d '"')
+	FN=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains("linux_x86_64")) | .name' | tr -d '"')
+
+	function download() {
+			echo "download $1 version"
+			echo "installing ${vers}"
+			rm -rf /tmp/lazygit /tmp/"${FN}"
+			wget -qc "${DL}" -O /tmp/"${FN}"
+			tar axf /tmp/"${FN}" lazygit
+			if [ "$(id -u)" == 0 ]; then
+					IDIR="/usr/local/bin"
+					sudo mkdir -p "${IDIR}"
+					sudo install lazygit "${IDIR}"
+			else
+					IDIR="${HOME}/.local/bin"
+					mkdir -p "${IDIR}"
+					install lazygit "${IDIR}"
+			fi
+			rm -rf lazygit /tmp/"${FN}"
+	}
+
+	if [ -z "$(command -v ${APP})" ]; then
+			download new
+	else
+		APPVER=$($(command -v ${APP}) --version 2>&1 | awk '{print $6}' | sed 's/,//g' | awk -F'=' '{print $2}')
+		if [ "${APPVER}" = "${vers}" ]; then
+				echo "${APP} version is current"
+		else
+				download "${vers}"
+		fi
 	fi
 
 }
@@ -3826,7 +3899,12 @@ gup_install_task_command() {
 gup_install_timer_command() {
 
 	# src/install_timer_command.sh
-	go install github.com/caarlos0/timer@latest
+	APP="timer"
+	REPO="caarlos0/timer"
+	vers=$(gup_get_latest_release "${REPO}")
+
+	gup_ensure_go
+	go install github.com/caarlos0/timer@${vers}
 }
 
 # :command.function
@@ -3898,233 +3976,165 @@ gup_install_zfsnap_command() {
 }
 
 # :command.function
-gup_install_lazydocker_command() {
+gup_install_terraform_command() {
 
-	# src/install_lazydocker_command.sh
-	APP="lazydocker"
-	REPO="jesseduffield/lazydocker"
+	# src/install_terraform_command.sh
+	APP="terraform"
+	REPO="hashicorp/terraform"
 	RURL="https://api.github.com/repos/${REPO}/releases/latest"
 	vers=$(wget -qO- "${RURL}" | jq .tag_name | tr -d '"' | tr -d 'v')
-	DL=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains("inux_x86_64")) | .browser_download_url' | tr -d '"')
-	FN=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains("inux_x86_64")) | .name' | tr -d '"')
+
+	DLREPO="https://releases.hashicorp.com/terraform"
+	FN="${APP}_${vers}_linux_amd64.zip"
+	DL="${DLREPO}/${vers}/${FN}"
 
 	function download() {
 			echo "download $1 version"
 			echo "installing ${vers}"
-			rm -rf /tmp/lazydocker /tmp/"${FN}"
+			rm -rf /tmp/"${FN}" /tmp/"${APP}_${vers}"
 			wget -qc "${DL}" -O /tmp/"${FN}"
-			tar axf /tmp/"${FN}" lazydocker
+			mkdir -p /tmp/"${APP}_${vers}"
+			unzip /tmp/"${FN}" -d /tmp/"${APP}_${vers}"
 			if [ "$(id -u)" == 0 ]; then
-					IDIR="/usr/local/bin"
-					sudo mkdir -p "${IDIR}"
-					sudo install lazydocker "${IDIR}"
+					BDIR="/usr/local/bin"
+					sudo install /tmp/"${APP}_${vers}"/"${APP}" "${BDIR}/${APP}"
 			else
-					IDIR="${HOME}/.local/bin"
-					mkdir -p "${IDIR}"
-					install lazydocker "${IDIR}"
+					BDIR="${HOME}/.local/bin"
+					install /tmp/"${APP}_${vers}"/"${APP}" "${BDIR}/${APP}"
 			fi
-			rm -rf lazydocker /tmp/"${FN}"
+			rm -rf /tmp/"${FN}"
 	}
 
 	if [ -z "$(command -v ${APP})" ]; then
 			download new
 	else
-		APPVER=$($(command -v ${APP}) --version 2>&1 | awk '{print $6}' | sed 's/,//g' | awk -F'=' '{print $2}')
-		if [ "${APPVER}" = "${vers}" ]; then
-				echo "${APP} version is current"
-		else
-				download "${vers}"
-		fi
+			APPVER=$($(command -v ${APP}) version 2>&1 | grep -i "^${APP}" | awk '{print $2}' | tr -d 'v')
+			if [ "${APPVER}" = "${vers}" ]; then
+					echo "${APP} version is current"
+			else
+					download "${vers}"
+			fi
 	fi
+}
+
+# :command.function
+gup_install_distrobuilder_command() {
+
+	# src/install_distrobuilder_command.sh
+	PWD=$(pwd)
+	REPO="https://github.com/lxc/distrobuilder"
+	rm -rf /tmp/distrobuilder
+	git clone "${REPO}" /tmp/distrobuilder
+	cd /tmp/distrobuilder
+	make
+	cd "$PWD"
+	rm -rf /tmp/distrobuilder
 
 }
 
 # :command.function
-gup_install_vagrant_command() {
+gup_install_upx_command() {
 
-	# src/install_vagrant_command.sh
-	lsb=$(grep VERSION_CODENAME /etc/os-release | awk -F'=' '{print $2}')
-	wget -O- https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
-	echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com ${lsb} main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
-	sudo apt update -y && sudo apt install vagrant
-}
-
-# :command.function
-gup_install_etcd_command() {
-
-	# src/install_etcd_command.sh
-	APP="etcd"
-	REPO="etcd-io/etcd"
+	# src/install_upx_command.sh
+	APP="upx"
+	REPO="upx/upx"
 	RURL="https://api.github.com/repos/${REPO}/releases/latest"
 	vers=$(wget -qO- "${RURL}" | jq .tag_name | tr -d '"' | tr -d 'v')
+	DL=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | (contains("sha256") | not) and contains("amd64_linux.tar.xz")) | .browser_download_url' | tr -d '"')
+	FN=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | (contains("sha256") | not) and contains("amd64_linux.tar.xz")) | .name' | tr -d '"')
 
-	BDIR="/usr/local/bin"
+	function download() {
+			echo "download $1 version"
+			echo "installing ${vers}"
+			rm -rf /tmp/"${FN}" /tmp/"${APP}_${vers}"
+			wget -qc "${DL}" -O /tmp/"${FN}"
+			mkdir -p /tmp/"${APP}_${vers}"
+			tar -axf /tmp/"${FN}" -C /tmp/"${APP}_${vers}" --strip-components=1
+			if [ "$(id -u)" == 0 ]; then
+					BDIR="/usr/local/bin"
+					sudo rm -f "${BDIR}/${APP}"
+					sudo install /tmp/"${APP}_${vers}/${APP}" "${BDIR}/${APP}"
+			else
+					BDIR="${HOME}/.local/bin"
+					rm -f "${BDIR}/${APP}"
+					install /tmp/"${APP}_${vers}/${APP}" "${BDIR}/${APP}"
+			fi
+			rm -rf /tmp/"${FN}" /tmp/"${APP}_${vers}"
+	}
+
+	if [ -z "$(command -v "${APP}")" ]; then
+			download new
+	else
+			APPVER=$($(command -v "${APP}") -V 2>&1 | grep -e "^${APP}" | awk '{print $2}')
+			if [ "${APPVER}" = "${vers}" ]; then
+					echo "${APP} version is current"
+			else
+					download "${vers}"
+			fi
+	fi
+}
+
+# :command.function
+gup_install_sqlc_command() {
+
+	# src/install_sqlc_command.sh
+	APP="sqlc"
+	REPO="sqlc-dev/sqlc"
+	vers=$(gup_get_latest_release "${REPO}")
+
+	gup_ensure_go
+	go install github.com/sqlc-dev/sqlc/cmd/sqlc@${vers}
+}
+
+# :command.function
+gup_install_mkcert_command() {
+
+	# src/install_mkcert_command.sh
+	APP="mkcert"
+
+	sudo apt update -y && \
+	sudo apt install -y libnss3-tools && \
+	sudo wget -O "/usr/local/bin/${APP}" "https://dl.filippo.io/mkcert/latest?for=linux/amd64" && \
+	sudo chmod +x "/usr/local/bin/${APP}"
+
+}
+
+# :command.function
+gup_install_govulncheck_command() {
+
+	# src/install_govulncheck_command.sh
+	APP="govulncheck"
+	REPO="golang/vuln"
+	vers=$(gup_get_latest_release "${REPO}")
+
+	gup_ensure_go
+	go install golang.org/x/vuln/cmd/govulncheck@${vers}
+
+}
+
+# :command.function
+gup_install_nerdfonts_command() {
+
+	# src/install_nerdfonts_command.sh
+	REPO="ryanoasis/nerd-fonts"
+	RURL="https://api.github.com/repos/${REPO}/releases/latest"
+	FONTDIR="${HOME}/.local/share/fonts"
 
 	download() {
-			echo "download $1 version"
-			echo "installing ${vers}"
-			DL=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains ("linux-amd64")) | .browser_download_url' | tr -d '"')
-			FN=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains ("linux-amd64")) | .name' | tr -d '"')
-			rm -rf /tmp/etcd
-			wget -qc "${DL}" -O "/tmp/${FN}"
-			mkdir -p /tmp/etcd
-			tar -axf "/tmp/${FN}" -C /tmp/etcd --strip-components=1
-			sudo install /tmp/etcd/etcd* "${BDIR}"/.
-			rm -rf /tmp/etcd
-			rm -f "/tmp/${FN}"
+			echo "installing $1 font"
+			DL=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains("tar.xz")) | .browser_download_url' | tr -d '"' | grep "$1")
+			for font in ${DL}; do
+					rm -f /tmp/font.tar.xz
+					wget -qc "${font}" -O /tmp/font.tar.xz
+					tar -xf /tmp/font.tar.xz -C "${FONTDIR}" --wildcards "*ttf"
+					rm -f /tmp/font.tar.xz
+			done
 	}
 
-	if [ -z "$(command -v ${APP})" ]; then
-			download new
-	else
-			APPVER=$($(command -v ${APP}) --version 2>&1 | grep "etcd.*Version" | awk '{print $3}' | sed 's/^v//')
-			if [ "${APPVER}" = "${vers}" ]; then
-					echo "${APP} version is current"
-			else
-					download "${vers}"
-			fi
-	fi
-
-}
-
-# :command.function
-gup_install_k9s_command() {
-
-	# src/install_k9s_command.sh
-	APP="k9s"
-	REPO="derailed/k9s"
-	RURL="https://api.github.com/repos/${REPO}/releases/latest"
-	vers=$(wget -qO- "${RURL}" | jq .tag_name | tr -d '"' | tr -d 'v')
-	DL=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | (contains("json") | not) and contains("Linux") and contains("amd64")) | .browser_download_url' | tr -d '"')
-	FN=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | (contains("json") | not) and contains("Linux") and contains("amd64")) | .name' | tr -d '"')
-
-	function download() {
-			echo "download $1 version"
-			echo "installing ${vers}"
-			rm -rf /tmp/"${FN}" /tmp/k9s
-			wget -qc "${DL}" -O /tmp/"${FN}"
-			tar axf /tmp/"${FN}" k9s
-			if [ "$(id -u)" == 0 ]; then
-					IDIR="/usr/local/bin"
-					mkdir -p "${IDIR}"
-					install k9s "$IDIR"
-			else
-					IDIR="${HOME}/.local/bin"
-					mkdir -p "${IDIR}"
-					install k9s "$IDIR"
-			fi
-			rm -rf k9s /tmp/"${FN}"
-	}
-
-	if [ -z "$(command -v ${APP})" ]; then
-			download new
-	else
-		APPVER=$($(command -v ${APP}) version 2>&1 | grep Version | awk '{print $2}' | tr -d 'v')
-		if [ "${APPVER}" = "${vers}" ]; then
-				echo "${APP} version is current"
-		else
-				download "${vers}"
-		fi
-	fi
-
-}
-
-# :command.function
-gup_install_kubectl_command() {
-
-	# src/install_kubectl_command.sh
-	curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
-	sudo install kubectl /usr/local/bin
-	rm kubectl
-
-}
-
-# :command.function
-gup_install_minikube_command() {
-
-	# src/install_minikube_command.sh
-	curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
-	sudo install minikube-linux-amd64 /usr/local/bin/minikube
-	rm minikube-linux-amd64
-
-}
-
-# :command.function
-gup_install_neovim_command() {
-
-	# src/install_neovim_command.sh
-	APP="nvim"
-	REPO="neovim/neovim"
-	RURL="https://api.github.com/repos/${REPO}/releases/latest"
-	vers=$(wget -qO- "${RURL}" | jq .tag_name | tr -d '"' | tr -d 'v')
-	DL=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains("linux-x86_64.tar.gz")) | .browser_download_url' | tr -d '"')
-	FN=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains("linux-x86_64.tar.gz")) | .name' | tr -d '"')
-
-	IDIR=${HOME}/.local/nvim
-	BDIR=${HOME}/.local/bin
-
-	function download() {
-			echo "download $1 version"
-			echo "installing ${vers}"
-			rm -f /tmp/"${FN}"
-			wget -qc "${DL}" -O /tmp/"${FN}"
-			rm -rf "${IDIR:?}"
-			mkdir -p "${IDIR}"
-			tar -zxf /tmp/"${FN}" --strip-components=1 -C "${IDIR}"
-			ln -sf "${IDIR}/bin/nvim" "${BDIR}/nvim"
-			rm -f /tmp/"${FN}"
-	}
-
-	if [ -z "$(command -v ${APP})" ]; then
-			download new
-	else
-			APPVER=$($(command -v "${APP}") --version 2>&1 | grep -i "^${APP}" | awk '{print $2}' | tr -d 'v')
-			if [ "${APPVER}" = "${vers}" ]; then
-					echo "${APP} version is current"
-			else
-					download "${vers}"
-			fi
-	fi
-
-}
-
-# :command.function
-gup_install_helix_command() {
-
-	# src/install_helix_command.sh
-	APP="hx"
-	REPO="helix-editor/helix"
-	RURL="https://api.github.com/repos/${REPO}/releases/latest"
-	vers=$(wget -qO- "${RURL}" | jq .tag_name | tr -d '"' | tr -d 'v')
-	DL=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains ("x86_64-linux")) | .browser_download_url' | tr -d '"')
-	FN=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains ("x86_64-linux")) | .name' | tr -d '"')
-
-	IDIR=${HOME}/.config/helix
-	BDIR=${HOME}/.local/helix
-
-	function download() {
-			echo "download $1 version"
-			echo "installing ${vers}"
-			mkdir -p "${IDIR}" "${BDIR}"
-			touch "${IDIR}/config.toml"
-			rm -f /tmp/"${FN}"
-			wget -qc "${DL}" -O /tmp/"${FN}"
-			rm -rf "${BDIR:?}"/*
-			tar axf /tmp/"${FN}" --strip-components=1 -C "${BDIR}"
-			ln -sf "${BDIR}/hx" "${HOME}/.local/bin/hx"
-			rm -f /tmp/"${FN}"
-	}
-
-	if [ -z "$(command -v ${APP})" ]; then
-			download new
-	else
-			APPVER=$($(command -v ${APP}) -V 2>&1 | grep -e "^helix" | awk '{print $2}')
-			if [ "${APPVER}" = "${vers}" ]; then
-					echo "${APP} version is current"
-			else
-					download "${vers}"
-			fi
-	fi
+	fonts="${args[font]}"
+	for font in ${fonts}; do
+		download "$font"
+	done
 
 }
 
@@ -4313,104 +4323,6 @@ gup_install_parse_requirements() {
 			shift $#
 			;;
 
-		nerdfonts)
-			action="nerdfonts"
-			shift
-			gup_install_nerdfonts_parse_requirements "$@"
-			shift $#
-			;;
-
-		b2)
-			action="b2"
-			shift
-			gup_install_b2_parse_requirements "$@"
-			shift $#
-			;;
-
-		doctl)
-			action="doctl"
-			shift
-			gup_install_doctl_parse_requirements "$@"
-			shift $#
-			;;
-
-		distrobuilder)
-			action="distrobuilder"
-			shift
-			gup_install_distrobuilder_parse_requirements "$@"
-			shift $#
-			;;
-
-		terraform)
-			action="terraform"
-			shift
-			gup_install_terraform_parse_requirements "$@"
-			shift $#
-			;;
-
-		githubcli)
-			action="githubcli"
-			shift
-			gup_install_githubcli_parse_requirements "$@"
-			shift $#
-			;;
-
-		forgejocli)
-			action="forgejocli"
-			shift
-			gup_install_forgejocli_parse_requirements "$@"
-			shift $#
-			;;
-
-		lazygit)
-			action="lazygit"
-			shift
-			gup_install_lazygit_parse_requirements "$@"
-			shift $#
-			;;
-
-		mkcert)
-			action="mkcert"
-			shift
-			gup_install_mkcert_parse_requirements "$@"
-			shift $#
-			;;
-
-		scc)
-			action="scc"
-			shift
-			gup_install_scc_parse_requirements "$@"
-			shift $#
-			;;
-
-		sqlc)
-			action="sqlc"
-			shift
-			gup_install_sqlc_parse_requirements "$@"
-			shift $#
-			;;
-
-		upx)
-			action="upx"
-			shift
-			gup_install_upx_parse_requirements "$@"
-			shift $#
-			;;
-
-		tailwindcss)
-			action="tailwindcss"
-			shift
-			gup_install_tailwindcss_parse_requirements "$@"
-			shift $#
-			;;
-
-		yamlfmt)
-			action="yamlfmt"
-			shift
-			gup_install_yamlfmt_parse_requirements "$@"
-			shift $#
-			;;
-
 		go)
 			action="go"
 			shift
@@ -4425,129 +4337,10 @@ gup_install_parse_requirements() {
 			shift $#
 			;;
 
-		godevenv)
-			action="godevenv"
+		nodejs)
+			action="nodejs"
 			shift
-			gup_install_godevenv_parse_requirements "$@"
-			shift $#
-			;;
-
-		air)
-			action="air"
-			shift
-			gup_install_air_parse_requirements "$@"
-			shift $#
-			;;
-
-		dlv)
-			action="dlv"
-			shift
-			gup_install_dlv_parse_requirements "$@"
-			shift $#
-			;;
-
-		go-blueprint)
-			action="go-blueprint"
-			shift
-			gup_install_go_blueprint_parse_requirements "$@"
-			shift $#
-			;;
-
-		gofumpt)
-			action="gofumpt"
-			shift
-			gup_install_gofumpt_parse_requirements "$@"
-			shift $#
-			;;
-
-		goimports)
-			action="goimports"
-			shift
-			gup_install_goimports_parse_requirements "$@"
-			shift $#
-			;;
-
-		golangci-lint)
-			action="golangci-lint"
-			shift
-			gup_install_golangci_lint_parse_requirements "$@"
-			shift $#
-			;;
-
-		gomodifytags)
-			action="gomodifytags"
-			shift
-			gup_install_gomodifytags_parse_requirements "$@"
-			shift $#
-			;;
-
-		goplay)
-			action="goplay"
-			shift
-			gup_install_goplay_parse_requirements "$@"
-			shift $#
-			;;
-
-		gopls)
-			action="gopls"
-			shift
-			gup_install_gopls_parse_requirements "$@"
-			shift $#
-			;;
-
-		gotests)
-			action="gotests"
-			shift
-			gup_install_gotests_parse_requirements "$@"
-			shift $#
-			;;
-
-		govulncheck)
-			action="govulncheck"
-			shift
-			gup_install_govulncheck_parse_requirements "$@"
-			shift $#
-			;;
-
-		gowebly)
-			action="gowebly"
-			shift
-			gup_install_gowebly_parse_requirements "$@"
-			shift $#
-			;;
-
-		impl)
-			action="impl"
-			shift
-			gup_install_impl_parse_requirements "$@"
-			shift $#
-			;;
-
-		nilaway)
-			action="nilaway"
-			shift
-			gup_install_nilaway_parse_requirements "$@"
-			shift $#
-			;;
-
-		staticcheck)
-			action="staticcheck"
-			shift
-			gup_install_staticcheck_parse_requirements "$@"
-			shift $#
-			;;
-
-		swag)
-			action="swag"
-			shift
-			gup_install_swag_parse_requirements "$@"
-			shift $#
-			;;
-
-		templ)
-			action="templ"
-			shift
-			gup_install_templ_parse_requirements "$@"
+			gup_install_nodejs_parse_requirements "$@"
 			shift $#
 			;;
 
@@ -4555,13 +4348,6 @@ gup_install_parse_requirements() {
 			action="nvm"
 			shift
 			gup_install_nvm_parse_requirements "$@"
-			shift $#
-			;;
-
-		nodejs)
-			action="nodejs"
-			shift
-			gup_install_nodejs_parse_requirements "$@"
 			shift $#
 			;;
 
@@ -4576,13 +4362,6 @@ gup_install_parse_requirements() {
 			action="bun"
 			shift
 			gup_install_bun_parse_requirements "$@"
-			shift $#
-			;;
-
-		ruff)
-			action="ruff"
-			shift
-			gup_install_ruff_parse_requirements "$@"
 			shift $#
 			;;
 
@@ -4607,6 +4386,146 @@ gup_install_parse_requirements() {
 			shift $#
 			;;
 
+		gohelpers)
+			action="gohelpers"
+			shift
+			gup_install_gohelpers_parse_requirements "$@"
+			shift $#
+			;;
+
+		go-blueprint)
+			action="go-blueprint"
+			shift
+			gup_install_go_blueprint_parse_requirements "$@"
+			shift $#
+			;;
+
+		gowebly)
+			action="gowebly"
+			shift
+			gup_install_gowebly_parse_requirements "$@"
+			shift $#
+			;;
+
+		goplay)
+			action="goplay"
+			shift
+			gup_install_goplay_parse_requirements "$@"
+			shift $#
+			;;
+
+		gotests)
+			action="gotests"
+			shift
+			gup_install_gotests_parse_requirements "$@"
+			shift $#
+			;;
+
+		impl)
+			action="impl"
+			shift
+			gup_install_impl_parse_requirements "$@"
+			shift $#
+			;;
+
+		gomodifytags)
+			action="gomodifytags"
+			shift
+			gup_install_gomodifytags_parse_requirements "$@"
+			shift $#
+			;;
+
+		air)
+			action="air"
+			shift
+			gup_install_air_parse_requirements "$@"
+			shift $#
+			;;
+
+		gofumpt)
+			action="gofumpt"
+			shift
+			gup_install_gofumpt_parse_requirements "$@"
+			shift $#
+			;;
+
+		goimports)
+			action="goimports"
+			shift
+			gup_install_goimports_parse_requirements "$@"
+			shift $#
+			;;
+
+		golangci-lint)
+			action="golangci-lint"
+			shift
+			gup_install_golangci_lint_parse_requirements "$@"
+			shift $#
+			;;
+
+		staticcheck)
+			action="staticcheck"
+			shift
+			gup_install_staticcheck_parse_requirements "$@"
+			shift $#
+			;;
+
+		nilaway)
+			action="nilaway"
+			shift
+			gup_install_nilaway_parse_requirements "$@"
+			shift $#
+			;;
+
+		swag)
+			action="swag"
+			shift
+			gup_install_swag_parse_requirements "$@"
+			shift $#
+			;;
+
+		templ)
+			action="templ"
+			shift
+			gup_install_templ_parse_requirements "$@"
+			shift $#
+			;;
+
+		ruff)
+			action="ruff"
+			shift
+			gup_install_ruff_parse_requirements "$@"
+			shift $#
+			;;
+
+		scc)
+			action="scc"
+			shift
+			gup_install_scc_parse_requirements "$@"
+			shift $#
+			;;
+
+		yamlfmt)
+			action="yamlfmt"
+			shift
+			gup_install_yamlfmt_parse_requirements "$@"
+			shift $#
+			;;
+
+		gopls)
+			action="gopls"
+			shift
+			gup_install_gopls_parse_requirements "$@"
+			shift $#
+			;;
+
+		dlv)
+			action="dlv"
+			shift
+			gup_install_dlv_parse_requirements "$@"
+			shift $#
+			;;
+
 		zls)
 			action="zls"
 			shift
@@ -4614,24 +4533,24 @@ gup_install_parse_requirements() {
 			shift $#
 			;;
 
-		btop)
-			action="btop"
+		neovim)
+			action="neovim"
 			shift
-			gup_install_btop_parse_requirements "$@"
+			gup_install_neovim_parse_requirements "$@"
 			shift $#
 			;;
 
-		gotop)
-			action="gotop"
+		helix)
+			action="helix"
 			shift
-			gup_install_gotop_parse_requirements "$@"
+			gup_install_helix_parse_requirements "$@"
 			shift $#
 			;;
 
-		blackbox_exporter)
-			action="blackbox_exporter"
+		prometheus)
+			action="prometheus"
 			shift
-			gup_install_blackbox_exporter_parse_requirements "$@"
+			gup_install_prometheus_parse_requirements "$@"
 			shift $#
 			;;
 
@@ -4663,10 +4582,10 @@ gup_install_parse_requirements() {
 			shift $#
 			;;
 
-		prometheus)
-			action="prometheus"
+		blackbox_exporter)
+			action="blackbox_exporter"
 			shift
-			gup_install_prometheus_parse_requirements "$@"
+			gup_install_blackbox_exporter_parse_requirements "$@"
 			shift $#
 			;;
 
@@ -4674,6 +4593,90 @@ gup_install_parse_requirements() {
 			action="snmp_exporter"
 			shift
 			gup_install_snmp_exporter_parse_requirements "$@"
+			shift $#
+			;;
+
+		btop)
+			action="btop"
+			shift
+			gup_install_btop_parse_requirements "$@"
+			shift $#
+			;;
+
+		gotop)
+			action="gotop"
+			shift
+			gup_install_gotop_parse_requirements "$@"
+			shift $#
+			;;
+
+		lazydocker)
+			action="lazydocker"
+			shift
+			gup_install_lazydocker_parse_requirements "$@"
+			shift $#
+			;;
+
+		minikube)
+			action="minikube"
+			shift
+			gup_install_minikube_parse_requirements "$@"
+			shift $#
+			;;
+
+		kubectl)
+			action="kubectl"
+			shift
+			gup_install_kubectl_parse_requirements "$@"
+			shift $#
+			;;
+
+		k9s)
+			action="k9s"
+			shift
+			gup_install_k9s_parse_requirements "$@"
+			shift $#
+			;;
+
+		etcd)
+			action="etcd"
+			shift
+			gup_install_etcd_parse_requirements "$@"
+			shift $#
+			;;
+
+		vagrant)
+			action="vagrant"
+			shift
+			gup_install_vagrant_parse_requirements "$@"
+			shift $#
+			;;
+
+		doctl)
+			action="doctl"
+			shift
+			gup_install_doctl_parse_requirements "$@"
+			shift $#
+			;;
+
+		b2)
+			action="b2"
+			shift
+			gup_install_b2_parse_requirements "$@"
+			shift $#
+			;;
+
+		githubcli)
+			action="githubcli"
+			shift
+			gup_install_githubcli_parse_requirements "$@"
+			shift $#
+			;;
+
+		forgejocli)
+			action="forgejocli"
+			shift
+			gup_install_forgejocli_parse_requirements "$@"
 			shift $#
 			;;
 
@@ -4698,6 +4701,20 @@ gup_install_parse_requirements() {
 			shift $#
 			;;
 
+		tailwindcss)
+			action="tailwindcss"
+			shift
+			gup_install_tailwindcss_parse_requirements "$@"
+			shift $#
+			;;
+
+		marp)
+			action="marp"
+			shift
+			gup_install_marp_parse_requirements "$@"
+			shift $#
+			;;
+
 		duf)
 			action="duf"
 			shift
@@ -4719,10 +4736,10 @@ gup_install_parse_requirements() {
 			shift $#
 			;;
 
-		marp)
-			action="marp"
+		lazygit)
+			action="lazygit"
 			shift
-			gup_install_marp_parse_requirements "$@"
+			gup_install_lazygit_parse_requirements "$@"
 			shift $#
 			;;
 
@@ -4775,59 +4792,52 @@ gup_install_parse_requirements() {
 			shift $#
 			;;
 
-		lazydocker)
-			action="lazydocker"
+		terraform)
+			action="terraform"
 			shift
-			gup_install_lazydocker_parse_requirements "$@"
+			gup_install_terraform_parse_requirements "$@"
 			shift $#
 			;;
 
-		vagrant)
-			action="vagrant"
+		distrobuilder)
+			action="distrobuilder"
 			shift
-			gup_install_vagrant_parse_requirements "$@"
+			gup_install_distrobuilder_parse_requirements "$@"
 			shift $#
 			;;
 
-		etcd)
-			action="etcd"
+		upx)
+			action="upx"
 			shift
-			gup_install_etcd_parse_requirements "$@"
+			gup_install_upx_parse_requirements "$@"
 			shift $#
 			;;
 
-		k9s)
-			action="k9s"
+		sqlc)
+			action="sqlc"
 			shift
-			gup_install_k9s_parse_requirements "$@"
+			gup_install_sqlc_parse_requirements "$@"
 			shift $#
 			;;
 
-		kubectl)
-			action="kubectl"
+		mkcert)
+			action="mkcert"
 			shift
-			gup_install_kubectl_parse_requirements "$@"
+			gup_install_mkcert_parse_requirements "$@"
 			shift $#
 			;;
 
-		minikube)
-			action="minikube"
+		govulncheck)
+			action="govulncheck"
 			shift
-			gup_install_minikube_parse_requirements "$@"
+			gup_install_govulncheck_parse_requirements "$@"
 			shift $#
 			;;
 
-		neovim)
-			action="neovim"
+		nerdfonts)
+			action="nerdfonts"
 			shift
-			gup_install_neovim_parse_requirements "$@"
-			shift $#
-			;;
-
-		helix)
-			action="helix"
-			shift
-			gup_install_helix_parse_requirements "$@"
+			gup_install_nerdfonts_parse_requirements "$@"
 			shift $#
 			;;
 
@@ -4962,688 +4972,6 @@ gup_install_update_parse_requirements() {
 }
 
 # :command.parse_requirements
-gup_install_nerdfonts_parse_requirements() {
-	local key
-
-	# :command.fixed_flags_filter
-	while [[ $# -gt 0 ]]; do
-		key="$1"
-		case "$key" in
-			--help | -h)
-				long_usage=yes
-				gup_install_nerdfonts_usage
-				exit
-				;;
-
-			*)
-				break
-				;;
-
-		esac
-	done
-
-	# :command.command_filter
-	action="install nerdfonts"
-
-	# :command.parse_requirements_while
-	while [[ $# -gt 0 ]]; do
-		key="$1"
-		case "$key" in
-
-			-?*)
-				printf "invalid option: %s\n" "$key" >&2
-				exit 1
-				;;
-
-			*)
-				# :command.parse_requirements_case
-				# :command.parse_requirements_case_repeatable
-				# :argument.case_repeatable
-				escaped="$(printf '%q' "$1")"
-				if [[ -z ${args['font']+x} ]]; then
-					args['font']="$escaped"
-				else
-					args['font']="${args['font']} $escaped"
-
-				fi
-				shift
-
-				;;
-
-		esac
-	done
-
-	# :command.required_args_filter
-	if [[ -z ${args['font']+x} ]]; then
-		printf "missing required argument: FONT\nusage: gup install nerdfonts FONT...\n" >&2
-
-		exit 1
-	fi
-
-	# :command.whitelist_filter
-	input_array=''
-	eval "input_array=(${args[font]})"
-	for i in "${input_array[@]}"; do
-		if [[ ! $i =~ ^(Ubuntu|UbuntuMono|Hack|FiraMono|Noto)$ ]]; then
-			printf "%s\n" "font must be one of: Ubuntu, UbuntuMono, Hack, FiraMono, Noto" >&2
-			exit 1
-		fi
-	done
-
-}
-
-# :command.parse_requirements
-gup_install_b2_parse_requirements() {
-	local key
-
-	# :command.fixed_flags_filter
-	while [[ $# -gt 0 ]]; do
-		key="$1"
-		case "$key" in
-			--help | -h)
-				long_usage=yes
-				gup_install_b2_usage
-				exit
-				;;
-
-			*)
-				break
-				;;
-
-		esac
-	done
-
-	# :command.command_filter
-	action="install b2"
-
-	# :command.parse_requirements_while
-	while [[ $# -gt 0 ]]; do
-		key="$1"
-		case "$key" in
-
-			-?*)
-				printf "invalid option: %s\n" "$key" >&2
-				exit 1
-				;;
-
-			*)
-				# :command.parse_requirements_case
-				# :command.parse_requirements_case_simple
-				printf "invalid argument: %s\n" "$key" >&2
-				exit 1
-
-				;;
-
-		esac
-	done
-
-}
-
-# :command.parse_requirements
-gup_install_doctl_parse_requirements() {
-	local key
-
-	# :command.fixed_flags_filter
-	while [[ $# -gt 0 ]]; do
-		key="$1"
-		case "$key" in
-			--help | -h)
-				long_usage=yes
-				gup_install_doctl_usage
-				exit
-				;;
-
-			*)
-				break
-				;;
-
-		esac
-	done
-
-	# :command.command_filter
-	action="install doctl"
-
-	# :command.parse_requirements_while
-	while [[ $# -gt 0 ]]; do
-		key="$1"
-		case "$key" in
-
-			-?*)
-				printf "invalid option: %s\n" "$key" >&2
-				exit 1
-				;;
-
-			*)
-				# :command.parse_requirements_case
-				# :command.parse_requirements_case_simple
-				printf "invalid argument: %s\n" "$key" >&2
-				exit 1
-
-				;;
-
-		esac
-	done
-
-}
-
-# :command.parse_requirements
-gup_install_distrobuilder_parse_requirements() {
-	local key
-
-	# :command.fixed_flags_filter
-	while [[ $# -gt 0 ]]; do
-		key="$1"
-		case "$key" in
-			--help | -h)
-				long_usage=yes
-				gup_install_distrobuilder_usage
-				exit
-				;;
-
-			*)
-				break
-				;;
-
-		esac
-	done
-
-	# :command.command_filter
-	action="install distrobuilder"
-
-	# :command.parse_requirements_while
-	while [[ $# -gt 0 ]]; do
-		key="$1"
-		case "$key" in
-
-			-?*)
-				printf "invalid option: %s\n" "$key" >&2
-				exit 1
-				;;
-
-			*)
-				# :command.parse_requirements_case
-				# :command.parse_requirements_case_simple
-				printf "invalid argument: %s\n" "$key" >&2
-				exit 1
-
-				;;
-
-		esac
-	done
-
-}
-
-# :command.parse_requirements
-gup_install_terraform_parse_requirements() {
-	local key
-
-	# :command.fixed_flags_filter
-	while [[ $# -gt 0 ]]; do
-		key="$1"
-		case "$key" in
-			--help | -h)
-				long_usage=yes
-				gup_install_terraform_usage
-				exit
-				;;
-
-			*)
-				break
-				;;
-
-		esac
-	done
-
-	# :command.command_filter
-	action="install terraform"
-
-	# :command.parse_requirements_while
-	while [[ $# -gt 0 ]]; do
-		key="$1"
-		case "$key" in
-
-			-?*)
-				printf "invalid option: %s\n" "$key" >&2
-				exit 1
-				;;
-
-			*)
-				# :command.parse_requirements_case
-				# :command.parse_requirements_case_simple
-				printf "invalid argument: %s\n" "$key" >&2
-				exit 1
-
-				;;
-
-		esac
-	done
-
-}
-
-# :command.parse_requirements
-gup_install_githubcli_parse_requirements() {
-	local key
-
-	# :command.fixed_flags_filter
-	while [[ $# -gt 0 ]]; do
-		key="$1"
-		case "$key" in
-			--help | -h)
-				long_usage=yes
-				gup_install_githubcli_usage
-				exit
-				;;
-
-			*)
-				break
-				;;
-
-		esac
-	done
-
-	# :command.command_filter
-	action="install githubcli"
-
-	# :command.parse_requirements_while
-	while [[ $# -gt 0 ]]; do
-		key="$1"
-		case "$key" in
-
-			-?*)
-				printf "invalid option: %s\n" "$key" >&2
-				exit 1
-				;;
-
-			*)
-				# :command.parse_requirements_case
-				# :command.parse_requirements_case_simple
-				printf "invalid argument: %s\n" "$key" >&2
-				exit 1
-
-				;;
-
-		esac
-	done
-
-}
-
-# :command.parse_requirements
-gup_install_forgejocli_parse_requirements() {
-	local key
-
-	# :command.fixed_flags_filter
-	while [[ $# -gt 0 ]]; do
-		key="$1"
-		case "$key" in
-			--help | -h)
-				long_usage=yes
-				gup_install_forgejocli_usage
-				exit
-				;;
-
-			*)
-				break
-				;;
-
-		esac
-	done
-
-	# :command.command_filter
-	action="install forgejocli"
-
-	# :command.parse_requirements_while
-	while [[ $# -gt 0 ]]; do
-		key="$1"
-		case "$key" in
-
-			-?*)
-				printf "invalid option: %s\n" "$key" >&2
-				exit 1
-				;;
-
-			*)
-				# :command.parse_requirements_case
-				# :command.parse_requirements_case_simple
-				printf "invalid argument: %s\n" "$key" >&2
-				exit 1
-
-				;;
-
-		esac
-	done
-
-}
-
-# :command.parse_requirements
-gup_install_lazygit_parse_requirements() {
-	local key
-
-	# :command.fixed_flags_filter
-	while [[ $# -gt 0 ]]; do
-		key="$1"
-		case "$key" in
-			--help | -h)
-				long_usage=yes
-				gup_install_lazygit_usage
-				exit
-				;;
-
-			*)
-				break
-				;;
-
-		esac
-	done
-
-	# :command.command_filter
-	action="install lazygit"
-
-	# :command.parse_requirements_while
-	while [[ $# -gt 0 ]]; do
-		key="$1"
-		case "$key" in
-
-			-?*)
-				printf "invalid option: %s\n" "$key" >&2
-				exit 1
-				;;
-
-			*)
-				# :command.parse_requirements_case
-				# :command.parse_requirements_case_simple
-				printf "invalid argument: %s\n" "$key" >&2
-				exit 1
-
-				;;
-
-		esac
-	done
-
-}
-
-# :command.parse_requirements
-gup_install_mkcert_parse_requirements() {
-	local key
-
-	# :command.fixed_flags_filter
-	while [[ $# -gt 0 ]]; do
-		key="$1"
-		case "$key" in
-			--help | -h)
-				long_usage=yes
-				gup_install_mkcert_usage
-				exit
-				;;
-
-			*)
-				break
-				;;
-
-		esac
-	done
-
-	# :command.command_filter
-	action="install mkcert"
-
-	# :command.parse_requirements_while
-	while [[ $# -gt 0 ]]; do
-		key="$1"
-		case "$key" in
-
-			-?*)
-				printf "invalid option: %s\n" "$key" >&2
-				exit 1
-				;;
-
-			*)
-				# :command.parse_requirements_case
-				# :command.parse_requirements_case_simple
-				printf "invalid argument: %s\n" "$key" >&2
-				exit 1
-
-				;;
-
-		esac
-	done
-
-}
-
-# :command.parse_requirements
-gup_install_scc_parse_requirements() {
-	local key
-
-	# :command.fixed_flags_filter
-	while [[ $# -gt 0 ]]; do
-		key="$1"
-		case "$key" in
-			--help | -h)
-				long_usage=yes
-				gup_install_scc_usage
-				exit
-				;;
-
-			*)
-				break
-				;;
-
-		esac
-	done
-
-	# :command.command_filter
-	action="install scc"
-
-	# :command.parse_requirements_while
-	while [[ $# -gt 0 ]]; do
-		key="$1"
-		case "$key" in
-
-			-?*)
-				printf "invalid option: %s\n" "$key" >&2
-				exit 1
-				;;
-
-			*)
-				# :command.parse_requirements_case
-				# :command.parse_requirements_case_simple
-				printf "invalid argument: %s\n" "$key" >&2
-				exit 1
-
-				;;
-
-		esac
-	done
-
-}
-
-# :command.parse_requirements
-gup_install_sqlc_parse_requirements() {
-	local key
-
-	# :command.fixed_flags_filter
-	while [[ $# -gt 0 ]]; do
-		key="$1"
-		case "$key" in
-			--help | -h)
-				long_usage=yes
-				gup_install_sqlc_usage
-				exit
-				;;
-
-			*)
-				break
-				;;
-
-		esac
-	done
-
-	# :command.command_filter
-	action="install sqlc"
-
-	# :command.parse_requirements_while
-	while [[ $# -gt 0 ]]; do
-		key="$1"
-		case "$key" in
-
-			-?*)
-				printf "invalid option: %s\n" "$key" >&2
-				exit 1
-				;;
-
-			*)
-				# :command.parse_requirements_case
-				# :command.parse_requirements_case_simple
-				printf "invalid argument: %s\n" "$key" >&2
-				exit 1
-
-				;;
-
-		esac
-	done
-
-}
-
-# :command.parse_requirements
-gup_install_upx_parse_requirements() {
-	local key
-
-	# :command.fixed_flags_filter
-	while [[ $# -gt 0 ]]; do
-		key="$1"
-		case "$key" in
-			--help | -h)
-				long_usage=yes
-				gup_install_upx_usage
-				exit
-				;;
-
-			*)
-				break
-				;;
-
-		esac
-	done
-
-	# :command.command_filter
-	action="install upx"
-
-	# :command.parse_requirements_while
-	while [[ $# -gt 0 ]]; do
-		key="$1"
-		case "$key" in
-
-			-?*)
-				printf "invalid option: %s\n" "$key" >&2
-				exit 1
-				;;
-
-			*)
-				# :command.parse_requirements_case
-				# :command.parse_requirements_case_simple
-				printf "invalid argument: %s\n" "$key" >&2
-				exit 1
-
-				;;
-
-		esac
-	done
-
-}
-
-# :command.parse_requirements
-gup_install_tailwindcss_parse_requirements() {
-	local key
-
-	# :command.fixed_flags_filter
-	while [[ $# -gt 0 ]]; do
-		key="$1"
-		case "$key" in
-			--help | -h)
-				long_usage=yes
-				gup_install_tailwindcss_usage
-				exit
-				;;
-
-			*)
-				break
-				;;
-
-		esac
-	done
-
-	# :command.command_filter
-	action="install tailwindcss"
-
-	# :command.parse_requirements_while
-	while [[ $# -gt 0 ]]; do
-		key="$1"
-		case "$key" in
-
-			-?*)
-				printf "invalid option: %s\n" "$key" >&2
-				exit 1
-				;;
-
-			*)
-				# :command.parse_requirements_case
-				# :command.parse_requirements_case_simple
-				printf "invalid argument: %s\n" "$key" >&2
-				exit 1
-
-				;;
-
-		esac
-	done
-
-}
-
-# :command.parse_requirements
-gup_install_yamlfmt_parse_requirements() {
-	local key
-
-	# :command.fixed_flags_filter
-	while [[ $# -gt 0 ]]; do
-		key="$1"
-		case "$key" in
-			--help | -h)
-				long_usage=yes
-				gup_install_yamlfmt_usage
-				exit
-				;;
-
-			*)
-				break
-				;;
-
-		esac
-	done
-
-	# :command.command_filter
-	action="install yamlfmt"
-
-	# :command.parse_requirements_while
-	while [[ $# -gt 0 ]]; do
-		key="$1"
-		case "$key" in
-
-			-?*)
-				printf "invalid option: %s\n" "$key" >&2
-				exit 1
-				;;
-
-			*)
-				# :command.parse_requirements_case
-				# :command.parse_requirements_case_simple
-				printf "invalid argument: %s\n" "$key" >&2
-				exit 1
-
-				;;
-
-		esac
-	done
-
-}
-
-# :command.parse_requirements
 gup_install_go_parse_requirements() {
 	local key
 
@@ -5738,7 +5066,7 @@ gup_install_tinygo_parse_requirements() {
 }
 
 # :command.parse_requirements
-gup_install_godevenv_parse_requirements() {
+gup_install_nodejs_parse_requirements() {
 	local key
 
 	# :command.fixed_flags_filter
@@ -5747,7 +5075,7 @@ gup_install_godevenv_parse_requirements() {
 		case "$key" in
 			--help | -h)
 				long_usage=yes
-				gup_install_godevenv_usage
+				gup_install_nodejs_usage
 				exit
 				;;
 
@@ -5759,806 +5087,7 @@ gup_install_godevenv_parse_requirements() {
 	done
 
 	# :command.command_filter
-	action="install godevenv"
-
-	# :command.parse_requirements_while
-	while [[ $# -gt 0 ]]; do
-		key="$1"
-		case "$key" in
-
-			-?*)
-				printf "invalid option: %s\n" "$key" >&2
-				exit 1
-				;;
-
-			*)
-				# :command.parse_requirements_case
-				# :command.parse_requirements_case_simple
-				printf "invalid argument: %s\n" "$key" >&2
-				exit 1
-
-				;;
-
-		esac
-	done
-
-}
-
-# :command.parse_requirements
-gup_install_air_parse_requirements() {
-	local key
-
-	# :command.fixed_flags_filter
-	while [[ $# -gt 0 ]]; do
-		key="$1"
-		case "$key" in
-			--help | -h)
-				long_usage=yes
-				gup_install_air_usage
-				exit
-				;;
-
-			*)
-				break
-				;;
-
-		esac
-	done
-
-	# :command.command_filter
-	action="install air"
-
-	# :command.parse_requirements_while
-	while [[ $# -gt 0 ]]; do
-		key="$1"
-		case "$key" in
-
-			-?*)
-				printf "invalid option: %s\n" "$key" >&2
-				exit 1
-				;;
-
-			*)
-				# :command.parse_requirements_case
-				# :command.parse_requirements_case_simple
-				printf "invalid argument: %s\n" "$key" >&2
-				exit 1
-
-				;;
-
-		esac
-	done
-
-}
-
-# :command.parse_requirements
-gup_install_dlv_parse_requirements() {
-	local key
-
-	# :command.fixed_flags_filter
-	while [[ $# -gt 0 ]]; do
-		key="$1"
-		case "$key" in
-			--help | -h)
-				long_usage=yes
-				gup_install_dlv_usage
-				exit
-				;;
-
-			*)
-				break
-				;;
-
-		esac
-	done
-
-	# :command.command_filter
-	action="install dlv"
-
-	# :command.parse_requirements_while
-	while [[ $# -gt 0 ]]; do
-		key="$1"
-		case "$key" in
-
-			-?*)
-				printf "invalid option: %s\n" "$key" >&2
-				exit 1
-				;;
-
-			*)
-				# :command.parse_requirements_case
-				# :command.parse_requirements_case_simple
-				printf "invalid argument: %s\n" "$key" >&2
-				exit 1
-
-				;;
-
-		esac
-	done
-
-}
-
-# :command.parse_requirements
-gup_install_go_blueprint_parse_requirements() {
-	local key
-
-	# :command.fixed_flags_filter
-	while [[ $# -gt 0 ]]; do
-		key="$1"
-		case "$key" in
-			--help | -h)
-				long_usage=yes
-				gup_install_go_blueprint_usage
-				exit
-				;;
-
-			*)
-				break
-				;;
-
-		esac
-	done
-
-	# :command.command_filter
-	action="install go-blueprint"
-
-	# :command.parse_requirements_while
-	while [[ $# -gt 0 ]]; do
-		key="$1"
-		case "$key" in
-
-			-?*)
-				printf "invalid option: %s\n" "$key" >&2
-				exit 1
-				;;
-
-			*)
-				# :command.parse_requirements_case
-				# :command.parse_requirements_case_simple
-				printf "invalid argument: %s\n" "$key" >&2
-				exit 1
-
-				;;
-
-		esac
-	done
-
-}
-
-# :command.parse_requirements
-gup_install_gofumpt_parse_requirements() {
-	local key
-
-	# :command.fixed_flags_filter
-	while [[ $# -gt 0 ]]; do
-		key="$1"
-		case "$key" in
-			--help | -h)
-				long_usage=yes
-				gup_install_gofumpt_usage
-				exit
-				;;
-
-			*)
-				break
-				;;
-
-		esac
-	done
-
-	# :command.command_filter
-	action="install gofumpt"
-
-	# :command.parse_requirements_while
-	while [[ $# -gt 0 ]]; do
-		key="$1"
-		case "$key" in
-
-			-?*)
-				printf "invalid option: %s\n" "$key" >&2
-				exit 1
-				;;
-
-			*)
-				# :command.parse_requirements_case
-				# :command.parse_requirements_case_simple
-				printf "invalid argument: %s\n" "$key" >&2
-				exit 1
-
-				;;
-
-		esac
-	done
-
-}
-
-# :command.parse_requirements
-gup_install_goimports_parse_requirements() {
-	local key
-
-	# :command.fixed_flags_filter
-	while [[ $# -gt 0 ]]; do
-		key="$1"
-		case "$key" in
-			--help | -h)
-				long_usage=yes
-				gup_install_goimports_usage
-				exit
-				;;
-
-			*)
-				break
-				;;
-
-		esac
-	done
-
-	# :command.command_filter
-	action="install goimports"
-
-	# :command.parse_requirements_while
-	while [[ $# -gt 0 ]]; do
-		key="$1"
-		case "$key" in
-
-			-?*)
-				printf "invalid option: %s\n" "$key" >&2
-				exit 1
-				;;
-
-			*)
-				# :command.parse_requirements_case
-				# :command.parse_requirements_case_simple
-				printf "invalid argument: %s\n" "$key" >&2
-				exit 1
-
-				;;
-
-		esac
-	done
-
-}
-
-# :command.parse_requirements
-gup_install_golangci_lint_parse_requirements() {
-	local key
-
-	# :command.fixed_flags_filter
-	while [[ $# -gt 0 ]]; do
-		key="$1"
-		case "$key" in
-			--help | -h)
-				long_usage=yes
-				gup_install_golangci_lint_usage
-				exit
-				;;
-
-			*)
-				break
-				;;
-
-		esac
-	done
-
-	# :command.command_filter
-	action="install golangci-lint"
-
-	# :command.parse_requirements_while
-	while [[ $# -gt 0 ]]; do
-		key="$1"
-		case "$key" in
-
-			-?*)
-				printf "invalid option: %s\n" "$key" >&2
-				exit 1
-				;;
-
-			*)
-				# :command.parse_requirements_case
-				# :command.parse_requirements_case_simple
-				printf "invalid argument: %s\n" "$key" >&2
-				exit 1
-
-				;;
-
-		esac
-	done
-
-}
-
-# :command.parse_requirements
-gup_install_gomodifytags_parse_requirements() {
-	local key
-
-	# :command.fixed_flags_filter
-	while [[ $# -gt 0 ]]; do
-		key="$1"
-		case "$key" in
-			--help | -h)
-				long_usage=yes
-				gup_install_gomodifytags_usage
-				exit
-				;;
-
-			*)
-				break
-				;;
-
-		esac
-	done
-
-	# :command.command_filter
-	action="install gomodifytags"
-
-	# :command.parse_requirements_while
-	while [[ $# -gt 0 ]]; do
-		key="$1"
-		case "$key" in
-
-			-?*)
-				printf "invalid option: %s\n" "$key" >&2
-				exit 1
-				;;
-
-			*)
-				# :command.parse_requirements_case
-				# :command.parse_requirements_case_simple
-				printf "invalid argument: %s\n" "$key" >&2
-				exit 1
-
-				;;
-
-		esac
-	done
-
-}
-
-# :command.parse_requirements
-gup_install_goplay_parse_requirements() {
-	local key
-
-	# :command.fixed_flags_filter
-	while [[ $# -gt 0 ]]; do
-		key="$1"
-		case "$key" in
-			--help | -h)
-				long_usage=yes
-				gup_install_goplay_usage
-				exit
-				;;
-
-			*)
-				break
-				;;
-
-		esac
-	done
-
-	# :command.command_filter
-	action="install goplay"
-
-	# :command.parse_requirements_while
-	while [[ $# -gt 0 ]]; do
-		key="$1"
-		case "$key" in
-
-			-?*)
-				printf "invalid option: %s\n" "$key" >&2
-				exit 1
-				;;
-
-			*)
-				# :command.parse_requirements_case
-				# :command.parse_requirements_case_simple
-				printf "invalid argument: %s\n" "$key" >&2
-				exit 1
-
-				;;
-
-		esac
-	done
-
-}
-
-# :command.parse_requirements
-gup_install_gopls_parse_requirements() {
-	local key
-
-	# :command.fixed_flags_filter
-	while [[ $# -gt 0 ]]; do
-		key="$1"
-		case "$key" in
-			--help | -h)
-				long_usage=yes
-				gup_install_gopls_usage
-				exit
-				;;
-
-			*)
-				break
-				;;
-
-		esac
-	done
-
-	# :command.command_filter
-	action="install gopls"
-
-	# :command.parse_requirements_while
-	while [[ $# -gt 0 ]]; do
-		key="$1"
-		case "$key" in
-
-			-?*)
-				printf "invalid option: %s\n" "$key" >&2
-				exit 1
-				;;
-
-			*)
-				# :command.parse_requirements_case
-				# :command.parse_requirements_case_simple
-				printf "invalid argument: %s\n" "$key" >&2
-				exit 1
-
-				;;
-
-		esac
-	done
-
-}
-
-# :command.parse_requirements
-gup_install_gotests_parse_requirements() {
-	local key
-
-	# :command.fixed_flags_filter
-	while [[ $# -gt 0 ]]; do
-		key="$1"
-		case "$key" in
-			--help | -h)
-				long_usage=yes
-				gup_install_gotests_usage
-				exit
-				;;
-
-			*)
-				break
-				;;
-
-		esac
-	done
-
-	# :command.command_filter
-	action="install gotests"
-
-	# :command.parse_requirements_while
-	while [[ $# -gt 0 ]]; do
-		key="$1"
-		case "$key" in
-
-			-?*)
-				printf "invalid option: %s\n" "$key" >&2
-				exit 1
-				;;
-
-			*)
-				# :command.parse_requirements_case
-				# :command.parse_requirements_case_simple
-				printf "invalid argument: %s\n" "$key" >&2
-				exit 1
-
-				;;
-
-		esac
-	done
-
-}
-
-# :command.parse_requirements
-gup_install_govulncheck_parse_requirements() {
-	local key
-
-	# :command.fixed_flags_filter
-	while [[ $# -gt 0 ]]; do
-		key="$1"
-		case "$key" in
-			--help | -h)
-				long_usage=yes
-				gup_install_govulncheck_usage
-				exit
-				;;
-
-			*)
-				break
-				;;
-
-		esac
-	done
-
-	# :command.command_filter
-	action="install govulncheck"
-
-	# :command.parse_requirements_while
-	while [[ $# -gt 0 ]]; do
-		key="$1"
-		case "$key" in
-
-			-?*)
-				printf "invalid option: %s\n" "$key" >&2
-				exit 1
-				;;
-
-			*)
-				# :command.parse_requirements_case
-				# :command.parse_requirements_case_simple
-				printf "invalid argument: %s\n" "$key" >&2
-				exit 1
-
-				;;
-
-		esac
-	done
-
-}
-
-# :command.parse_requirements
-gup_install_gowebly_parse_requirements() {
-	local key
-
-	# :command.fixed_flags_filter
-	while [[ $# -gt 0 ]]; do
-		key="$1"
-		case "$key" in
-			--help | -h)
-				long_usage=yes
-				gup_install_gowebly_usage
-				exit
-				;;
-
-			*)
-				break
-				;;
-
-		esac
-	done
-
-	# :command.command_filter
-	action="install gowebly"
-
-	# :command.parse_requirements_while
-	while [[ $# -gt 0 ]]; do
-		key="$1"
-		case "$key" in
-
-			-?*)
-				printf "invalid option: %s\n" "$key" >&2
-				exit 1
-				;;
-
-			*)
-				# :command.parse_requirements_case
-				# :command.parse_requirements_case_simple
-				printf "invalid argument: %s\n" "$key" >&2
-				exit 1
-
-				;;
-
-		esac
-	done
-
-}
-
-# :command.parse_requirements
-gup_install_impl_parse_requirements() {
-	local key
-
-	# :command.fixed_flags_filter
-	while [[ $# -gt 0 ]]; do
-		key="$1"
-		case "$key" in
-			--help | -h)
-				long_usage=yes
-				gup_install_impl_usage
-				exit
-				;;
-
-			*)
-				break
-				;;
-
-		esac
-	done
-
-	# :command.command_filter
-	action="install impl"
-
-	# :command.parse_requirements_while
-	while [[ $# -gt 0 ]]; do
-		key="$1"
-		case "$key" in
-
-			-?*)
-				printf "invalid option: %s\n" "$key" >&2
-				exit 1
-				;;
-
-			*)
-				# :command.parse_requirements_case
-				# :command.parse_requirements_case_simple
-				printf "invalid argument: %s\n" "$key" >&2
-				exit 1
-
-				;;
-
-		esac
-	done
-
-}
-
-# :command.parse_requirements
-gup_install_nilaway_parse_requirements() {
-	local key
-
-	# :command.fixed_flags_filter
-	while [[ $# -gt 0 ]]; do
-		key="$1"
-		case "$key" in
-			--help | -h)
-				long_usage=yes
-				gup_install_nilaway_usage
-				exit
-				;;
-
-			*)
-				break
-				;;
-
-		esac
-	done
-
-	# :command.command_filter
-	action="install nilaway"
-
-	# :command.parse_requirements_while
-	while [[ $# -gt 0 ]]; do
-		key="$1"
-		case "$key" in
-
-			-?*)
-				printf "invalid option: %s\n" "$key" >&2
-				exit 1
-				;;
-
-			*)
-				# :command.parse_requirements_case
-				# :command.parse_requirements_case_simple
-				printf "invalid argument: %s\n" "$key" >&2
-				exit 1
-
-				;;
-
-		esac
-	done
-
-}
-
-# :command.parse_requirements
-gup_install_staticcheck_parse_requirements() {
-	local key
-
-	# :command.fixed_flags_filter
-	while [[ $# -gt 0 ]]; do
-		key="$1"
-		case "$key" in
-			--help | -h)
-				long_usage=yes
-				gup_install_staticcheck_usage
-				exit
-				;;
-
-			*)
-				break
-				;;
-
-		esac
-	done
-
-	# :command.command_filter
-	action="install staticcheck"
-
-	# :command.parse_requirements_while
-	while [[ $# -gt 0 ]]; do
-		key="$1"
-		case "$key" in
-
-			-?*)
-				printf "invalid option: %s\n" "$key" >&2
-				exit 1
-				;;
-
-			*)
-				# :command.parse_requirements_case
-				# :command.parse_requirements_case_simple
-				printf "invalid argument: %s\n" "$key" >&2
-				exit 1
-
-				;;
-
-		esac
-	done
-
-}
-
-# :command.parse_requirements
-gup_install_swag_parse_requirements() {
-	local key
-
-	# :command.fixed_flags_filter
-	while [[ $# -gt 0 ]]; do
-		key="$1"
-		case "$key" in
-			--help | -h)
-				long_usage=yes
-				gup_install_swag_usage
-				exit
-				;;
-
-			*)
-				break
-				;;
-
-		esac
-	done
-
-	# :command.command_filter
-	action="install swag"
-
-	# :command.parse_requirements_while
-	while [[ $# -gt 0 ]]; do
-		key="$1"
-		case "$key" in
-
-			-?*)
-				printf "invalid option: %s\n" "$key" >&2
-				exit 1
-				;;
-
-			*)
-				# :command.parse_requirements_case
-				# :command.parse_requirements_case_simple
-				printf "invalid argument: %s\n" "$key" >&2
-				exit 1
-
-				;;
-
-		esac
-	done
-
-}
-
-# :command.parse_requirements
-gup_install_templ_parse_requirements() {
-	local key
-
-	# :command.fixed_flags_filter
-	while [[ $# -gt 0 ]]; do
-		key="$1"
-		case "$key" in
-			--help | -h)
-				long_usage=yes
-				gup_install_templ_usage
-				exit
-				;;
-
-			*)
-				break
-				;;
-
-		esac
-	done
-
-	# :command.command_filter
-	action="install templ"
+	action="install nodejs"
 
 	# :command.parse_requirements_while
 	while [[ $# -gt 0 ]]; do
@@ -6606,53 +5135,6 @@ gup_install_nvm_parse_requirements() {
 
 	# :command.command_filter
 	action="install nvm"
-
-	# :command.parse_requirements_while
-	while [[ $# -gt 0 ]]; do
-		key="$1"
-		case "$key" in
-
-			-?*)
-				printf "invalid option: %s\n" "$key" >&2
-				exit 1
-				;;
-
-			*)
-				# :command.parse_requirements_case
-				# :command.parse_requirements_case_simple
-				printf "invalid argument: %s\n" "$key" >&2
-				exit 1
-
-				;;
-
-		esac
-	done
-
-}
-
-# :command.parse_requirements
-gup_install_nodejs_parse_requirements() {
-	local key
-
-	# :command.fixed_flags_filter
-	while [[ $# -gt 0 ]]; do
-		key="$1"
-		case "$key" in
-			--help | -h)
-				long_usage=yes
-				gup_install_nodejs_usage
-				exit
-				;;
-
-			*)
-				break
-				;;
-
-		esac
-	done
-
-	# :command.command_filter
-	action="install nodejs"
 
 	# :command.parse_requirements_while
 	while [[ $# -gt 0 ]]; do
@@ -6747,53 +5229,6 @@ gup_install_bun_parse_requirements() {
 
 	# :command.command_filter
 	action="install bun"
-
-	# :command.parse_requirements_while
-	while [[ $# -gt 0 ]]; do
-		key="$1"
-		case "$key" in
-
-			-?*)
-				printf "invalid option: %s\n" "$key" >&2
-				exit 1
-				;;
-
-			*)
-				# :command.parse_requirements_case
-				# :command.parse_requirements_case_simple
-				printf "invalid argument: %s\n" "$key" >&2
-				exit 1
-
-				;;
-
-		esac
-	done
-
-}
-
-# :command.parse_requirements
-gup_install_ruff_parse_requirements() {
-	local key
-
-	# :command.fixed_flags_filter
-	while [[ $# -gt 0 ]]; do
-		key="$1"
-		case "$key" in
-			--help | -h)
-				long_usage=yes
-				gup_install_ruff_usage
-				exit
-				;;
-
-			*)
-				break
-				;;
-
-		esac
-	done
-
-	# :command.command_filter
-	action="install ruff"
 
 	# :command.parse_requirements_while
 	while [[ $# -gt 0 ]]; do
@@ -6960,6 +5395,946 @@ gup_install_zig_parse_requirements() {
 }
 
 # :command.parse_requirements
+gup_install_gohelpers_parse_requirements() {
+	local key
+
+	# :command.fixed_flags_filter
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+			--help | -h)
+				long_usage=yes
+				gup_install_gohelpers_usage
+				exit
+				;;
+
+			*)
+				break
+				;;
+
+		esac
+	done
+
+	# :command.command_filter
+	action="install gohelpers"
+
+	# :command.parse_requirements_while
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+
+			-?*)
+				printf "invalid option: %s\n" "$key" >&2
+				exit 1
+				;;
+
+			*)
+				# :command.parse_requirements_case
+				# :command.parse_requirements_case_simple
+				printf "invalid argument: %s\n" "$key" >&2
+				exit 1
+
+				;;
+
+		esac
+	done
+
+}
+
+# :command.parse_requirements
+gup_install_go_blueprint_parse_requirements() {
+	local key
+
+	# :command.fixed_flags_filter
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+			--help | -h)
+				long_usage=yes
+				gup_install_go_blueprint_usage
+				exit
+				;;
+
+			*)
+				break
+				;;
+
+		esac
+	done
+
+	# :command.command_filter
+	action="install go-blueprint"
+
+	# :command.parse_requirements_while
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+
+			-?*)
+				printf "invalid option: %s\n" "$key" >&2
+				exit 1
+				;;
+
+			*)
+				# :command.parse_requirements_case
+				# :command.parse_requirements_case_simple
+				printf "invalid argument: %s\n" "$key" >&2
+				exit 1
+
+				;;
+
+		esac
+	done
+
+}
+
+# :command.parse_requirements
+gup_install_gowebly_parse_requirements() {
+	local key
+
+	# :command.fixed_flags_filter
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+			--help | -h)
+				long_usage=yes
+				gup_install_gowebly_usage
+				exit
+				;;
+
+			*)
+				break
+				;;
+
+		esac
+	done
+
+	# :command.command_filter
+	action="install gowebly"
+
+	# :command.parse_requirements_while
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+
+			-?*)
+				printf "invalid option: %s\n" "$key" >&2
+				exit 1
+				;;
+
+			*)
+				# :command.parse_requirements_case
+				# :command.parse_requirements_case_simple
+				printf "invalid argument: %s\n" "$key" >&2
+				exit 1
+
+				;;
+
+		esac
+	done
+
+}
+
+# :command.parse_requirements
+gup_install_goplay_parse_requirements() {
+	local key
+
+	# :command.fixed_flags_filter
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+			--help | -h)
+				long_usage=yes
+				gup_install_goplay_usage
+				exit
+				;;
+
+			*)
+				break
+				;;
+
+		esac
+	done
+
+	# :command.command_filter
+	action="install goplay"
+
+	# :command.parse_requirements_while
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+
+			-?*)
+				printf "invalid option: %s\n" "$key" >&2
+				exit 1
+				;;
+
+			*)
+				# :command.parse_requirements_case
+				# :command.parse_requirements_case_simple
+				printf "invalid argument: %s\n" "$key" >&2
+				exit 1
+
+				;;
+
+		esac
+	done
+
+}
+
+# :command.parse_requirements
+gup_install_gotests_parse_requirements() {
+	local key
+
+	# :command.fixed_flags_filter
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+			--help | -h)
+				long_usage=yes
+				gup_install_gotests_usage
+				exit
+				;;
+
+			*)
+				break
+				;;
+
+		esac
+	done
+
+	# :command.command_filter
+	action="install gotests"
+
+	# :command.parse_requirements_while
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+
+			-?*)
+				printf "invalid option: %s\n" "$key" >&2
+				exit 1
+				;;
+
+			*)
+				# :command.parse_requirements_case
+				# :command.parse_requirements_case_simple
+				printf "invalid argument: %s\n" "$key" >&2
+				exit 1
+
+				;;
+
+		esac
+	done
+
+}
+
+# :command.parse_requirements
+gup_install_impl_parse_requirements() {
+	local key
+
+	# :command.fixed_flags_filter
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+			--help | -h)
+				long_usage=yes
+				gup_install_impl_usage
+				exit
+				;;
+
+			*)
+				break
+				;;
+
+		esac
+	done
+
+	# :command.command_filter
+	action="install impl"
+
+	# :command.parse_requirements_while
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+
+			-?*)
+				printf "invalid option: %s\n" "$key" >&2
+				exit 1
+				;;
+
+			*)
+				# :command.parse_requirements_case
+				# :command.parse_requirements_case_simple
+				printf "invalid argument: %s\n" "$key" >&2
+				exit 1
+
+				;;
+
+		esac
+	done
+
+}
+
+# :command.parse_requirements
+gup_install_gomodifytags_parse_requirements() {
+	local key
+
+	# :command.fixed_flags_filter
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+			--help | -h)
+				long_usage=yes
+				gup_install_gomodifytags_usage
+				exit
+				;;
+
+			*)
+				break
+				;;
+
+		esac
+	done
+
+	# :command.command_filter
+	action="install gomodifytags"
+
+	# :command.parse_requirements_while
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+
+			-?*)
+				printf "invalid option: %s\n" "$key" >&2
+				exit 1
+				;;
+
+			*)
+				# :command.parse_requirements_case
+				# :command.parse_requirements_case_simple
+				printf "invalid argument: %s\n" "$key" >&2
+				exit 1
+
+				;;
+
+		esac
+	done
+
+}
+
+# :command.parse_requirements
+gup_install_air_parse_requirements() {
+	local key
+
+	# :command.fixed_flags_filter
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+			--help | -h)
+				long_usage=yes
+				gup_install_air_usage
+				exit
+				;;
+
+			*)
+				break
+				;;
+
+		esac
+	done
+
+	# :command.command_filter
+	action="install air"
+
+	# :command.parse_requirements_while
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+
+			-?*)
+				printf "invalid option: %s\n" "$key" >&2
+				exit 1
+				;;
+
+			*)
+				# :command.parse_requirements_case
+				# :command.parse_requirements_case_simple
+				printf "invalid argument: %s\n" "$key" >&2
+				exit 1
+
+				;;
+
+		esac
+	done
+
+}
+
+# :command.parse_requirements
+gup_install_gofumpt_parse_requirements() {
+	local key
+
+	# :command.fixed_flags_filter
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+			--help | -h)
+				long_usage=yes
+				gup_install_gofumpt_usage
+				exit
+				;;
+
+			*)
+				break
+				;;
+
+		esac
+	done
+
+	# :command.command_filter
+	action="install gofumpt"
+
+	# :command.parse_requirements_while
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+
+			-?*)
+				printf "invalid option: %s\n" "$key" >&2
+				exit 1
+				;;
+
+			*)
+				# :command.parse_requirements_case
+				# :command.parse_requirements_case_simple
+				printf "invalid argument: %s\n" "$key" >&2
+				exit 1
+
+				;;
+
+		esac
+	done
+
+}
+
+# :command.parse_requirements
+gup_install_goimports_parse_requirements() {
+	local key
+
+	# :command.fixed_flags_filter
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+			--help | -h)
+				long_usage=yes
+				gup_install_goimports_usage
+				exit
+				;;
+
+			*)
+				break
+				;;
+
+		esac
+	done
+
+	# :command.command_filter
+	action="install goimports"
+
+	# :command.parse_requirements_while
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+
+			-?*)
+				printf "invalid option: %s\n" "$key" >&2
+				exit 1
+				;;
+
+			*)
+				# :command.parse_requirements_case
+				# :command.parse_requirements_case_simple
+				printf "invalid argument: %s\n" "$key" >&2
+				exit 1
+
+				;;
+
+		esac
+	done
+
+}
+
+# :command.parse_requirements
+gup_install_golangci_lint_parse_requirements() {
+	local key
+
+	# :command.fixed_flags_filter
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+			--help | -h)
+				long_usage=yes
+				gup_install_golangci_lint_usage
+				exit
+				;;
+
+			*)
+				break
+				;;
+
+		esac
+	done
+
+	# :command.command_filter
+	action="install golangci-lint"
+
+	# :command.parse_requirements_while
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+
+			-?*)
+				printf "invalid option: %s\n" "$key" >&2
+				exit 1
+				;;
+
+			*)
+				# :command.parse_requirements_case
+				# :command.parse_requirements_case_simple
+				printf "invalid argument: %s\n" "$key" >&2
+				exit 1
+
+				;;
+
+		esac
+	done
+
+}
+
+# :command.parse_requirements
+gup_install_staticcheck_parse_requirements() {
+	local key
+
+	# :command.fixed_flags_filter
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+			--help | -h)
+				long_usage=yes
+				gup_install_staticcheck_usage
+				exit
+				;;
+
+			*)
+				break
+				;;
+
+		esac
+	done
+
+	# :command.command_filter
+	action="install staticcheck"
+
+	# :command.parse_requirements_while
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+
+			-?*)
+				printf "invalid option: %s\n" "$key" >&2
+				exit 1
+				;;
+
+			*)
+				# :command.parse_requirements_case
+				# :command.parse_requirements_case_simple
+				printf "invalid argument: %s\n" "$key" >&2
+				exit 1
+
+				;;
+
+		esac
+	done
+
+}
+
+# :command.parse_requirements
+gup_install_nilaway_parse_requirements() {
+	local key
+
+	# :command.fixed_flags_filter
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+			--help | -h)
+				long_usage=yes
+				gup_install_nilaway_usage
+				exit
+				;;
+
+			*)
+				break
+				;;
+
+		esac
+	done
+
+	# :command.command_filter
+	action="install nilaway"
+
+	# :command.parse_requirements_while
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+
+			-?*)
+				printf "invalid option: %s\n" "$key" >&2
+				exit 1
+				;;
+
+			*)
+				# :command.parse_requirements_case
+				# :command.parse_requirements_case_simple
+				printf "invalid argument: %s\n" "$key" >&2
+				exit 1
+
+				;;
+
+		esac
+	done
+
+}
+
+# :command.parse_requirements
+gup_install_swag_parse_requirements() {
+	local key
+
+	# :command.fixed_flags_filter
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+			--help | -h)
+				long_usage=yes
+				gup_install_swag_usage
+				exit
+				;;
+
+			*)
+				break
+				;;
+
+		esac
+	done
+
+	# :command.command_filter
+	action="install swag"
+
+	# :command.parse_requirements_while
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+
+			-?*)
+				printf "invalid option: %s\n" "$key" >&2
+				exit 1
+				;;
+
+			*)
+				# :command.parse_requirements_case
+				# :command.parse_requirements_case_simple
+				printf "invalid argument: %s\n" "$key" >&2
+				exit 1
+
+				;;
+
+		esac
+	done
+
+}
+
+# :command.parse_requirements
+gup_install_templ_parse_requirements() {
+	local key
+
+	# :command.fixed_flags_filter
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+			--help | -h)
+				long_usage=yes
+				gup_install_templ_usage
+				exit
+				;;
+
+			*)
+				break
+				;;
+
+		esac
+	done
+
+	# :command.command_filter
+	action="install templ"
+
+	# :command.parse_requirements_while
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+
+			-?*)
+				printf "invalid option: %s\n" "$key" >&2
+				exit 1
+				;;
+
+			*)
+				# :command.parse_requirements_case
+				# :command.parse_requirements_case_simple
+				printf "invalid argument: %s\n" "$key" >&2
+				exit 1
+
+				;;
+
+		esac
+	done
+
+}
+
+# :command.parse_requirements
+gup_install_ruff_parse_requirements() {
+	local key
+
+	# :command.fixed_flags_filter
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+			--help | -h)
+				long_usage=yes
+				gup_install_ruff_usage
+				exit
+				;;
+
+			*)
+				break
+				;;
+
+		esac
+	done
+
+	# :command.command_filter
+	action="install ruff"
+
+	# :command.parse_requirements_while
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+
+			-?*)
+				printf "invalid option: %s\n" "$key" >&2
+				exit 1
+				;;
+
+			*)
+				# :command.parse_requirements_case
+				# :command.parse_requirements_case_simple
+				printf "invalid argument: %s\n" "$key" >&2
+				exit 1
+
+				;;
+
+		esac
+	done
+
+}
+
+# :command.parse_requirements
+gup_install_scc_parse_requirements() {
+	local key
+
+	# :command.fixed_flags_filter
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+			--help | -h)
+				long_usage=yes
+				gup_install_scc_usage
+				exit
+				;;
+
+			*)
+				break
+				;;
+
+		esac
+	done
+
+	# :command.command_filter
+	action="install scc"
+
+	# :command.parse_requirements_while
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+
+			-?*)
+				printf "invalid option: %s\n" "$key" >&2
+				exit 1
+				;;
+
+			*)
+				# :command.parse_requirements_case
+				# :command.parse_requirements_case_simple
+				printf "invalid argument: %s\n" "$key" >&2
+				exit 1
+
+				;;
+
+		esac
+	done
+
+}
+
+# :command.parse_requirements
+gup_install_yamlfmt_parse_requirements() {
+	local key
+
+	# :command.fixed_flags_filter
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+			--help | -h)
+				long_usage=yes
+				gup_install_yamlfmt_usage
+				exit
+				;;
+
+			*)
+				break
+				;;
+
+		esac
+	done
+
+	# :command.command_filter
+	action="install yamlfmt"
+
+	# :command.parse_requirements_while
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+
+			-?*)
+				printf "invalid option: %s\n" "$key" >&2
+				exit 1
+				;;
+
+			*)
+				# :command.parse_requirements_case
+				# :command.parse_requirements_case_simple
+				printf "invalid argument: %s\n" "$key" >&2
+				exit 1
+
+				;;
+
+		esac
+	done
+
+}
+
+# :command.parse_requirements
+gup_install_gopls_parse_requirements() {
+	local key
+
+	# :command.fixed_flags_filter
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+			--help | -h)
+				long_usage=yes
+				gup_install_gopls_usage
+				exit
+				;;
+
+			*)
+				break
+				;;
+
+		esac
+	done
+
+	# :command.command_filter
+	action="install gopls"
+
+	# :command.parse_requirements_while
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+
+			-?*)
+				printf "invalid option: %s\n" "$key" >&2
+				exit 1
+				;;
+
+			*)
+				# :command.parse_requirements_case
+				# :command.parse_requirements_case_simple
+				printf "invalid argument: %s\n" "$key" >&2
+				exit 1
+
+				;;
+
+		esac
+	done
+
+}
+
+# :command.parse_requirements
+gup_install_dlv_parse_requirements() {
+	local key
+
+	# :command.fixed_flags_filter
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+			--help | -h)
+				long_usage=yes
+				gup_install_dlv_usage
+				exit
+				;;
+
+			*)
+				break
+				;;
+
+		esac
+	done
+
+	# :command.command_filter
+	action="install dlv"
+
+	# :command.parse_requirements_while
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+
+			-?*)
+				printf "invalid option: %s\n" "$key" >&2
+				exit 1
+				;;
+
+			*)
+				# :command.parse_requirements_case
+				# :command.parse_requirements_case_simple
+				printf "invalid argument: %s\n" "$key" >&2
+				exit 1
+
+				;;
+
+		esac
+	done
+
+}
+
+# :command.parse_requirements
 gup_install_zls_parse_requirements() {
 	local key
 
@@ -7007,7 +6382,7 @@ gup_install_zls_parse_requirements() {
 }
 
 # :command.parse_requirements
-gup_install_btop_parse_requirements() {
+gup_install_neovim_parse_requirements() {
 	local key
 
 	# :command.fixed_flags_filter
@@ -7016,7 +6391,7 @@ gup_install_btop_parse_requirements() {
 		case "$key" in
 			--help | -h)
 				long_usage=yes
-				gup_install_btop_usage
+				gup_install_neovim_usage
 				exit
 				;;
 
@@ -7028,7 +6403,7 @@ gup_install_btop_parse_requirements() {
 	done
 
 	# :command.command_filter
-	action="install btop"
+	action="install neovim"
 
 	# :command.parse_requirements_while
 	while [[ $# -gt 0 ]]; do
@@ -7054,7 +6429,7 @@ gup_install_btop_parse_requirements() {
 }
 
 # :command.parse_requirements
-gup_install_gotop_parse_requirements() {
+gup_install_helix_parse_requirements() {
 	local key
 
 	# :command.fixed_flags_filter
@@ -7063,7 +6438,7 @@ gup_install_gotop_parse_requirements() {
 		case "$key" in
 			--help | -h)
 				long_usage=yes
-				gup_install_gotop_usage
+				gup_install_helix_usage
 				exit
 				;;
 
@@ -7075,7 +6450,7 @@ gup_install_gotop_parse_requirements() {
 	done
 
 	# :command.command_filter
-	action="install gotop"
+	action="install helix"
 
 	# :command.parse_requirements_while
 	while [[ $# -gt 0 ]]; do
@@ -7101,7 +6476,7 @@ gup_install_gotop_parse_requirements() {
 }
 
 # :command.parse_requirements
-gup_install_blackbox_exporter_parse_requirements() {
+gup_install_prometheus_parse_requirements() {
 	local key
 
 	# :command.fixed_flags_filter
@@ -7110,7 +6485,7 @@ gup_install_blackbox_exporter_parse_requirements() {
 		case "$key" in
 			--help | -h)
 				long_usage=yes
-				gup_install_blackbox_exporter_usage
+				gup_install_prometheus_usage
 				exit
 				;;
 
@@ -7122,7 +6497,7 @@ gup_install_blackbox_exporter_parse_requirements() {
 	done
 
 	# :command.command_filter
-	action="install blackbox_exporter"
+	action="install prometheus"
 
 	# :command.parse_requirements_while
 	while [[ $# -gt 0 ]]; do
@@ -7336,7 +6711,7 @@ gup_install_postgres_exporter_parse_requirements() {
 }
 
 # :command.parse_requirements
-gup_install_prometheus_parse_requirements() {
+gup_install_blackbox_exporter_parse_requirements() {
 	local key
 
 	# :command.fixed_flags_filter
@@ -7345,7 +6720,7 @@ gup_install_prometheus_parse_requirements() {
 		case "$key" in
 			--help | -h)
 				long_usage=yes
-				gup_install_prometheus_usage
+				gup_install_blackbox_exporter_usage
 				exit
 				;;
 
@@ -7357,7 +6732,7 @@ gup_install_prometheus_parse_requirements() {
 	done
 
 	# :command.command_filter
-	action="install prometheus"
+	action="install blackbox_exporter"
 
 	# :command.parse_requirements_while
 	while [[ $# -gt 0 ]]; do
@@ -7405,6 +6780,570 @@ gup_install_snmp_exporter_parse_requirements() {
 
 	# :command.command_filter
 	action="install snmp_exporter"
+
+	# :command.parse_requirements_while
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+
+			-?*)
+				printf "invalid option: %s\n" "$key" >&2
+				exit 1
+				;;
+
+			*)
+				# :command.parse_requirements_case
+				# :command.parse_requirements_case_simple
+				printf "invalid argument: %s\n" "$key" >&2
+				exit 1
+
+				;;
+
+		esac
+	done
+
+}
+
+# :command.parse_requirements
+gup_install_btop_parse_requirements() {
+	local key
+
+	# :command.fixed_flags_filter
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+			--help | -h)
+				long_usage=yes
+				gup_install_btop_usage
+				exit
+				;;
+
+			*)
+				break
+				;;
+
+		esac
+	done
+
+	# :command.command_filter
+	action="install btop"
+
+	# :command.parse_requirements_while
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+
+			-?*)
+				printf "invalid option: %s\n" "$key" >&2
+				exit 1
+				;;
+
+			*)
+				# :command.parse_requirements_case
+				# :command.parse_requirements_case_simple
+				printf "invalid argument: %s\n" "$key" >&2
+				exit 1
+
+				;;
+
+		esac
+	done
+
+}
+
+# :command.parse_requirements
+gup_install_gotop_parse_requirements() {
+	local key
+
+	# :command.fixed_flags_filter
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+			--help | -h)
+				long_usage=yes
+				gup_install_gotop_usage
+				exit
+				;;
+
+			*)
+				break
+				;;
+
+		esac
+	done
+
+	# :command.command_filter
+	action="install gotop"
+
+	# :command.parse_requirements_while
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+
+			-?*)
+				printf "invalid option: %s\n" "$key" >&2
+				exit 1
+				;;
+
+			*)
+				# :command.parse_requirements_case
+				# :command.parse_requirements_case_simple
+				printf "invalid argument: %s\n" "$key" >&2
+				exit 1
+
+				;;
+
+		esac
+	done
+
+}
+
+# :command.parse_requirements
+gup_install_lazydocker_parse_requirements() {
+	local key
+
+	# :command.fixed_flags_filter
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+			--help | -h)
+				long_usage=yes
+				gup_install_lazydocker_usage
+				exit
+				;;
+
+			*)
+				break
+				;;
+
+		esac
+	done
+
+	# :command.command_filter
+	action="install lazydocker"
+
+	# :command.parse_requirements_while
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+
+			-?*)
+				printf "invalid option: %s\n" "$key" >&2
+				exit 1
+				;;
+
+			*)
+				# :command.parse_requirements_case
+				# :command.parse_requirements_case_simple
+				printf "invalid argument: %s\n" "$key" >&2
+				exit 1
+
+				;;
+
+		esac
+	done
+
+}
+
+# :command.parse_requirements
+gup_install_minikube_parse_requirements() {
+	local key
+
+	# :command.fixed_flags_filter
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+			--help | -h)
+				long_usage=yes
+				gup_install_minikube_usage
+				exit
+				;;
+
+			*)
+				break
+				;;
+
+		esac
+	done
+
+	# :command.command_filter
+	action="install minikube"
+
+	# :command.parse_requirements_while
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+
+			-?*)
+				printf "invalid option: %s\n" "$key" >&2
+				exit 1
+				;;
+
+			*)
+				# :command.parse_requirements_case
+				# :command.parse_requirements_case_simple
+				printf "invalid argument: %s\n" "$key" >&2
+				exit 1
+
+				;;
+
+		esac
+	done
+
+}
+
+# :command.parse_requirements
+gup_install_kubectl_parse_requirements() {
+	local key
+
+	# :command.fixed_flags_filter
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+			--help | -h)
+				long_usage=yes
+				gup_install_kubectl_usage
+				exit
+				;;
+
+			*)
+				break
+				;;
+
+		esac
+	done
+
+	# :command.command_filter
+	action="install kubectl"
+
+	# :command.parse_requirements_while
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+
+			-?*)
+				printf "invalid option: %s\n" "$key" >&2
+				exit 1
+				;;
+
+			*)
+				# :command.parse_requirements_case
+				# :command.parse_requirements_case_simple
+				printf "invalid argument: %s\n" "$key" >&2
+				exit 1
+
+				;;
+
+		esac
+	done
+
+}
+
+# :command.parse_requirements
+gup_install_k9s_parse_requirements() {
+	local key
+
+	# :command.fixed_flags_filter
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+			--help | -h)
+				long_usage=yes
+				gup_install_k9s_usage
+				exit
+				;;
+
+			*)
+				break
+				;;
+
+		esac
+	done
+
+	# :command.command_filter
+	action="install k9s"
+
+	# :command.parse_requirements_while
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+
+			-?*)
+				printf "invalid option: %s\n" "$key" >&2
+				exit 1
+				;;
+
+			*)
+				# :command.parse_requirements_case
+				# :command.parse_requirements_case_simple
+				printf "invalid argument: %s\n" "$key" >&2
+				exit 1
+
+				;;
+
+		esac
+	done
+
+}
+
+# :command.parse_requirements
+gup_install_etcd_parse_requirements() {
+	local key
+
+	# :command.fixed_flags_filter
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+			--help | -h)
+				long_usage=yes
+				gup_install_etcd_usage
+				exit
+				;;
+
+			*)
+				break
+				;;
+
+		esac
+	done
+
+	# :command.command_filter
+	action="install etcd"
+
+	# :command.parse_requirements_while
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+
+			-?*)
+				printf "invalid option: %s\n" "$key" >&2
+				exit 1
+				;;
+
+			*)
+				# :command.parse_requirements_case
+				# :command.parse_requirements_case_simple
+				printf "invalid argument: %s\n" "$key" >&2
+				exit 1
+
+				;;
+
+		esac
+	done
+
+}
+
+# :command.parse_requirements
+gup_install_vagrant_parse_requirements() {
+	local key
+
+	# :command.fixed_flags_filter
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+			--help | -h)
+				long_usage=yes
+				gup_install_vagrant_usage
+				exit
+				;;
+
+			*)
+				break
+				;;
+
+		esac
+	done
+
+	# :command.command_filter
+	action="install vagrant"
+
+	# :command.parse_requirements_while
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+
+			-?*)
+				printf "invalid option: %s\n" "$key" >&2
+				exit 1
+				;;
+
+			*)
+				# :command.parse_requirements_case
+				# :command.parse_requirements_case_simple
+				printf "invalid argument: %s\n" "$key" >&2
+				exit 1
+
+				;;
+
+		esac
+	done
+
+}
+
+# :command.parse_requirements
+gup_install_doctl_parse_requirements() {
+	local key
+
+	# :command.fixed_flags_filter
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+			--help | -h)
+				long_usage=yes
+				gup_install_doctl_usage
+				exit
+				;;
+
+			*)
+				break
+				;;
+
+		esac
+	done
+
+	# :command.command_filter
+	action="install doctl"
+
+	# :command.parse_requirements_while
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+
+			-?*)
+				printf "invalid option: %s\n" "$key" >&2
+				exit 1
+				;;
+
+			*)
+				# :command.parse_requirements_case
+				# :command.parse_requirements_case_simple
+				printf "invalid argument: %s\n" "$key" >&2
+				exit 1
+
+				;;
+
+		esac
+	done
+
+}
+
+# :command.parse_requirements
+gup_install_b2_parse_requirements() {
+	local key
+
+	# :command.fixed_flags_filter
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+			--help | -h)
+				long_usage=yes
+				gup_install_b2_usage
+				exit
+				;;
+
+			*)
+				break
+				;;
+
+		esac
+	done
+
+	# :command.command_filter
+	action="install b2"
+
+	# :command.parse_requirements_while
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+
+			-?*)
+				printf "invalid option: %s\n" "$key" >&2
+				exit 1
+				;;
+
+			*)
+				# :command.parse_requirements_case
+				# :command.parse_requirements_case_simple
+				printf "invalid argument: %s\n" "$key" >&2
+				exit 1
+
+				;;
+
+		esac
+	done
+
+}
+
+# :command.parse_requirements
+gup_install_githubcli_parse_requirements() {
+	local key
+
+	# :command.fixed_flags_filter
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+			--help | -h)
+				long_usage=yes
+				gup_install_githubcli_usage
+				exit
+				;;
+
+			*)
+				break
+				;;
+
+		esac
+	done
+
+	# :command.command_filter
+	action="install githubcli"
+
+	# :command.parse_requirements_while
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+
+			-?*)
+				printf "invalid option: %s\n" "$key" >&2
+				exit 1
+				;;
+
+			*)
+				# :command.parse_requirements_case
+				# :command.parse_requirements_case_simple
+				printf "invalid argument: %s\n" "$key" >&2
+				exit 1
+
+				;;
+
+		esac
+	done
+
+}
+
+# :command.parse_requirements
+gup_install_forgejocli_parse_requirements() {
+	local key
+
+	# :command.fixed_flags_filter
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+			--help | -h)
+				long_usage=yes
+				gup_install_forgejocli_usage
+				exit
+				;;
+
+			*)
+				break
+				;;
+
+		esac
+	done
+
+	# :command.command_filter
+	action="install forgejocli"
 
 	# :command.parse_requirements_while
 	while [[ $# -gt 0 ]]; do
@@ -7571,6 +7510,100 @@ gup_install_hugo_parse_requirements() {
 }
 
 # :command.parse_requirements
+gup_install_tailwindcss_parse_requirements() {
+	local key
+
+	# :command.fixed_flags_filter
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+			--help | -h)
+				long_usage=yes
+				gup_install_tailwindcss_usage
+				exit
+				;;
+
+			*)
+				break
+				;;
+
+		esac
+	done
+
+	# :command.command_filter
+	action="install tailwindcss"
+
+	# :command.parse_requirements_while
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+
+			-?*)
+				printf "invalid option: %s\n" "$key" >&2
+				exit 1
+				;;
+
+			*)
+				# :command.parse_requirements_case
+				# :command.parse_requirements_case_simple
+				printf "invalid argument: %s\n" "$key" >&2
+				exit 1
+
+				;;
+
+		esac
+	done
+
+}
+
+# :command.parse_requirements
+gup_install_marp_parse_requirements() {
+	local key
+
+	# :command.fixed_flags_filter
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+			--help | -h)
+				long_usage=yes
+				gup_install_marp_usage
+				exit
+				;;
+
+			*)
+				break
+				;;
+
+		esac
+	done
+
+	# :command.command_filter
+	action="install marp"
+
+	# :command.parse_requirements_while
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+
+			-?*)
+				printf "invalid option: %s\n" "$key" >&2
+				exit 1
+				;;
+
+			*)
+				# :command.parse_requirements_case
+				# :command.parse_requirements_case_simple
+				printf "invalid argument: %s\n" "$key" >&2
+				exit 1
+
+				;;
+
+		esac
+	done
+
+}
+
+# :command.parse_requirements
 gup_install_duf_parse_requirements() {
 	local key
 
@@ -7712,7 +7745,7 @@ gup_install_gum_parse_requirements() {
 }
 
 # :command.parse_requirements
-gup_install_marp_parse_requirements() {
+gup_install_lazygit_parse_requirements() {
 	local key
 
 	# :command.fixed_flags_filter
@@ -7721,7 +7754,7 @@ gup_install_marp_parse_requirements() {
 		case "$key" in
 			--help | -h)
 				long_usage=yes
-				gup_install_marp_usage
+				gup_install_lazygit_usage
 				exit
 				;;
 
@@ -7733,7 +7766,7 @@ gup_install_marp_parse_requirements() {
 	done
 
 	# :command.command_filter
-	action="install marp"
+	action="install lazygit"
 
 	# :command.parse_requirements_while
 	while [[ $# -gt 0 ]]; do
@@ -8088,7 +8121,7 @@ gup_install_zfsnap_parse_requirements() {
 }
 
 # :command.parse_requirements
-gup_install_lazydocker_parse_requirements() {
+gup_install_terraform_parse_requirements() {
 	local key
 
 	# :command.fixed_flags_filter
@@ -8097,7 +8130,7 @@ gup_install_lazydocker_parse_requirements() {
 		case "$key" in
 			--help | -h)
 				long_usage=yes
-				gup_install_lazydocker_usage
+				gup_install_terraform_usage
 				exit
 				;;
 
@@ -8109,7 +8142,7 @@ gup_install_lazydocker_parse_requirements() {
 	done
 
 	# :command.command_filter
-	action="install lazydocker"
+	action="install terraform"
 
 	# :command.parse_requirements_while
 	while [[ $# -gt 0 ]]; do
@@ -8135,7 +8168,7 @@ gup_install_lazydocker_parse_requirements() {
 }
 
 # :command.parse_requirements
-gup_install_vagrant_parse_requirements() {
+gup_install_distrobuilder_parse_requirements() {
 	local key
 
 	# :command.fixed_flags_filter
@@ -8144,7 +8177,7 @@ gup_install_vagrant_parse_requirements() {
 		case "$key" in
 			--help | -h)
 				long_usage=yes
-				gup_install_vagrant_usage
+				gup_install_distrobuilder_usage
 				exit
 				;;
 
@@ -8156,7 +8189,7 @@ gup_install_vagrant_parse_requirements() {
 	done
 
 	# :command.command_filter
-	action="install vagrant"
+	action="install distrobuilder"
 
 	# :command.parse_requirements_while
 	while [[ $# -gt 0 ]]; do
@@ -8182,7 +8215,7 @@ gup_install_vagrant_parse_requirements() {
 }
 
 # :command.parse_requirements
-gup_install_etcd_parse_requirements() {
+gup_install_upx_parse_requirements() {
 	local key
 
 	# :command.fixed_flags_filter
@@ -8191,7 +8224,7 @@ gup_install_etcd_parse_requirements() {
 		case "$key" in
 			--help | -h)
 				long_usage=yes
-				gup_install_etcd_usage
+				gup_install_upx_usage
 				exit
 				;;
 
@@ -8203,7 +8236,7 @@ gup_install_etcd_parse_requirements() {
 	done
 
 	# :command.command_filter
-	action="install etcd"
+	action="install upx"
 
 	# :command.parse_requirements_while
 	while [[ $# -gt 0 ]]; do
@@ -8229,7 +8262,7 @@ gup_install_etcd_parse_requirements() {
 }
 
 # :command.parse_requirements
-gup_install_k9s_parse_requirements() {
+gup_install_sqlc_parse_requirements() {
 	local key
 
 	# :command.fixed_flags_filter
@@ -8238,7 +8271,7 @@ gup_install_k9s_parse_requirements() {
 		case "$key" in
 			--help | -h)
 				long_usage=yes
-				gup_install_k9s_usage
+				gup_install_sqlc_usage
 				exit
 				;;
 
@@ -8250,7 +8283,7 @@ gup_install_k9s_parse_requirements() {
 	done
 
 	# :command.command_filter
-	action="install k9s"
+	action="install sqlc"
 
 	# :command.parse_requirements_while
 	while [[ $# -gt 0 ]]; do
@@ -8276,7 +8309,7 @@ gup_install_k9s_parse_requirements() {
 }
 
 # :command.parse_requirements
-gup_install_kubectl_parse_requirements() {
+gup_install_mkcert_parse_requirements() {
 	local key
 
 	# :command.fixed_flags_filter
@@ -8285,7 +8318,7 @@ gup_install_kubectl_parse_requirements() {
 		case "$key" in
 			--help | -h)
 				long_usage=yes
-				gup_install_kubectl_usage
+				gup_install_mkcert_usage
 				exit
 				;;
 
@@ -8297,7 +8330,7 @@ gup_install_kubectl_parse_requirements() {
 	done
 
 	# :command.command_filter
-	action="install kubectl"
+	action="install mkcert"
 
 	# :command.parse_requirements_while
 	while [[ $# -gt 0 ]]; do
@@ -8323,7 +8356,7 @@ gup_install_kubectl_parse_requirements() {
 }
 
 # :command.parse_requirements
-gup_install_minikube_parse_requirements() {
+gup_install_govulncheck_parse_requirements() {
 	local key
 
 	# :command.fixed_flags_filter
@@ -8332,7 +8365,7 @@ gup_install_minikube_parse_requirements() {
 		case "$key" in
 			--help | -h)
 				long_usage=yes
-				gup_install_minikube_usage
+				gup_install_govulncheck_usage
 				exit
 				;;
 
@@ -8344,7 +8377,7 @@ gup_install_minikube_parse_requirements() {
 	done
 
 	# :command.command_filter
-	action="install minikube"
+	action="install govulncheck"
 
 	# :command.parse_requirements_while
 	while [[ $# -gt 0 ]]; do
@@ -8370,7 +8403,7 @@ gup_install_minikube_parse_requirements() {
 }
 
 # :command.parse_requirements
-gup_install_neovim_parse_requirements() {
+gup_install_nerdfonts_parse_requirements() {
 	local key
 
 	# :command.fixed_flags_filter
@@ -8379,7 +8412,7 @@ gup_install_neovim_parse_requirements() {
 		case "$key" in
 			--help | -h)
 				long_usage=yes
-				gup_install_neovim_usage
+				gup_install_nerdfonts_usage
 				exit
 				;;
 
@@ -8391,7 +8424,7 @@ gup_install_neovim_parse_requirements() {
 	done
 
 	# :command.command_filter
-	action="install neovim"
+	action="install nerdfonts"
 
 	# :command.parse_requirements_while
 	while [[ $# -gt 0 ]]; do
@@ -8405,60 +8438,37 @@ gup_install_neovim_parse_requirements() {
 
 			*)
 				# :command.parse_requirements_case
-				# :command.parse_requirements_case_simple
-				printf "invalid argument: %s\n" "$key" >&2
-				exit 1
+				# :command.parse_requirements_case_repeatable
+				# :argument.case_repeatable
+				escaped="$(printf '%q' "$1")"
+				if [[ -z ${args['font']+x} ]]; then
+					args['font']="$escaped"
+				else
+					args['font']="${args['font']} $escaped"
+
+				fi
+				shift
 
 				;;
 
 		esac
 	done
 
-}
+	# :command.required_args_filter
+	if [[ -z ${args['font']+x} ]]; then
+		printf "missing required argument: FONT\nusage: gup install nerdfonts FONT...\n" >&2
 
-# :command.parse_requirements
-gup_install_helix_parse_requirements() {
-	local key
+		exit 1
+	fi
 
-	# :command.fixed_flags_filter
-	while [[ $# -gt 0 ]]; do
-		key="$1"
-		case "$key" in
-			--help | -h)
-				long_usage=yes
-				gup_install_helix_usage
-				exit
-				;;
-
-			*)
-				break
-				;;
-
-		esac
-	done
-
-	# :command.command_filter
-	action="install helix"
-
-	# :command.parse_requirements_while
-	while [[ $# -gt 0 ]]; do
-		key="$1"
-		case "$key" in
-
-			-?*)
-				printf "invalid option: %s\n" "$key" >&2
-				exit 1
-				;;
-
-			*)
-				# :command.parse_requirements_case
-				# :command.parse_requirements_case_simple
-				printf "invalid argument: %s\n" "$key" >&2
-				exit 1
-
-				;;
-
-		esac
+	# :command.whitelist_filter
+	input_array=''
+	eval "input_array=(${args[font]})"
+	for i in "${input_array[@]}"; do
+		if [[ ! $i =~ ^(Ubuntu|UbuntuMono|Hack|FiraMono|Noto)$ ]]; then
+			printf "%s\n" "font must be one of: Ubuntu, UbuntuMono, Hack, FiraMono, Noto" >&2
+			exit 1
+		fi
 	done
 
 }
@@ -8793,65 +8803,66 @@ run() {
 		"install") gup_install_command ;;
 		"install gup") gup_install_gup_command ;;
 		"install update") gup_install_update_command ;;
-		"install nerdfonts") gup_install_nerdfonts_command ;;
-		"install b2") gup_install_b2_command ;;
-		"install doctl") gup_install_doctl_command ;;
-		"install distrobuilder") gup_install_distrobuilder_command ;;
-		"install terraform") gup_install_terraform_command ;;
-		"install githubcli") gup_install_githubcli_command ;;
-		"install forgejocli") gup_install_forgejocli_command ;;
-		"install lazygit") gup_install_lazygit_command ;;
-		"install mkcert") gup_install_mkcert_command ;;
-		"install scc") gup_install_scc_command ;;
-		"install sqlc") gup_install_sqlc_command ;;
-		"install upx") gup_install_upx_command ;;
-		"install tailwindcss") gup_install_tailwindcss_command ;;
-		"install yamlfmt") gup_install_yamlfmt_command ;;
 		"install go") gup_install_go_command ;;
 		"install tinygo") gup_install_tinygo_command ;;
-		"install godevenv") gup_install_godevenv_command ;;
-		"install air") gup_install_air_command ;;
-		"install dlv") gup_install_dlv_command ;;
-		"install go-blueprint") gup_install_go_blueprint_command ;;
-		"install gofumpt") gup_install_gofumpt_command ;;
-		"install goimports") gup_install_goimports_command ;;
-		"install golangci-lint") gup_install_golangci_lint_command ;;
-		"install gomodifytags") gup_install_gomodifytags_command ;;
-		"install goplay") gup_install_goplay_command ;;
-		"install gopls") gup_install_gopls_command ;;
-		"install gotests") gup_install_gotests_command ;;
-		"install govulncheck") gup_install_govulncheck_command ;;
-		"install gowebly") gup_install_gowebly_command ;;
-		"install impl") gup_install_impl_command ;;
-		"install nilaway") gup_install_nilaway_command ;;
-		"install staticcheck") gup_install_staticcheck_command ;;
-		"install swag") gup_install_swag_command ;;
-		"install templ") gup_install_templ_command ;;
-		"install nvm") gup_install_nvm_command ;;
 		"install nodejs") gup_install_nodejs_command ;;
+		"install nvm") gup_install_nvm_command ;;
 		"install deno") gup_install_deno_command ;;
 		"install bun") gup_install_bun_command ;;
-		"install ruff") gup_install_ruff_command ;;
 		"install uv") gup_install_uv_command ;;
 		"install rust") gup_install_rust_command ;;
 		"install zig") gup_install_zig_command ;;
+		"install gohelpers") gup_install_gohelpers_command ;;
+		"install go-blueprint") gup_install_go_blueprint_command ;;
+		"install gowebly") gup_install_gowebly_command ;;
+		"install goplay") gup_install_goplay_command ;;
+		"install gotests") gup_install_gotests_command ;;
+		"install impl") gup_install_impl_command ;;
+		"install gomodifytags") gup_install_gomodifytags_command ;;
+		"install air") gup_install_air_command ;;
+		"install gofumpt") gup_install_gofumpt_command ;;
+		"install goimports") gup_install_goimports_command ;;
+		"install golangci-lint") gup_install_golangci_lint_command ;;
+		"install staticcheck") gup_install_staticcheck_command ;;
+		"install nilaway") gup_install_nilaway_command ;;
+		"install swag") gup_install_swag_command ;;
+		"install templ") gup_install_templ_command ;;
+		"install ruff") gup_install_ruff_command ;;
+		"install scc") gup_install_scc_command ;;
+		"install yamlfmt") gup_install_yamlfmt_command ;;
+		"install gopls") gup_install_gopls_command ;;
+		"install dlv") gup_install_dlv_command ;;
 		"install zls") gup_install_zls_command ;;
-		"install btop") gup_install_btop_command ;;
-		"install gotop") gup_install_gotop_command ;;
-		"install blackbox_exporter") gup_install_blackbox_exporter_command ;;
+		"install neovim") gup_install_neovim_command ;;
+		"install helix") gup_install_helix_command ;;
+		"install prometheus") gup_install_prometheus_command ;;
 		"install grafana") gup_install_grafana_command ;;
 		"install loki") gup_install_loki_command ;;
 		"install node_exporter") gup_install_node_exporter_command ;;
 		"install postgres_exporter") gup_install_postgres_exporter_command ;;
-		"install prometheus") gup_install_prometheus_command ;;
+		"install blackbox_exporter") gup_install_blackbox_exporter_command ;;
 		"install snmp_exporter") gup_install_snmp_exporter_command ;;
+		"install btop") gup_install_btop_command ;;
+		"install gotop") gup_install_gotop_command ;;
+		"install lazydocker") gup_install_lazydocker_command ;;
+		"install minikube") gup_install_minikube_command ;;
+		"install kubectl") gup_install_kubectl_command ;;
+		"install k9s") gup_install_k9s_command ;;
+		"install etcd") gup_install_etcd_command ;;
+		"install vagrant") gup_install_vagrant_command ;;
+		"install doctl") gup_install_doctl_command ;;
+		"install b2") gup_install_b2_command ;;
+		"install githubcli") gup_install_githubcli_command ;;
+		"install forgejocli") gup_install_forgejocli_command ;;
 		"install caddy2") gup_install_caddy2_command ;;
 		"install traefik") gup_install_traefik_command ;;
 		"install hugo") gup_install_hugo_command ;;
+		"install tailwindcss") gup_install_tailwindcss_command ;;
+		"install marp") gup_install_marp_command ;;
 		"install duf") gup_install_duf_command ;;
 		"install gdu") gup_install_gdu_command ;;
 		"install gum") gup_install_gum_command ;;
-		"install marp") gup_install_marp_command ;;
+		"install lazygit") gup_install_lazygit_command ;;
 		"install muffet") gup_install_muffet_command ;;
 		"install s5cmd") gup_install_s5cmd_command ;;
 		"install sshconfig") gup_install_sshconfig_command ;;
@@ -8859,14 +8870,13 @@ run() {
 		"install timer") gup_install_timer_command ;;
 		"install ytdlp") gup_install_ytdlp_command ;;
 		"install zfsnap") gup_install_zfsnap_command ;;
-		"install lazydocker") gup_install_lazydocker_command ;;
-		"install vagrant") gup_install_vagrant_command ;;
-		"install etcd") gup_install_etcd_command ;;
-		"install k9s") gup_install_k9s_command ;;
-		"install kubectl") gup_install_kubectl_command ;;
-		"install minikube") gup_install_minikube_command ;;
-		"install neovim") gup_install_neovim_command ;;
-		"install helix") gup_install_helix_command ;;
+		"install terraform") gup_install_terraform_command ;;
+		"install distrobuilder") gup_install_distrobuilder_command ;;
+		"install upx") gup_install_upx_command ;;
+		"install sqlc") gup_install_sqlc_command ;;
+		"install mkcert") gup_install_mkcert_command ;;
+		"install govulncheck") gup_install_govulncheck_command ;;
+		"install nerdfonts") gup_install_nerdfonts_command ;;
 		"remove") gup_remove_command ;;
 		"remove neovim") gup_remove_neovim_command ;;
 		"systemd") gup_systemd_command ;;

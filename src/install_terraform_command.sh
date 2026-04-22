@@ -1,36 +1,27 @@
 APP="terraform"
 REPO="hashicorp/terraform"
-RURL="https://api.github.com/repos/${REPO}/releases/latest"
-vers=$(wget -qO- "${RURL}" | jq .tag_name | tr -d '"' | tr -d 'v')
+gup_fetch_release "${REPO}" 'contains("linux_amd64.zip")'
 
-DLREPO="https://releases.hashicorp.com/terraform"
-FN="${APP}_${vers}_linux_amd64.zip"
-DL="${DLREPO}/${vers}/${FN}"
-
-function download() {
+download() {
     echo "download $1 version"
-    echo "installing ${vers}"
-    rm -rf /tmp/"${FN}" /tmp/"${APP}_${vers}"
-    wget -qc "${DL}" -O /tmp/"${FN}"
-    mkdir -p /tmp/"${APP}_${vers}"
-    unzip /tmp/"${FN}" -d /tmp/"${APP}_${vers}"
-    if [ "$(id -u)" == 0 ]; then
-        BDIR="/usr/local/bin"
-        sudo install /tmp/"${APP}_${vers}"/"${APP}" "${BDIR}/${APP}"
-    else
-        BDIR="${HOME}/.local/bin"
-        install /tmp/"${APP}_${vers}"/"${APP}" "${BDIR}/${APP}"
-    fi
-    rm -rf /tmp/"${FN}"
+    echo "installing ${GUP_REL_VERSION}"
+
+    local tmp_dir
+    tmp_dir=$(gup_mktemp_dir)
+    trap 'rm -rf "${tmp_dir}"' RETURN
+
+    gup_download "${GUP_REL_DL}" "${tmp_dir}/${GUP_REL_FN}"
+    _gup_extract_zip "${tmp_dir}/${GUP_REL_FN}" "${tmp_dir}/${APP}"
+    _gup_install_binary "${tmp_dir}/${APP}/${APP}"
 }
 
-if [ -z "$(command -v ${APP})" ]; then
+if [ -z "$(command -v "${APP}")" ]; then
     download new
 else
-    APPVER=$($(command -v ${APP}) version 2>&1 | grep -i "^${APP}" | awk '{print $2}' | tr -d 'v')
-    if [ "${APPVER}" = "${vers}" ]; then
+    APPVER=$($(command -v "${APP}") version 2>&1 | grep -i "^${APP}" | awk '{print $2}' | tr -d 'v')
+    if [ "${APPVER}" = "${GUP_REL_VERSION}" ]; then
         echo "${APP} version is current"
     else
-        download "${vers}"
+        download "${GUP_REL_VERSION}"
     fi
 fi

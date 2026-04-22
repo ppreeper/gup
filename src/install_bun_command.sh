@@ -1,18 +1,18 @@
 APP="bun"
 REPO="oven-sh/bun"
-RURL="https://api.github.com/repos/${REPO}/releases/latest"
-vers=$(wget -qO- "${RURL}" | jq .tag_name | tr -d '"' | tr -d 'v')
-DL=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains ("linux-x64.zip")) | .browser_download_url' | tr -d '"')
-FN=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains ("linux-x64.zip")) | .name' | tr -d '"')
-
 BDIR="${HOME}/.bun"
 target="linux-x64"
+gup_fetch_release "${REPO}" 'contains("linux-x64.zip")'
 
 download() {
     echo "download $1 version"
-    echo "installing ${vers}"
+    echo "installing ${GUP_REL_VERSION}"
 
-    if [ "$(id -u)" == 0 ]; then
+    local tmp_dir
+    tmp_dir=$(gup_mktemp_dir)
+    trap 'rm -rf "${tmp_dir}"' RETURN
+
+    if [ "$(id -u)" = 0 ]; then
         BDIR="/usr/local"
         sudo mkdir -p "${BDIR}/bin"
         grep "BUN_INSTALL=${BDIR}" /etc/environment >/dev/null || echo "BUN_INSTALL=${BDIR}" | sudo tee -a /etc/environment
@@ -21,29 +21,24 @@ download() {
     else
         BDIR="${HOME}/.bun"
         mkdir -p "${BDIR}/bin"
-        grep "export BUN_INSTALL" ${HOME}/.bashrc >/dev/null || echo "export BUN_INSTALL=${BDIR}" >>${HOME}/.bashrc
-        grep 'export PATH=$BUN_INSTALL/bin:$PATH' ~/.bashrc >/dev/null || echo 'export PATH=$BUN_INSTALL/bin:$PATH' >>${HOME}/.bashrc
+        grep "export BUN_INSTALL" "${HOME}/.bashrc" >/dev/null || echo "export BUN_INSTALL=${BDIR}" >>"${HOME}/.bashrc"
+        grep 'export PATH=$BUN_INSTALL/bin:$PATH' "${HOME}/.bashrc" >/dev/null || echo 'export PATH=$BUN_INSTALL/bin:$PATH' >>"${HOME}/.bashrc"
     fi
 
-    rm -rf /tmp/"${APP}-${target}"
-    rm -f /tmp/"${FN}"
-    wget -qc "${DL}" -O /tmp/"${FN}"
-    unzip /tmp/"${FN}" -d /tmp
-    echo install /tmp/"${APP}-${target}"/"${APP}" "${BDIR}"/bin/"${APP}"
-    install /tmp/"${APP}-${target}"/"${APP}" "${BDIR}"/bin/"${APP}"
-    cd "${BDIR}"/bin
+    gup_download "${GUP_REL_DL}" "${tmp_dir}/${GUP_REL_FN}"
+    _gup_extract_zip "${tmp_dir}/${GUP_REL_FN}" "${tmp_dir}"
+    install "${tmp_dir}/${APP}-${target}/${APP}" "${BDIR}/bin/${APP}"
+    cd "${BDIR}/bin"
     ln -f -s bun bunx
-    rm -rf /tmp/"${APP}-${target}"
-    rm -f /tmp/"${FN}"
 }
 
-if [ -z "$(command -v ${APP})" ]; then
+if [ -z "$(command -v "${APP}")" ]; then
     download new
 else
-    APPVER=$($(command -v ${APP}) --version 2>&1)
-    if [ "${APPVER}" = "${vers}" ]; then
+    APPVER=$($(command -v "${APP}") --version 2>&1)
+    if [ "${APPVER}" = "${GUP_REL_VERSION}" ]; then
         echo "${APP} version is current"
     else
-        download "${vers}"
+        download "${GUP_REL_VERSION}"
     fi
 fi

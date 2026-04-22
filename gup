@@ -2041,7 +2041,7 @@ gup_ensure_go() {
 		local missing_deps=()
 		for dep in go; do
 				if ! command -v "$dep" >/dev/null 2>&1; then
-						echo $dep
+						echo "$dep"
 						missing_deps+=("$dep")
 				fi
 		done
@@ -2068,14 +2068,81 @@ gup_get_latest_release() {
 		local repo="$1"
 		local api_url="https://api.github.com/repos/${repo}/releases/latest"
 		wget -qO- "${api_url}" | jq -r .tag_name
-		# wget -qO- "${api_url}" | jq .tag_name | tr -d '"'
 }
 
-gup_get_latest_dl() {
+# create a secure temporary directory
+gup_mktemp_dir() {
+		mktemp -d "${TMPDIR:-/tmp}/gup.XXXXXXXXXX"
+}
+
+# gup_fetch_release repo jq_asset_filter
+# Fetches latest GitHub release info with a single API call.
+# Sets globals: GUP_REL_VERSION (no leading v), GUP_REL_DL, GUP_REL_FN, GUP_REL_JSON
+gup_fetch_release() {
 		local repo="$1"
+		local jq_filter="$2"
 		local api_url="https://api.github.com/repos/${repo}/releases/latest"
-		wget -qO- "${api_url}" | jq -r .tag_name
-		# wget -qO- "${api_url}" | jq .tag_name | tr -d '"'
+		GUP_REL_JSON=$(wget -qO- "${api_url}")
+		GUP_REL_VERSION=$(echo "${GUP_REL_JSON}" | jq -r '.tag_name' | sed 's/^v//')
+		GUP_REL_DL=$(echo "${GUP_REL_JSON}" | jq -r ".assets[] | select(.name | ${jq_filter}) | .browser_download_url")
+		GUP_REL_FN=$(echo "${GUP_REL_JSON}" | jq -r ".assets[] | select(.name | ${jq_filter}) | .name")
+}
+
+# _gup_install_binary src_path [dest_name]
+# Installs a single binary with root/user detection.
+# Sets BDIR globally.
+_gup_install_binary() {
+		local src="$1"
+		local name="${2:-$(basename "$1")}"
+		if [ "$(id -u)" = 0 ]; then
+				BDIR="/usr/local/bin"
+				sudo rm -f "${BDIR}/${name}"
+				sudo install "${src}" "${BDIR}/${name}"
+		else
+				BDIR="${HOME}/.local/bin"
+				rm -f "${BDIR}/${name}"
+				install "${src}" "${BDIR}/${name}"
+		fi
+}
+
+# _gup_install_binaries src_dir name [name ...]
+# Installs multiple binaries from a directory with root/user detection.
+# Sets BDIR globally.
+_gup_install_binaries() {
+		local src_dir="$1"
+		shift
+		if [ "$(id -u)" = 0 ]; then
+				BDIR="/usr/local/bin"
+				for name in "$@"; do
+						sudo rm -f "${BDIR}/${name}"
+						sudo install "${src_dir}/${name}" "${BDIR}/${name}"
+				done
+		else
+				BDIR="${HOME}/.local/bin"
+				for name in "$@"; do
+						rm -f "${BDIR}/${name}"
+						install "${src_dir}/${name}" "${BDIR}/${name}"
+				done
+		fi
+}
+
+# _gup_extract_tarball archive dest_dir [strip_components]
+# Extracts a tarball to the destination directory.
+_gup_extract_tarball() {
+		local archive="$1"
+		local dest="$2"
+		local strip="${3:-1}"
+		mkdir -p "${dest}"
+		tar -axf "${archive}" -C "${dest}" --strip-components="${strip}"
+}
+
+# _gup_extract_zip archive dest_dir
+# Extracts a zip to the destination directory.
+_gup_extract_zip() {
+		local archive="$1"
+		local dest="$2"
+		mkdir -p "${dest}"
+		unzip -o "${archive}" -d "${dest}"
 }
 
 # :command.command_functions
@@ -2117,28 +2184,31 @@ gup_install_go_command() {
 	APP="go"
 	REPO="https://go.googlesource.com/go"
 	DLREPO="https://dl.google.com/go"
-	vers=$(git ls-remote --tags ${REPO} | grep -E 'refs/tags/go[0-9]+\.[0-9]+(\.[0-9]+)?$' | awk '{print $2}' | sed 's/refs\/tags\///' | sort -V | uniq | tail -1)
+	vers=$(git ls-remote --tags "${REPO}" | grep -E 'refs/tags/go[0-9]+\.[0-9]+(\.[0-9]+)?$' | awk '{print $2}' | sed 's/refs\/tags\///' | sort -V | uniq | tail -1)
 
 	IDIR=/usr/local/lib
 	BDIR=/usr/local/bin
 
-	function download(){
+	download() {
 			echo "download $1 version"
 			echo "installing $vers"
-			FN=$vers.linux-amd64.tar.gz
-			rm -f /tmp/"${FN}"
-			wget -qc "${DLREPO}/${FN}" -O /tmp/"${FN}"
-			sudo ls ${IDIR}/go/bin 2>/dev/null | sudo xargs -I {} rm -f ${BDIR}/{}
-			sudo rm -rf ${IDIR}/go
-			sudo tar axf /tmp/"${FN}" -C ${IDIR}
-			sudo ls ${IDIR}/go/bin | sudo xargs -I {} ln -sf ${IDIR}/go/bin/{} ${BDIR}/{}
-			rm -f /tmp/"${FN}"
+
+			local tmp_dir
+			tmp_dir=$(gup_mktemp_dir)
+			trap 'rm -rf "${tmp_dir}"' RETURN
+
+			FN="${vers}.linux-amd64.tar.gz"
+			gup_download "${DLREPO}/${FN}" "${tmp_dir}/${FN}"
+			sudo ls "${IDIR}/go/bin" 2>/dev/null | sudo xargs -I {} rm -f "${BDIR}/{}"
+			sudo rm -rf "${IDIR}/go"
+			sudo tar axf "${tmp_dir}/${FN}" -C "${IDIR}"
+			sudo ls "${IDIR}/go/bin" | sudo xargs -I {} ln -sf "${IDIR}/go/bin/{}" "${BDIR}/{}"
 	}
 
-	if [ -z "$(command -v ${APP})" ]; then
+	if [ -z "$(command -v "${APP}")" ]; then
 			download new
 	else
-			APPVER=$($(command -v ${APP}) version 2>&1 | awk '{print $3}')
+			APPVER=$($(command -v "${APP}") version 2>&1 | awk '{print $3}')
 			if [ "${APPVER}" = "${vers}" ]; then
 					echo "${APP} version is current"
 			else
@@ -2154,53 +2224,54 @@ gup_install_tinygo_command() {
 	# src/install_tinygo_command.sh
 	APP="tinygo"
 	REPO="tinygo-org/tinygo"
-	RURL="https://api.github.com/repos/${REPO}/releases/latest"
-	vers=$(wget -qO- "${RURL}" | jq .tag_name | tr -d '"' | tr -d 'v')
-	DL=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | (contains("sha256") | not) and contains("linux-amd64.tar.gz")) | .browser_download_url' | tr -d '"')
-	FN=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | (contains("sha256") | not) and contains("linux-amd64.tar.gz")) | .name' | tr -d '"')
+	gup_fetch_release "${REPO}" '(contains("sha256") | not) and contains("linux-amd64.tar.gz")'
 
-	function download() {
+	download() {
 			echo "download $1 version"
-			echo "installing ${vers}"
-			rm -rf /tmp/"${FN}" /tmp/"${APP}_${vers}"
-			wget -qc "${DL}" -O /tmp/"${FN}"
-			if [ "$(id -u)" == 0 ]; then
+			echo "installing ${GUP_REL_VERSION}"
+
+			local tmp_dir
+			tmp_dir=$(gup_mktemp_dir)
+			trap 'rm -rf "${tmp_dir}"' RETURN
+
+			gup_download "${GUP_REL_DL}" "${tmp_dir}/${GUP_REL_FN}"
+			if [ "$(id -u)" = 0 ]; then
 					BDIR="/usr/local/bin"
 					IDIR="/usr/local/lib"
 					sudo rm -rf "${IDIR}/tinygo"
 					sudo mkdir -p "${IDIR}/tinygo"
-					sudo tar axf /tmp/"${FN}" -C "${IDIR}/tinygo/" --strip-components=1
-					for f in $(find "${IDIR}"/tinygo/bin/ -type f); do
+					_gup_extract_tarball "${tmp_dir}/${GUP_REL_FN}" "${IDIR}/tinygo"
+					for f in $(find "${IDIR}/tinygo/bin/" -type f); do
 							fname=$(basename "${f}")
 							sudo rm -f "${BDIR}/${fname}"
-							sudo ln -s "${IDIR}"/tinygo/bin/"${fname}" "${BDIR}/${fname}"
+							sudo ln -s "${IDIR}/tinygo/bin/${fname}" "${BDIR}/${fname}"
 					done
 			else
 					BDIR="${HOME}/.local/bin"
 					IDIR="${HOME}/.local/share"
 					rm -rf "${IDIR}/tinygo"
 					mkdir -p "${IDIR}/tinygo"
-					tar axf /tmp/"${FN}" -C "${IDIR}/tinygo/" --strip-components=1
-					for f in $(find "${IDIR}"/tinygo/bin/ -type f); do
+					_gup_extract_tarball "${tmp_dir}/${GUP_REL_FN}" "${IDIR}/tinygo"
+					for f in $(find "${IDIR}/tinygo/bin/" -type f); do
 							fname=$(basename "${f}")
 							rm -f "${BDIR}/${fname}"
-							ln -s "${IDIR}"/tinygo/bin/"${fname}" "${BDIR}/${fname}"
+							ln -s "${IDIR}/tinygo/bin/${fname}" "${BDIR}/${fname}"
 					done
 			fi
-			rm -rf /tmp/"${FN}" /tmp/"${APP}_${vers}"
 	}
 
-	if [ -z "$(command -v ${APP})" ]; then
+	if [ -z "$(command -v "${APP}")" ]; then
 			download new
 	else
-			APPVER=$($(command -v ${APP}) version 2>&1 | awk '{print $3}')
-			if [ "v${APPVER}" = "${vers}" ]; then
+			APPVER=$($(command -v "${APP}") version 2>&1 | awk '{print $3}')
+			if [ "v${APPVER}" = "v${GUP_REL_VERSION}" ]; then
 					echo "${APP} version is current"
 					exit 0
 			else
-					download "${vers}"
+					download "${GUP_REL_VERSION}"
 			fi
 	fi
+
 }
 
 # :command.function
@@ -2210,16 +2281,15 @@ gup_install_nodejs_command() {
 	target="linux-x64.tar.xz"
 	node_version="$(wget -qO- https://nodejs.org/download/release/index.tab | awk '{print $10,$1}' | grep -v "^-" | awk '{print $2}' | grep -v "^version" | sort -V | tail -1)"
 	node_uri="https://nodejs.org/dist/${node_version}/node-${node_version}-${target}"
-	installer="/tmp/node-${target}"
-	iversion=$(node --version 2&>1 || echo "")
+
+	local_tmp_dir=$(gup_mktemp_dir)
+	trap 'rm -rf "${local_tmp_dir}"' RETURN
 
 	sudo mkdir -p /usr/local/share/node
 	sudo rm -rf /usr/local/share/node/*
 
-	rm -f "${installer}"
-	wget -qO "${installer}" "${node_uri}"
-	sudo tar axf "${installer}" --strip-components=1 -C /usr/local/share/node
-	rm -f "${installer}"
+	wget -qO "${local_tmp_dir}/node-${target}" "${node_uri}"
+	sudo tar axf "${local_tmp_dir}/node-${target}" --strip-components=1 -C /usr/local/share/node
 
 	sudo rm -f /usr/local/bin/node
 	sudo ln -s /usr/local/share/node/bin/node /usr/local/bin/node
@@ -2252,12 +2322,12 @@ gup_install_deno_command() {
 	target="x86_64-unknown-linux-gnu"
 	deno_version="$(wget -qO- https://dl.deno.land/release-latest.txt)"
 	deno_uri="https://dl.deno.land/release/${deno_version}/deno-${target}.zip"
-	installer="/tmp/deno.zip"
-	iversion="deno --version | grep "^deno" | awk '{print $2}'"
 
-	wget -qO "${installer}" "${deno_uri}"
-	sudo unzip -d /usr/local/bin -o "${installer}"
-	rm -f "${installer}"
+	local_tmp_dir=$(gup_mktemp_dir)
+	trap 'rm -rf "${local_tmp_dir}"' RETURN
+
+	wget -qO "${local_tmp_dir}/deno.zip" "${deno_uri}"
+	sudo unzip -d /usr/local/bin -o "${local_tmp_dir}/deno.zip"
 
 }
 
@@ -2267,19 +2337,19 @@ gup_install_bun_command() {
 	# src/install_bun_command.sh
 	APP="bun"
 	REPO="oven-sh/bun"
-	RURL="https://api.github.com/repos/${REPO}/releases/latest"
-	vers=$(wget -qO- "${RURL}" | jq .tag_name | tr -d '"' | tr -d 'v')
-	DL=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains ("linux-x64.zip")) | .browser_download_url' | tr -d '"')
-	FN=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains ("linux-x64.zip")) | .name' | tr -d '"')
-
 	BDIR="${HOME}/.bun"
 	target="linux-x64"
+	gup_fetch_release "${REPO}" 'contains("linux-x64.zip")'
 
 	download() {
 			echo "download $1 version"
-			echo "installing ${vers}"
+			echo "installing ${GUP_REL_VERSION}"
 
-			if [ "$(id -u)" == 0 ]; then
+			local tmp_dir
+			tmp_dir=$(gup_mktemp_dir)
+			trap 'rm -rf "${tmp_dir}"' RETURN
+
+			if [ "$(id -u)" = 0 ]; then
 					BDIR="/usr/local"
 					sudo mkdir -p "${BDIR}/bin"
 					grep "BUN_INSTALL=${BDIR}" /etc/environment >/dev/null || echo "BUN_INSTALL=${BDIR}" | sudo tee -a /etc/environment
@@ -2288,30 +2358,25 @@ gup_install_bun_command() {
 			else
 					BDIR="${HOME}/.bun"
 					mkdir -p "${BDIR}/bin"
-					grep "export BUN_INSTALL" ${HOME}/.bashrc >/dev/null || echo "export BUN_INSTALL=${BDIR}" >>${HOME}/.bashrc
-					grep 'export PATH=$BUN_INSTALL/bin:$PATH' ~/.bashrc >/dev/null || echo 'export PATH=$BUN_INSTALL/bin:$PATH' >>${HOME}/.bashrc
+					grep "export BUN_INSTALL" "${HOME}/.bashrc" >/dev/null || echo "export BUN_INSTALL=${BDIR}" >>"${HOME}/.bashrc"
+					grep 'export PATH=$BUN_INSTALL/bin:$PATH' "${HOME}/.bashrc" >/dev/null || echo 'export PATH=$BUN_INSTALL/bin:$PATH' >>"${HOME}/.bashrc"
 			fi
 
-			rm -rf /tmp/"${APP}-${target}"
-			rm -f /tmp/"${FN}"
-			wget -qc "${DL}" -O /tmp/"${FN}"
-			unzip /tmp/"${FN}" -d /tmp
-			echo install /tmp/"${APP}-${target}"/"${APP}" "${BDIR}"/bin/"${APP}"
-			install /tmp/"${APP}-${target}"/"${APP}" "${BDIR}"/bin/"${APP}"
-			cd "${BDIR}"/bin
+			gup_download "${GUP_REL_DL}" "${tmp_dir}/${GUP_REL_FN}"
+			_gup_extract_zip "${tmp_dir}/${GUP_REL_FN}" "${tmp_dir}"
+			install "${tmp_dir}/${APP}-${target}/${APP}" "${BDIR}/bin/${APP}"
+			cd "${BDIR}/bin"
 			ln -f -s bun bunx
-			rm -rf /tmp/"${APP}-${target}"
-			rm -f /tmp/"${FN}"
 	}
 
-	if [ -z "$(command -v ${APP})" ]; then
+	if [ -z "$(command -v "${APP}")" ]; then
 			download new
 	else
-			APPVER=$($(command -v ${APP}) --version 2>&1)
-			if [ "${APPVER}" = "${vers}" ]; then
+			APPVER=$($(command -v "${APP}") --version 2>&1)
+			if [ "${APPVER}" = "${GUP_REL_VERSION}" ]; then
 					echo "${APP} version is current"
 			else
-					download "${vers}"
+					download "${GUP_REL_VERSION}"
 			fi
 	fi
 
@@ -2323,44 +2388,32 @@ gup_install_uv_command() {
 	# src/install_uv_command.sh
 	APP="uv"
 	REPO="astral-sh/uv"
-	RURL="https://api.github.com/repos/${REPO}/releases/latest"
-	vers=$(wget -qO- "${RURL}" | jq .tag_name | tr -d '"' | tr -d 'v')
-	DL=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | (contains("sha256") | not) and contains("x86_64-unknown-linux-gnu.tar.gz")) | .browser_download_url' | tr -d '"')
-	FN=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | (contains("sha256") | not) and contains("x86_64-unknown-linux-gnu.tar.gz")) | .name' | tr -d '"')
+	gup_fetch_release "${REPO}" '(contains("sha256") | not) and contains("x86_64-unknown-linux-gnu.tar.gz")'
 
-	function download() {
+	download() {
 			echo "download $1 version"
-			echo "installing ${vers}"
-			rm -rf /tmp/"${FN}" /tmp/"${APP}_${vers}"
-			wget -qc "${DL}" -O /tmp/"${FN}"
-			mkdir -p /tmp/"${APP}_${vers}"
-			tar -axf /tmp/"${FN}" -C /tmp/"${APP}_${vers}" --strip-components=1
-			if [ "$(id -u)" == 0 ]; then
-					BDIR="/usr/local/bin"
-					sudo rm -f "${BDIR}/${APP}"
-					sudo rm -f "${BDIR}/${APP}x"
-					sudo install /tmp/"${APP}_${vers}"/"${APP}" "${BDIR}/${APP}"
-					sudo install /tmp/"${APP}_${vers}"/"${APP}x" "${BDIR}/${APP}x"
-			else
-					BDIR="${HOME}/.local/bin"
-					rm -f "${BDIR}/${APP}"
-					rm -f "${BDIR}/${APP}x"
-					install /tmp/"${APP}_${vers}"/"${APP}" "${BDIR}/${APP}"
-					install /tmp/"${APP}_${vers}"/"${APP}x" "${BDIR}/${APP}x"
-			fi
-			rm -rf /tmp/"${FN}" /tmp/"${APP}_${vers}"
+			echo "installing ${GUP_REL_VERSION}"
+
+			local tmp_dir
+			tmp_dir=$(gup_mktemp_dir)
+			trap 'rm -rf "${tmp_dir}"' RETURN
+
+			gup_download "${GUP_REL_DL}" "${tmp_dir}/${GUP_REL_FN}"
+			_gup_extract_tarball "${tmp_dir}/${GUP_REL_FN}" "${tmp_dir}/${APP}"
+			_gup_install_binaries "${tmp_dir}/${APP}" "${APP}" "${APP}x"
 	}
 
-	if [ -z "$(command -v ${APP})" ]; then
+	if [ -z "$(command -v "${APP}")" ]; then
 			download new
 	else
-			APPVER=$($(command -v ${APP}) --version 2>&1 | grep "^${APP}" | awk '{print $2}')
-			if [ "${APPVER}" = "${vers}" ]; then
+			APPVER=$($(command -v "${APP}") --version 2>&1 | grep "^${APP}" | awk '{print $2}')
+			if [ "${APPVER}" = "${GUP_REL_VERSION}" ]; then
 					echo "${APP} version is current"
 			else
-					download "${vers}"
+					download "${GUP_REL_VERSION}"
 			fi
 	fi
+
 }
 
 # :command.function
@@ -2393,23 +2446,26 @@ gup_install_zig_command() {
 	IDIR=/usr/local/lib
 	BDIR=/usr/local/bin
 
-	function download(){
+	download() {
 			echo "download $1 version"
 			echo "installing $vers"
-			rm -f /tmp/"${FN}"
-			wget -qc "${DL}" -O /tmp/"${FN}"
-			sudo rm -f "${BDIR}"/zig
-			sudo rm -rf "${IDIR}"/zig
-			sudo mkdir -p "${IDIR}"/zig
-			sudo tar axf /tmp/"${FN}" -C "${IDIR}"/zig  --strip-components=1
-			sudo ln -sf "${IDIR}"/zig/zig "${BDIR}"/zig
-			rm -f /tmp/"${FN}"
+
+			local tmp_dir
+			tmp_dir=$(gup_mktemp_dir)
+			trap 'rm -rf "${tmp_dir}"' RETURN
+
+			gup_download "${DL}" "${tmp_dir}/${FN}"
+			sudo rm -f "${BDIR}/zig"
+			sudo rm -rf "${IDIR}/zig"
+			sudo mkdir -p "${IDIR}/zig"
+			sudo tar axf "${tmp_dir}/${FN}" -C "${IDIR}/zig" --strip-components=1
+			sudo ln -sf "${IDIR}/zig/zig" "${BDIR}/zig"
 	}
 
-	if [ -z "$(command -v ${APP})" ]; then
+	if [ -z "$(command -v "${APP}")" ]; then
 			download new
 	else
-			APPVER=$($(command -v ${APP}) version 2>&1)
+			APPVER=$($(command -v "${APP}") version 2>&1)
 			if [ "${APPVER}" = "${vers}" ]; then
 					echo "${APP} version is current"
 			else
@@ -2600,40 +2656,32 @@ gup_install_ruff_command() {
 	# src/install_ruff_command.sh
 	APP="ruff"
 	REPO="astral-sh/ruff"
-	RURL="https://api.github.com/repos/${REPO}/releases/latest"
-	vers=$(wget -qO- "${RURL}" | jq .tag_name | tr -d '"' | tr -d 'v')
-	DL=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | (contains("sha256") | not) and contains("x86_64-unknown-linux-gnu.tar.gz")) | .browser_download_url' | tr -d '"')
-	FN=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | (contains("sha256") | not) and contains("x86_64-unknown-linux-gnu.tar.gz")) | .name' | tr -d '"')
+	gup_fetch_release "${REPO}" '(contains("sha256") | not) and contains("x86_64-unknown-linux-gnu.tar.gz")'
 
-	function download() {
+	download() {
 			echo "download $1 version"
-			echo "installing ${vers}"
-			rm -rf /tmp/"${FN}" /tmp/"${APP}_${vers}"
-			wget -qc "${DL}" -O /tmp/"${FN}"
-			mkdir -p /tmp/"${APP}_${vers}"
-			tar -axf /tmp/"${FN}" -C /tmp/"${APP}_${vers}" --strip-components=1
-			if [ "$(id -u)" == 0 ]; then
-					BDIR="/usr/local/bin"
-					sudo rm -f "${BDIR}/${APP}"
-					sudo install /tmp/"${APP}_${vers}"/"${APP}" "${BDIR}/${APP}"
-			else
-					BDIR="${HOME}/.local/bin"
-					rm -f "${BDIR}/${APP}"
-					install /tmp/"${APP}_${vers}"/"${APP}" "${BDIR}/${APP}"
-			fi
-			rm -rf /tmp/"${FN}" /tmp/"${APP}_${vers}"
+			echo "installing ${GUP_REL_VERSION}"
+
+			local tmp_dir
+			tmp_dir=$(gup_mktemp_dir)
+			trap 'rm -rf "${tmp_dir}"' RETURN
+
+			gup_download "${GUP_REL_DL}" "${tmp_dir}/${GUP_REL_FN}"
+			_gup_extract_tarball "${tmp_dir}/${GUP_REL_FN}" "${tmp_dir}/${APP}"
+			_gup_install_binary "${tmp_dir}/${APP}/${APP}"
 	}
 
-	if [ -z "$(command -v ${APP})" ]; then
+	if [ -z "$(command -v "${APP}")" ]; then
 			download new
 	else
-			APPVER=$($(command -v ${APP}) --version 2>&1 | grep "^${APP}" | awk '{print $2}')
-			if [ "${APPVER}" = "${vers}" ]; then
+			APPVER=$($(command -v "${APP}") --version 2>&1 | grep "^${APP}" | awk '{print $2}')
+			if [ "${APPVER}" = "${GUP_REL_VERSION}" ]; then
 					echo "${APP} version is current"
 			else
-					download "${vers}"
+					download "${GUP_REL_VERSION}"
 			fi
 	fi
+
 }
 
 # :command.function
@@ -2692,32 +2740,31 @@ gup_install_zls_command() {
 	# src/install_zls_command.sh
 	APP="zls"
 	REPO="zigtools/zls"
-	RURL="https://api.github.com/repos/${REPO}/releases/latest"
-	vers=$(wget -qO- "${RURL}" | jq .tag_name | tr -d '"' | tr -d 'v')
-	DL=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | (contains("minisig") | not) and contains("x86_64-linux")) | .browser_download_url' | tr -d '"')
-	FN=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | (contains("minisig") | not) and contains("x86_64-linux")) | .name' | tr -d '"')
+	gup_fetch_release "${REPO}" '(contains("minisig") | not) and contains("x86_64-linux")'
 
-	function download(){
+	download() {
 			echo "download $1 version"
-			echo "installing $vers"
-			rm -rf /tmp/"${FN}" /tmp/"${APP}_${vers}"
-			wget -qc "${DL}" -O /tmp/"${FN}"
-			mkdir -p /tmp/"${APP}_${vers}"
-			tar axf /tmp/"${FN}" -C /tmp/"${APP}_${vers}"
-			BDIR=/usr/local/bin
-			sudo rm -f "${BDIR}"/zls
-			sudo install /tmp/"${APP}_${vers}"/zls "${BDIR}"/zls
-			rm -rf /tmp/"${FN}" /tmp/"${APP}_${vers}"
+			echo "installing ${GUP_REL_VERSION}"
+
+			local tmp_dir
+			tmp_dir=$(gup_mktemp_dir)
+			trap 'rm -rf "${tmp_dir}"' RETURN
+
+			gup_download "${GUP_REL_DL}" "${tmp_dir}/${GUP_REL_FN}"
+			_gup_extract_tarball "${tmp_dir}/${GUP_REL_FN}" "${tmp_dir}/${APP}"
+			BDIR="/usr/local/bin"
+			sudo rm -f "${BDIR}/zls"
+			sudo install "${tmp_dir}/${APP}/zls" "${BDIR}/zls"
 	}
 
-	if [ -z "$(command -v ${APP})" ]; then
+	if [ -z "$(command -v "${APP}")" ]; then
 			download new
 	else
-			APPVER=$($(command -v ${APP}) version 2>&1)
-			if [ "${APPVER}" = "${vers}" ]; then
+			APPVER=$($(command -v "${APP}") version 2>&1)
+			if [ "${APPVER}" = "${GUP_REL_VERSION}" ]; then
 					echo "${APP} version is current"
 			else
-					download "${vers}"
+					download "${GUP_REL_VERSION}"
 			fi
 	fi
 
@@ -2729,34 +2776,33 @@ gup_install_neovim_command() {
 	# src/install_neovim_command.sh
 	APP="nvim"
 	REPO="neovim/neovim"
-	RURL="https://api.github.com/repos/${REPO}/releases/latest"
-	vers=$(wget -qO- "${RURL}" | jq .tag_name | tr -d '"' | tr -d 'v')
-	DL=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains("linux-x86_64.tar.gz")) | .browser_download_url' | tr -d '"')
-	FN=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains("linux-x86_64.tar.gz")) | .name' | tr -d '"')
+	IDIR="${HOME}/.local/nvim"
+	BDIR="${HOME}/.local/bin"
+	gup_fetch_release "${REPO}" 'contains("linux-x86_64.tar.gz")'
 
-	IDIR=${HOME}/.local/nvim
-	BDIR=${HOME}/.local/bin
-
-	function download() {
+	download() {
 			echo "download $1 version"
-			echo "installing ${vers}"
-			rm -f /tmp/"${FN}"
-			wget -qc "${DL}" -O /tmp/"${FN}"
+			echo "installing ${GUP_REL_VERSION}"
+
+			local tmp_dir
+			tmp_dir=$(gup_mktemp_dir)
+			trap 'rm -rf "${tmp_dir}"' RETURN
+
+			gup_download "${GUP_REL_DL}" "${tmp_dir}/${GUP_REL_FN}"
 			rm -rf "${IDIR:?}"
 			mkdir -p "${IDIR}"
-			tar -zxf /tmp/"${FN}" --strip-components=1 -C "${IDIR}"
+			tar -zxf "${tmp_dir}/${GUP_REL_FN}" --strip-components=1 -C "${IDIR}"
 			ln -sf "${IDIR}/bin/nvim" "${BDIR}/nvim"
-			rm -f /tmp/"${FN}"
 	}
 
-	if [ -z "$(command -v ${APP})" ]; then
+	if [ -z "$(command -v "${APP}")" ]; then
 			download new
 	else
 			APPVER=$($(command -v "${APP}") --version 2>&1 | grep -i "^${APP}" | awk '{print $2}' | tr -d 'v')
-			if [ "${APPVER}" = "${vers}" ]; then
+			if [ "${APPVER}" = "${GUP_REL_VERSION}" ]; then
 					echo "${APP} version is current"
 			else
-					download "${vers}"
+					download "${GUP_REL_VERSION}"
 			fi
 	fi
 
@@ -2768,35 +2814,34 @@ gup_install_helix_command() {
 	# src/install_helix_command.sh
 	APP="hx"
 	REPO="helix-editor/helix"
-	RURL="https://api.github.com/repos/${REPO}/releases/latest"
-	vers=$(wget -qO- "${RURL}" | jq .tag_name | tr -d '"' | tr -d 'v')
-	DL=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains ("x86_64-linux")) | .browser_download_url' | tr -d '"')
-	FN=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains ("x86_64-linux")) | .name' | tr -d '"')
+	IDIR="${HOME}/.config/helix"
+	BDIR="${HOME}/.local/helix"
+	gup_fetch_release "${REPO}" 'contains("x86_64-linux")'
 
-	IDIR=${HOME}/.config/helix
-	BDIR=${HOME}/.local/helix
-
-	function download() {
+	download() {
 			echo "download $1 version"
-			echo "installing ${vers}"
+			echo "installing ${GUP_REL_VERSION}"
+
+			local tmp_dir
+			tmp_dir=$(gup_mktemp_dir)
+			trap 'rm -rf "${tmp_dir}"' RETURN
+
 			mkdir -p "${IDIR}" "${BDIR}"
 			touch "${IDIR}/config.toml"
-			rm -f /tmp/"${FN}"
-			wget -qc "${DL}" -O /tmp/"${FN}"
+			gup_download "${GUP_REL_DL}" "${tmp_dir}/${GUP_REL_FN}"
 			rm -rf "${BDIR:?}"/*
-			tar axf /tmp/"${FN}" --strip-components=1 -C "${BDIR}"
+			tar axf "${tmp_dir}/${GUP_REL_FN}" --strip-components=1 -C "${BDIR}"
 			ln -sf "${BDIR}/hx" "${HOME}/.local/bin/hx"
-			rm -f /tmp/"${FN}"
 	}
 
-	if [ -z "$(command -v ${APP})" ]; then
+	if [ -z "$(command -v "${APP}")" ]; then
 			download new
 	else
-			APPVER=$($(command -v ${APP}) -V 2>&1 | grep -e "^helix" | awk '{print $2}')
-			if [ "${APPVER}" = "${vers}" ]; then
+			APPVER=$($(command -v "${APP}") -V 2>&1 | grep -e "^helix" | awk '{print $2}')
+			if [ "${APPVER}" = "${GUP_REL_VERSION}" ]; then
 					echo "${APP} version is current"
 			else
-					download "${vers}"
+					download "${GUP_REL_VERSION}"
 			fi
 	fi
 
@@ -2808,42 +2853,29 @@ gup_install_prometheus_command() {
 	# src/install_prometheus_command.sh
 	APP="prometheus"
 	REPO="prometheus/prometheus"
-	RURL="https://api.github.com/repos/${REPO}/releases/latest"
-	vers=$(wget -qO- "${RURL}" | jq .tag_name | tr -d '"' | tr -d 'v')
-	DL=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains("linux-amd64.tar.gz")) | .browser_download_url' | tr -d '"')
-	FN=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains("linux-amd64.tar.gz")) | .name' | tr -d '"')
+	gup_fetch_release "${REPO}" 'contains("linux-amd64.tar.gz")'
 
 	download() {
 			echo "download $1 version"
-			echo "installing ${vers}"
-			rm -rf /tmp/"${FN}" /tmp/"${APP}_${vers}"
-			wget -qc "${DL}" -O /tmp/"${FN}"
-			mkdir -p /tmp/"${APP}_${vers}"
-			tar axf /tmp/"${FN}" -C /tmp/"${APP}_${vers}" --strip-components=1
-			if [ "$(id -u)" == 0 ]; then
-					BDIR="/usr/local/bin"
-					sudo rm -f "${BDIR}/${APP}"
-					sudo rm -f "${BDIR}/promtool"
-					sudo install /tmp/"${APP}_${vers}"/"${APP}" "${BDIR}/${APP}"
-					sudo install /tmp/"${APP}_${vers}"/promtool "${BDIR}/promtool"
-			else
-					BDIR="${HOME}/.local/bin"
-					rm -f "${BDIR}/${APP}"
-					rm -f "${BDIR}/promtool"
-					install /tmp/"${APP}_${vers}"/"${APP}" "${BDIR}/${APP}"
-					install /tmp/"${APP}_${vers}"/promtool "${BDIR}/promtool"
-			fi
-			rm -rf /tmp/"${FN}" /tmp/"${APP}_${vers}"
+			echo "installing ${GUP_REL_VERSION}"
+
+			local tmp_dir
+			tmp_dir=$(gup_mktemp_dir)
+			trap 'rm -rf "${tmp_dir}"' RETURN
+
+			gup_download "${GUP_REL_DL}" "${tmp_dir}/${GUP_REL_FN}"
+			_gup_extract_tarball "${tmp_dir}/${GUP_REL_FN}" "${tmp_dir}/${APP}"
+			_gup_install_binaries "${tmp_dir}/${APP}" "${APP}" promtool
 	}
 
-	if [ -z "$(command -v ${APP})" ]; then
+	if [ -z "$(command -v "${APP}")" ]; then
 			download new
 	else
-			APPVER=$($(command -v ${APP}) --version 2>&1 | grep -i ^${APP} | awk '{print $3}')
-			if [ "${APPVER}" = "${vers}" ]; then
+			APPVER=$($(command -v "${APP}") --version 2>&1 | grep -i "^${APP}" | awk '{print $3}')
+			if [ "${APPVER}" = "${GUP_REL_VERSION}" ]; then
 					echo "${APP} version is current"
 			else
-					download "${vers}"
+					download "${GUP_REL_VERSION}"
 			fi
 	fi
 
@@ -2864,39 +2896,29 @@ gup_install_loki_command() {
 	# src/install_loki_command.sh
 	APP="loki"
 	REPO="grafana/loki"
-	RURL="https://api.github.com/repos/${REPO}/releases/latest"
-	vers=$(wget -qO- "${RURL}" | jq .tag_name | tr -d '"' | tr -d 'v')
-	DL=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains("loki-linux-amd64")) | .browser_download_url' | tr -d '"')
-	FN=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains("loki-linux-amd64")) | .name' | tr -d '"')
+	gup_fetch_release "${REPO}" 'contains("loki-linux-amd64")'
 
 	download() {
 			echo "download $1 version"
-			echo "installing ${vers}"
-			rm -rf /tmp/"${FN}" /tmp/"${APP}_${vers}"
-			wget -qc "${DL}" -O /tmp/"${FN}"
-			mkdir -p /tmp/"${APP}_${vers}"
-			unzip /tmp/"${FN}" -d /tmp/"${APP}_${vers}"
+			echo "installing ${GUP_REL_VERSION}"
 
-			if [ "$(id -u)" == 0 ]; then
-					BDIR="/usr/local/bin"
-					sudo rm -f "${BDIR}/${APP}"
-					sudo install "/tmp/${APP}_${vers}/${APP}-linux-amd64" "${BDIR}/${APP}"
-			else
-					BDIR="${HOME}/.local/bin"
-					rm -f "${BDIR}/${APP}"
-					install "/tmp/${APP}_${vers}/${APP}-linux-amd64" "${BDIR}/${APP}"
-			fi
-			rm -rf /tmp/"${FN}" /tmp/"${APP}_${vers}"
+			local tmp_dir
+			tmp_dir=$(gup_mktemp_dir)
+			trap 'rm -rf "${tmp_dir}"' RETURN
+
+			gup_download "${GUP_REL_DL}" "${tmp_dir}/${GUP_REL_FN}"
+			_gup_extract_zip "${tmp_dir}/${GUP_REL_FN}" "${tmp_dir}/${APP}"
+			_gup_install_binary "${tmp_dir}/${APP}/${APP}-linux-amd64" "${APP}"
 	}
 
-	if [ -z "$(command -v ${APP})" ]; then
+	if [ -z "$(command -v "${APP}")" ]; then
 			download new
 	else
-			APPVER=$($(command -v ${APP}) --version 2>&1 | grep -i ^${APP} | awk '{print $3}')
-			if [ "${APPVER}" = "${vers}" ]; then
+			APPVER=$($(command -v "${APP}") --version 2>&1 | grep -i "^${APP}" | awk '{print $3}')
+			if [ "${APPVER}" = "${GUP_REL_VERSION}" ]; then
 					echo "${APP} version is current"
 			else
-					download "${vers}"
+					download "${GUP_REL_VERSION}"
 			fi
 	fi
 
@@ -2908,38 +2930,29 @@ gup_install_node_exporter_command() {
 	# src/install_node_exporter_command.sh
 	APP="node_exporter"
 	REPO="prometheus/node_exporter"
-	RURL="https://api.github.com/repos/${REPO}/releases/latest"
-	vers=$(wget -qO- "${RURL}" | jq .tag_name | tr -d '"' | tr -d 'v')
-	DL=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains("linux-amd64")) | .browser_download_url' | tr -d '"')
-	FN=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains("linux-amd64")) | .name' | tr -d '"')
+	gup_fetch_release "${REPO}" 'contains("linux-amd64")'
 
 	download() {
 			echo "download $1 version"
-			echo "installing ${vers}"
-			rm -rf /tmp/${APP}_"${vers}" /tmp/"${FN}"
-			wget -qc "${DL}" -O /tmp/"${FN}"
-			mkdir -p /tmp/${APP}_"${vers}"
-			tar axf /tmp/"${FN}" -C /tmp/${APP}_"${vers}" --strip-components=1
-			if [ "$(id -u)" == 0 ]; then
-					BDIR="/usr/local/bin"
-					sudo rm -f "${BDIR}/${APP}"
-					sudo install /tmp/"${APP}_${vers}"/"${APP}" "${BDIR}/${APP}"
-			else
-					BDIR="${HOME}/.local/bin"
-					rm -f "${BDIR}/${APP}"
-					install /tmp/"${APP}_${vers}"/"${APP}" "${BDIR}/${APP}"
-			fi
-			rm -rf /tmp/${APP}_"${vers}" /tmp/"${FN}"
+			echo "installing ${GUP_REL_VERSION}"
+
+			local tmp_dir
+			tmp_dir=$(gup_mktemp_dir)
+			trap 'rm -rf "${tmp_dir}"' RETURN
+
+			gup_download "${GUP_REL_DL}" "${tmp_dir}/${GUP_REL_FN}"
+			_gup_extract_tarball "${tmp_dir}/${GUP_REL_FN}" "${tmp_dir}/${APP}"
+			_gup_install_binary "${tmp_dir}/${APP}/${APP}"
 	}
 
-	if [ -z "$(command -v ${APP})" ]; then
+	if [ -z "$(command -v "${APP}")" ]; then
 			download new
 	else
-			APPVER=$($(command -v ${APP}) --version 2>&1 | grep -i ^${APP} | awk '{print $3}' | tr -d 'v')
-			if [ "${APPVER}" = "$vers" ]; then
+			APPVER=$($(command -v "${APP}") --version 2>&1 | grep -i "^${APP}" | awk '{print $3}' | tr -d 'v')
+			if [ "${APPVER}" = "${GUP_REL_VERSION}" ]; then
 					echo "${APP} version is current"
 			else
-					download "${vers}"
+					download "${GUP_REL_VERSION}"
 			fi
 	fi
 
@@ -2951,38 +2964,29 @@ gup_install_postgres_exporter_command() {
 	# src/install_postgres_exporter_command.sh
 	APP="postgres_exporter"
 	REPO="prometheus-community/postgres_exporter"
-	RURL="https://api.github.com/repos/${REPO}/releases/latest"
-	vers=$(wget -qO- "${RURL}" | jq .tag_name | tr -d '"' | tr -d 'v')
-	DL=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains("linux-amd64.tar.gz")) | .browser_download_url' | tr -d '"')
-	FN=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains("linux-amd64.tar.gz")) | .name' | tr -d '"')
+	gup_fetch_release "${REPO}" 'contains("linux-amd64.tar.gz")'
 
 	download() {
 			echo "download $1 version"
-			echo "installing ${vers}"
-			rm -rf /tmp/"${FN}" /tmp/"${APP}_${vers}"
-			wget -qc "${DL}" -O /tmp/"${FN}"
-			mkdir -p /tmp/"${APP}_${vers}"
-			tar axf /tmp/"${FN}" -C /tmp/"${APP}_${vers}" --strip-components=1
-			if [ "$(id -u)" == 0 ]; then
-					BDIR="/usr/local/bin"
-					sudo rm -f "${BDIR}/${APP}"
-					sudo install /tmp/"${APP}_${vers}"/"${APP}" "${BDIR}/${APP}"
-			else
-					BDIR="${HOME}/.local/bin"
-					rm -f "${BDIR}/${APP}"
-					install /tmp/"${APP}_${vers}"/"${APP}" "${BDIR}/${APP}"
-			fi
-			rm -rf /tmp/"${FN}" /tmp/"${APP}_${vers}"
+			echo "installing ${GUP_REL_VERSION}"
+
+			local tmp_dir
+			tmp_dir=$(gup_mktemp_dir)
+			trap 'rm -rf "${tmp_dir}"' RETURN
+
+			gup_download "${GUP_REL_DL}" "${tmp_dir}/${GUP_REL_FN}"
+			_gup_extract_tarball "${tmp_dir}/${GUP_REL_FN}" "${tmp_dir}/${APP}"
+			_gup_install_binary "${tmp_dir}/${APP}/${APP}"
 	}
 
-	if [ -z "$(command -v ${APP})" ]; then
+	if [ -z "$(command -v "${APP}")" ]; then
 			download new
 	else
-			APPVER=$($(command -v ${APP}) --version 2>&1 | grep -i ^${APP} | awk '{print $3}')
-			if [ "${APPVER}" = "${vers}" ]; then
+			APPVER=$($(command -v "${APP}") --version 2>&1 | grep -i "^${APP}" | awk '{print $3}')
+			if [ "${APPVER}" = "${GUP_REL_VERSION}" ]; then
 					echo "${APP} version is current"
 			else
-					download "${vers}"
+					download "${GUP_REL_VERSION}"
 			fi
 	fi
 
@@ -2994,40 +2998,32 @@ gup_install_blackbox_exporter_command() {
 	# src/install_blackbox_exporter_command.sh
 	APP="blackbox_exporter"
 	REPO="prometheus/blackbox_exporter"
-	RURL="https://api.github.com/repos/${REPO}/releases/latest"
-	vers=$(wget -qO- "${RURL}" | jq .tag_name | tr -d '"' | tr -d 'v')
-	DL=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | (contains("sha256") | not) and contains("linux-amd64.tar.gz")) | .browser_download_url' | tr -d '"')
-	FN=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | (contains("sha256") | not) and contains("linux-amd64.tar.gz")) | .name' | tr -d '"')
+	gup_fetch_release "${REPO}" '(contains("sha256") | not) and contains("linux-amd64.tar.gz")'
 
-	function download() {
+	download() {
 			echo "download $1 version"
-			echo "installing ${vers}"
-			rm -rf /tmp/"${FN}" /tmp/"${APP}_${vers}"
-			wget -qc "${DL}" -O /tmp/"${FN}"
-			mkdir -p /tmp/"${APP}_${vers}"
-			tar axf /tmp/"${FN}" -C /tmp/"${APP}_${vers}" --strip-components=1
-			if [ "$(id -u)" == 0 ]; then
-					BDIR="/usr/local/bin"
-					sudo rm -f "${BDIR}/${APP}"
-					sudo install /tmp/"${APP}_${vers}"/"${APP}" "${BDIR}/${APP}"
-			else
-					BDIR="${HOME}/.local/bin"
-					rm -f "${BDIR}/${APP}"
-					install /tmp/"${APP}_${vers}"/"${APP}" "${BDIR}/${APP}"
-			fi
-			rm -rf /tmp/"${FN}" /tmp/"${APP}_${vers}"
+			echo "installing ${GUP_REL_VERSION}"
+
+			local tmp_dir
+			tmp_dir=$(gup_mktemp_dir)
+			trap 'rm -rf "${tmp_dir}"' RETURN
+
+			gup_download "${GUP_REL_DL}" "${tmp_dir}/${GUP_REL_FN}"
+			_gup_extract_tarball "${tmp_dir}/${GUP_REL_FN}" "${tmp_dir}/${APP}"
+			_gup_install_binary "${tmp_dir}/${APP}/${APP}"
 	}
 
-	if [ -z "$(command -v ${APP})" ]; then
+	if [ -z "$(command -v "${APP}")" ]; then
 			download new
 	else
-			APPVER=$($(command -v ${APP}) --version 2>&1 | grep -i "^${APP}" | awk '{print $3}')
-			if [ "${APPVER}" = "${vers}" ]; then
+			APPVER=$($(command -v "${APP}") --version 2>&1 | grep -i "^${APP}" | awk '{print $3}')
+			if [ "${APPVER}" = "${GUP_REL_VERSION}" ]; then
 					echo "${APP} version is current"
 			else
-					download "${vers}"
+					download "${GUP_REL_VERSION}"
 			fi
 	fi
+
 }
 
 # :command.function
@@ -3036,38 +3032,32 @@ gup_install_snmp_exporter_command() {
 	# src/install_snmp_exporter_command.sh
 	APP="snmp_exporter"
 	REPO="prometheus/${APP}"
-	RURL="https://api.github.com/repos/${REPO}/releases/latest"
-	vers=$(wget -qO- "${RURL}" | jq .tag_name | tr -d '"' | tr -d 'v')
-	DL=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains ("linux-amd64.tar.gz")) | .browser_download_url' | tr -d '"')
-	FN=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains ("linux-amd64.tar.gz")) | .name' | tr -d '"')
+	gup_fetch_release "${REPO}" 'contains("linux-amd64.tar.gz")'
 
-	function download() {
+	download() {
 			echo "download $1 version"
-			echo "installing ${vers}"
-			rm -rf /tmp/"${FN}" /tmp/"${APP}_${vers}"
-			wget -qc "${DL}" -O /tmp/"${FN}"
-			mkdir -p /tmp/"${APP}_${vers}"
-			tar -axf /tmp/"${FN}" -C /tmp/"${APP}_${vers}" --strip-components=1
-			if [ "$(id -u)" == 0 ]; then
-					BDIR="/usr/local/bin"
-					sudo install /tmp/"${APP}_${vers}"/"${APP}" "${BDIR}/${APP}"
-			else
-					BDIR="${HOME}/.local/bin"
-					install /tmp/"${APP}_${vers}"/"${APP}" "${BDIR}/${APP}"
-			fi
-			rm -rf /tmp/"${FN}" /tmp/"${APP}_${vers}"
+			echo "installing ${GUP_REL_VERSION}"
+
+			local tmp_dir
+			tmp_dir=$(gup_mktemp_dir)
+			trap 'rm -rf "${tmp_dir}"' RETURN
+
+			gup_download "${GUP_REL_DL}" "${tmp_dir}/${GUP_REL_FN}"
+			_gup_extract_tarball "${tmp_dir}/${GUP_REL_FN}" "${tmp_dir}/${APP}"
+			_gup_install_binary "${tmp_dir}/${APP}/${APP}"
 	}
 
-	if [ -z "$(command -v ${APP})" ]; then
+	if [ -z "$(command -v "${APP}")" ]; then
 			download new
 	else
-			APPVER=$($(command -v ${APP}) --version 2>&1 | grep -i "^${APP}" | awk '{print $3}')
-			if [ "${APPVER}" = "${vers}" ]; then
+			APPVER=$($(command -v "${APP}") --version 2>&1 | grep -i "^${APP}" | awk '{print $3}')
+			if [ "${APPVER}" = "${GUP_REL_VERSION}" ]; then
 					echo "${APP} version is current"
 			else
-					download "${vers}"
+					download "${GUP_REL_VERSION}"
 			fi
 	fi
+
 }
 
 # :command.function
@@ -3076,24 +3066,19 @@ gup_install_btop_command() {
 	# src/install_btop_command.sh
 	APP="btop"
 	REPO="aristocratos/btop"
-	RURL="https://api.github.com/repos/${REPO}/releases/latest"
-	RELEASE_JSON=$(wget -qO- "${RURL}")
-	vers=$(echo "${RELEASE_JSON}" | jq .tag_name | tr -d '"')
-	DL=$(echo "${RELEASE_JSON}" | jq '.assets[] | select(.name | contains ("x86_64") and contains (".tbz")) | .browser_download_url' | tr -d '"')
-	FN=$(echo "${RELEASE_JSON}" | jq '.assets[] | select(.name | contains ("x86_64") and contains (".tbz")) | .name' | tr -d '"')
-
 	PREFIX="/usr/local"
+	gup_fetch_release "${REPO}" 'contains("x86_64") and contains(".tbz")'
 
-	function download() {
+	download() {
 			echo "download $1 version"
-			echo "installing ${vers}"
+			echo "installing ${GUP_REL_VERSION}"
 
-			rm -f /tmp/"${FN}"
-			wget -qO /tmp/"${FN}" "${DL}"
+			local tmp_dir
+			tmp_dir=$(gup_mktemp_dir)
+			trap 'rm -rf "${tmp_dir}"' RETURN
 
-			rm -rf /tmp/"${APP}"
-			mkdir -p /tmp/"${APP}"
-			tar -xjf /tmp/"${FN}" -C /tmp/"${APP}" --strip-components=2
+			gup_download "${GUP_REL_DL}" "${tmp_dir}/${GUP_REL_FN}"
+			_gup_extract_tarball "${tmp_dir}/${GUP_REL_FN}" "${tmp_dir}/${APP}"
 
 			# required directories
 			sudo mkdir -p "${PREFIX}/bin"
@@ -3104,37 +3089,33 @@ gup_install_btop_command() {
 			sudo mkdir -p "${PREFIX}/share/icons/hicolor/scalable/apps"
 
 			# btop binary
-			sudo install /tmp/btop/bin/btop "${PREFIX}/bin/btop"
+			sudo install "${tmp_dir}/btop/bin/btop" "${PREFIX}/bin/btop"
 
 			# doc
-			sudo cp /tmp/btop/README.md "${PREFIX}/share/${APP}/README.md"
+			sudo cp "${tmp_dir}/btop/README.md" "${PREFIX}/share/${APP}/README.md"
 
 			# Themes
-			sudo cp /tmp/btop/themes/* "${PREFIX}/share/${APP}/themes/"
+			sudo cp "${tmp_dir}/btop/themes/"* "${PREFIX}/share/${APP}/themes/"
 
 			# desktop file
-			sudo cp /tmp/btop/btop.desktop "${PREFIX}/share/applications/btop.desktop"
+			sudo cp "${tmp_dir}/btop/btop.desktop" "${PREFIX}/share/applications/btop.desktop"
 
 			# icons
-			sudo cp /tmp/btop/Img/icon.png "${PREFIX}/share/icons/hicolor/48x48/apps/btop.png"
-			sudo cp /tmp/btop/Img/icon.svg "${PREFIX}/share/icons/hicolor/scalable/apps/btop.svg"
-
-			# cleanup
-			rm -rf /tmp/"${APP}"
-			rm -f /tmp/"${FN}"
+			sudo cp "${tmp_dir}/btop/Img/icon.png" "${PREFIX}/share/icons/hicolor/48x48/apps/btop.png"
+			sudo cp "${tmp_dir}/btop/Img/icon.svg" "${PREFIX}/share/icons/hicolor/scalable/apps/btop.svg"
 	}
 
-	if [ -z "$(command -v ${APP})" ]; then
+	if [ -z "$(command -v "${APP}")" ]; then
 			download new
 	else
-			APPVER=$($(command -v ${APP}) --version | grep "^btop version:" | awk -F':' '{print $2}' | sed -E 's/\x1B\[[0-9;]*[a-zA-Z]//g' | awk '{$1=$1; print}')
-			version=$(echo "${vers}" | sed 's/^v//')
-			if [ "${APPVER}" = "${version}" ]; then
+			APPVER=$($(command -v "${APP}") --version | grep "^btop version:" | awk -F':' '{print $2}' | sed -E 's/\x1B\[[0-9;]*[a-zA-Z]//g' | awk '{$1=$1; print}')
+			if [ "${APPVER}" = "${GUP_REL_VERSION}" ]; then
 					echo "${APP} version is current"
 			else
-					download "${vers}"
+					download "${GUP_REL_VERSION}"
 			fi
 	fi
+
 }
 
 # :command.function
@@ -3143,37 +3124,32 @@ gup_install_gotop_command() {
 	# src/install_gotop_command.sh
 	APP="gotop"
 	REPO="xxxserxxx/gotop"
-	RURL="https://api.github.com/repos/${REPO}/releases/latest"
-	vers=$(wget -qO- "${RURL}" | jq .tag_name | tr -d '"' | tr -d 'v')
+	gup_fetch_release "${REPO}" 'contains("linux_amd64.tgz")'
 
-	function download() {
+	download() {
 			echo "download $1 version"
-			echo "installing ${vers}"
-			DL=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains ("linux_amd64.tgz")) | .browser_download_url' | tr -d '"')
-			FN=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains ("linux_amd64.tgz")) | .name' | tr -d '"')
-			rm -f /tmp/"${FN}"
-			wget -qc "${DL}" -O /tmp/"${FN}"
-			rm -f "${BDIR}/${APP}"
-			if [ "$(id -u)" == 0 ]; then
-					BDIR="/usr/local/bin"
-					tar axf /tmp/"${FN}" -C "${BDIR}"
-			else
-					BDIR="${HOME}/.local/bin"
-					tar axf /tmp/"${FN}" -C "${BDIR}"
-			fi
-			rm -f /tmp/"${FN}"
+			echo "installing ${GUP_REL_VERSION}"
+
+			local tmp_dir
+			tmp_dir=$(gup_mktemp_dir)
+			trap 'rm -rf "${tmp_dir}"' RETURN
+
+			gup_download "${GUP_REL_DL}" "${tmp_dir}/${GUP_REL_FN}"
+			tar axf "${tmp_dir}/${GUP_REL_FN}" -C "${tmp_dir}" "${APP}"
+			_gup_install_binary "${tmp_dir}/${APP}"
 	}
 
-	if [ -z "$(command -v ${APP})" ]; then
+	if [ -z "$(command -v "${APP}")" ]; then
 			download new
 	else
-			APPVER=$($(command -v ${APP}) --version 2>&1 | grep ^${APP} | awk '{print $2}')
-			if [ "${APPVER}" = "${vers}" ]; then
+			APPVER=$($(command -v "${APP}") --version 2>&1 | grep "^${APP}" | awk '{print $2}')
+			if [ "${APPVER}" = "${GUP_REL_VERSION}" ]; then
 					echo "${APP} version is current"
 			else
-					download "${vers}"
+					download "${GUP_REL_VERSION}"
 			fi
 	fi
+
 }
 
 # :command.function
@@ -3182,38 +3158,30 @@ gup_install_lazydocker_command() {
 	# src/install_lazydocker_command.sh
 	APP="lazydocker"
 	REPO="jesseduffield/lazydocker"
-	RURL="https://api.github.com/repos/${REPO}/releases/latest"
-	vers=$(wget -qO- "${RURL}" | jq .tag_name | tr -d '"' | tr -d 'v')
-	DL=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains("inux_x86_64")) | .browser_download_url' | tr -d '"')
-	FN=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains("inux_x86_64")) | .name' | tr -d '"')
+	gup_fetch_release "${REPO}" 'contains("linux_x86_64")'
 
-	function download() {
+	download() {
 			echo "download $1 version"
-			echo "installing ${vers}"
-			rm -rf /tmp/lazydocker /tmp/"${FN}"
-			wget -qc "${DL}" -O /tmp/"${FN}"
-			tar axf /tmp/"${FN}" lazydocker
-			if [ "$(id -u)" == 0 ]; then
-					IDIR="/usr/local/bin"
-					sudo mkdir -p "${IDIR}"
-					sudo install lazydocker "${IDIR}"
-			else
-					IDIR="${HOME}/.local/bin"
-					mkdir -p "${IDIR}"
-					install lazydocker "${IDIR}"
-			fi
-			rm -rf lazydocker /tmp/"${FN}"
+			echo "installing ${GUP_REL_VERSION}"
+
+			local tmp_dir
+			tmp_dir=$(gup_mktemp_dir)
+			trap 'rm -rf "${tmp_dir}"' RETURN
+
+			gup_download "${GUP_REL_DL}" "${tmp_dir}/${GUP_REL_FN}"
+			tar axf "${tmp_dir}/${GUP_REL_FN}" -C "${tmp_dir}" "${APP}"
+			_gup_install_binary "${tmp_dir}/${APP}"
 	}
 
-	if [ -z "$(command -v ${APP})" ]; then
+	if [ -z "$(command -v "${APP}")" ]; then
 			download new
 	else
-		APPVER=$($(command -v ${APP}) --version 2>&1 | awk '{print $6}' | sed 's/,//g' | awk -F'=' '{print $2}')
-		if [ "${APPVER}" = "${vers}" ]; then
-				echo "${APP} version is current"
-		else
-				download "${vers}"
-		fi
+			APPVER=$($(command -v "${APP}") --version 2>&1 | awk '{print $6}' | sed 's/,//g' | awk -F'=' '{print $2}')
+			if [ "${APPVER}" = "${GUP_REL_VERSION}" ]; then
+					echo "${APP} version is current"
+			else
+					download "${GUP_REL_VERSION}"
+			fi
 	fi
 
 }
@@ -3222,9 +3190,9 @@ gup_install_lazydocker_command() {
 gup_install_minikube_command() {
 
 	# src/install_minikube_command.sh
-	curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+	curl -LO "https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64"
 	sudo install minikube-linux-amd64 /usr/local/bin/minikube
-	rm minikube-linux-amd64
+	rm -f minikube-linux-amd64
 
 }
 
@@ -3232,9 +3200,11 @@ gup_install_minikube_command() {
 gup_install_kubectl_command() {
 
 	# src/install_kubectl_command.sh
-	curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
-	sudo install kubectl /usr/local/bin
-	rm kubectl
+	local_tmp_dir=$(gup_mktemp_dir)
+	trap 'rm -rf "${local_tmp_dir}"' RETURN
+
+	curl -Lo "${local_tmp_dir}/kubectl" "https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl"
+	sudo install "${local_tmp_dir}/kubectl" /usr/local/bin
 
 }
 
@@ -3244,38 +3214,30 @@ gup_install_k9s_command() {
 	# src/install_k9s_command.sh
 	APP="k9s"
 	REPO="derailed/k9s"
-	RURL="https://api.github.com/repos/${REPO}/releases/latest"
-	vers=$(wget -qO- "${RURL}" | jq .tag_name | tr -d '"' | tr -d 'v')
-	DL=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | (contains("json") | not) and contains("Linux") and contains("amd64")) | .browser_download_url' | tr -d '"')
-	FN=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | (contains("json") | not) and contains("Linux") and contains("amd64")) | .name' | tr -d '"')
+	gup_fetch_release "${REPO}" '(contains("json") | not) and contains("Linux") and contains("amd64")'
 
-	function download() {
+	download() {
 			echo "download $1 version"
-			echo "installing ${vers}"
-			rm -rf /tmp/"${FN}" /tmp/k9s
-			wget -qc "${DL}" -O /tmp/"${FN}"
-			tar axf /tmp/"${FN}" k9s
-			if [ "$(id -u)" == 0 ]; then
-					IDIR="/usr/local/bin"
-					mkdir -p "${IDIR}"
-					install k9s "$IDIR"
-			else
-					IDIR="${HOME}/.local/bin"
-					mkdir -p "${IDIR}"
-					install k9s "$IDIR"
-			fi
-			rm -rf k9s /tmp/"${FN}"
+			echo "installing ${GUP_REL_VERSION}"
+
+			local tmp_dir
+			tmp_dir=$(gup_mktemp_dir)
+			trap 'rm -rf "${tmp_dir}"' RETURN
+
+			gup_download "${GUP_REL_DL}" "${tmp_dir}/${GUP_REL_FN}"
+			tar axf "${tmp_dir}/${GUP_REL_FN}" -C "${tmp_dir}" "${APP}"
+			_gup_install_binary "${tmp_dir}/${APP}"
 	}
 
-	if [ -z "$(command -v ${APP})" ]; then
+	if [ -z "$(command -v "${APP}")" ]; then
 			download new
 	else
-		APPVER=$($(command -v ${APP}) version 2>&1 | grep Version | awk '{print $2}' | tr -d 'v')
-		if [ "${APPVER}" = "${vers}" ]; then
-				echo "${APP} version is current"
-		else
-				download "${vers}"
-		fi
+			APPVER=$($(command -v "${APP}") version 2>&1 | grep Version | awk '{print $2}' | tr -d 'v')
+			if [ "${APPVER}" = "${GUP_REL_VERSION}" ]; then
+					echo "${APP} version is current"
+			else
+					download "${GUP_REL_VERSION}"
+			fi
 	fi
 
 }
@@ -3286,33 +3248,30 @@ gup_install_etcd_command() {
 	# src/install_etcd_command.sh
 	APP="etcd"
 	REPO="etcd-io/etcd"
-	RURL="https://api.github.com/repos/${REPO}/releases/latest"
-	vers=$(wget -qO- "${RURL}" | jq .tag_name | tr -d '"' | tr -d 'v')
-
 	BDIR="/usr/local/bin"
+	gup_fetch_release "${REPO}" 'contains("linux-amd64")'
 
 	download() {
 			echo "download $1 version"
-			echo "installing ${vers}"
-			DL=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains ("linux-amd64")) | .browser_download_url' | tr -d '"')
-			FN=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains ("linux-amd64")) | .name' | tr -d '"')
-			rm -rf /tmp/etcd
-			wget -qc "${DL}" -O "/tmp/${FN}"
-			mkdir -p /tmp/etcd
-			tar -axf "/tmp/${FN}" -C /tmp/etcd --strip-components=1
-			sudo install /tmp/etcd/etcd* "${BDIR}"/.
-			rm -rf /tmp/etcd
-			rm -f "/tmp/${FN}"
+			echo "installing ${GUP_REL_VERSION}"
+
+			local tmp_dir
+			tmp_dir=$(gup_mktemp_dir)
+			trap 'rm -rf "${tmp_dir}"' RETURN
+
+			gup_download "${GUP_REL_DL}" "${tmp_dir}/${GUP_REL_FN}"
+			_gup_extract_tarball "${tmp_dir}/${GUP_REL_FN}" "${tmp_dir}/etcd"
+			sudo install "${tmp_dir}/etcd/etcd"* "${BDIR}"/.
 	}
 
-	if [ -z "$(command -v ${APP})" ]; then
+	if [ -z "$(command -v "${APP}")" ]; then
 			download new
 	else
-			APPVER=$($(command -v ${APP}) --version 2>&1 | grep "etcd.*Version" | awk '{print $3}' | sed 's/^v//')
-			if [ "${APPVER}" = "${vers}" ]; then
+			APPVER=$($(command -v "${APP}") --version 2>&1 | grep "etcd.*Version" | awk '{print $3}' | sed 's/^v//')
+			if [ "${APPVER}" = "${GUP_REL_VERSION}" ]; then
 					echo "${APP} version is current"
 			else
-					download "${vers}"
+					download "${GUP_REL_VERSION}"
 			fi
 	fi
 
@@ -3334,36 +3293,38 @@ gup_install_doctl_command() {
 	# src/install_doctl_command.sh
 	APP="doctl"
 	REPO="digitalocean/doctl"
-	RURL="https://api.github.com/repos/${REPO}/releases/latest"
-	vers=$(wget -qO- "${RURL}" | jq .tag_name | tr -d '"' | tr -d 'v')
-	DL=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains ("linux-amd64")) | .browser_download_url' | tr -d '"')
-	FN=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains ("linux-amd64")) | .name' | tr -d '"')
+	gup_fetch_release "${REPO}" 'contains("linux-amd64")'
 
-	function download() {
+	download() {
 			echo "download $1 version"
-			echo "installing ${vers}"
-			wget -qc "${DL}" -O /tmp/"${FN}"
-			if [ "$(id -u)" == 0 ]; then
+			echo "installing ${GUP_REL_VERSION}"
+
+			local tmp_dir
+			tmp_dir=$(gup_mktemp_dir)
+			trap 'rm -rf "${tmp_dir}"' RETURN
+
+			gup_download "${GUP_REL_DL}" "${tmp_dir}/${GUP_REL_FN}"
+			if [ "$(id -u)" = 0 ]; then
 					BDIR="/usr/local/bin"
-					sudo tar -axf /tmp/"${FN}" -C "${BDIR}" "${APP}"
+					sudo tar -axf "${tmp_dir}/${GUP_REL_FN}" -C "${BDIR}" "${APP}"
 			else
 					BDIR="${HOME}/.local/bin"
-					tar -axf /tmp/"${FN}" -C "${BDIR}" "${APP}"
+					tar -axf "${tmp_dir}/${GUP_REL_FN}" -C "${BDIR}" "${APP}"
 			fi
-			chmod +x "${BDIR}"/"${APP}"
-			rm -f /tmp/"${FN}"
+			chmod +x "${BDIR}/${APP}"
 	}
 
-	if [ -z "$(command -v ${APP})" ]; then
+	if [ -z "$(command -v "${APP}")" ]; then
 			download new
 	else
-			APPVER=$($(command -v ${APP}) version 2>&1 | grep "doctl version" | awk '{print $3}' | awk -F'-' '{print $1}')
-			if [ "${APPVER}" = "${vers}" ]; then
+			APPVER=$($(command -v "${APP}") version 2>&1 | grep "doctl version" | awk '{print $3}' | awk -F'-' '{print $1}')
+			if [ "${APPVER}" = "${GUP_REL_VERSION}" ]; then
 					echo "${APP} version is current"
 			else
-					download "${vers}"
+					download "${GUP_REL_VERSION}"
 			fi
 	fi
+
 }
 
 # :command.function
@@ -3406,36 +3367,36 @@ gup_install_githubcli_command() {
 	# src/install_githubcli_command.sh
 	APP="gh"
 	REPO="cli/cli"
-	RURL="https://api.github.com/repos/${REPO}/releases/latest"
-	vers=$(wget -qO- "${RURL}" | jq .tag_name | tr -d '"' | tr -d 'v')
-	DL=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains ("linux_amd64.tar.gz")) | .browser_download_url' | tr -d '"')
-	FN=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains ("linux_amd64.tar.gz")) | .name' | tr -d '"')
+	IDIR="/usr/local/lib"
+	BDIR="/usr/local/bin"
+	gup_fetch_release "${REPO}" 'contains("linux_amd64.tar.gz")'
 
-	IDIR=/usr/local/lib
-	BDIR=/usr/local/bin
-
-	function download() {
+	download() {
 			echo "download $1 version"
-			echo "installing ${vers}"
-			sudo rm -f /tmp/"${FN}"
-			wget -qc "${DL}" -O /tmp/"${FN}"
+			echo "installing ${GUP_REL_VERSION}"
+
+			local tmp_dir
+			tmp_dir=$(gup_mktemp_dir)
+			trap 'rm -rf "${tmp_dir}"' RETURN
+
+			gup_download "${GUP_REL_DL}" "${tmp_dir}/${GUP_REL_FN}"
 			sudo rm -rf "${IDIR}/${APP}"
 			sudo mkdir -p "${IDIR}/${APP}"
-			sudo tar -axf /tmp/"${FN}" --strip-components=1 -C "${IDIR}/${APP}"
+			sudo tar -axf "${tmp_dir}/${GUP_REL_FN}" --strip-components=1 -C "${IDIR}/${APP}"
 			sudo ls "${IDIR}/${APP}/bin" | sudo xargs -I {} ln -sf "${IDIR}/${APP}/bin/{}" "${BDIR}/{}"
-			sudo rm -f /tmp/"${FN}"
 	}
 
-	if [ -z "$(command -v ${APP})" ]; then
+	if [ -z "$(command -v "${APP}")" ]; then
 			download new
 	else
-			APPVER=$($(command -v ${APP}) version 2>&1 | awk '{print $3}')
-			if [ "${APPVER}" = "${vers}" ]; then
+			APPVER=$($(command -v "${APP}") version 2>&1 | awk '{print $3}')
+			if [ "${APPVER}" = "${GUP_REL_VERSION}" ]; then
 					echo "${APP} version is current"
 			else
-					download "${vers}"
+					download "${GUP_REL_VERSION}"
 			fi
 	fi
+
 }
 
 # :command.function
@@ -3450,19 +3411,17 @@ gup_install_forgejocli_command() {
 
 	function download() {
 			echo "download $1 version"
-			echo "installing ${vers}"
-			sudo rm -f /tmp/"${FN}"
-			sudo rm -f /tmp/"${APP}"
-			wget -qc "${DL}" -O /tmp/"${FN}"
-			sudo tar -axf /tmp/"${FN}" -C /tmp
-			ls -l /tmp
+
+			local tmp_dir
+			tmp_dir=$(gup_mktemp_dir)
+			trap 'rm -rf "${tmp_dir}"' RETURN
+
+			wget -qc "${DL}" -O "${tmp_dir}/${FN}"
+			sudo tar -axf "${tmp_dir}/${FN}" -C "${tmp_dir}"
 			sudo rm -rf "${BDIR}/${APP}"
-			sudo install -Dm755 /tmp/"${APP}" "${BDIR}/${APP}"
-			sudo rm -f /tmp/"${FN}"
-			sudo rm -f /tmp/"${APP}"
+			sudo install -Dm755 "${tmp_dir}/${APP}" "${BDIR}/${APP}"
 	}
 
-	download new
 }
 
 # :command.function
@@ -3514,36 +3473,29 @@ gup_install_traefik_command() {
 	# src/install_traefik_command.sh
 	APP="traefik"
 	REPO="traefik/traefik"
-	RURL="https://api.github.com/repos/${REPO}/releases/latest"
-	vers=$(wget -qO- "${RURL}" | jq .tag_name | tr -d '"' | tr -d 'v')
-	DL=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains ("linux_amd64.tar.gz")) | .browser_download_url' | tr -d '"')
-	FN=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains ("linux_amd64.tar.gz")) | .name' | tr -d '"')
+	gup_fetch_release "${REPO}" 'contains("linux_amd64.tar.gz")'
 
-	function download(){
+	download() {
 			echo "download $1 version"
-			echo "installing ${vers}"
-			rm -rf /tmp/"${APP}_${vers}" /tmp/"${FN}"
-			wget -qc "${DL}" -O /tmp/"${FN}"
-			mkdir -p /tmp/"${APP}_${vers}"
-			tar axf /tmp/"${FN}" -C /tmp/"${APP}_${vers}"
-			if [ "$(id -u)" == 0 ]; then
-					BDIR="/usr/local/bin"
-					sudo install /tmp/"${APP}_${vers}"/"${APP}" "${BDIR}/${APP}"
-			else
-					BDIR="${HOME}/.local/bin"
-					install /tmp/"${APP}_${vers}"/"${APP}" "${BDIR}/${APP}"
-			fi
-			rm -rf /tmp/"${APP}_${vers}" /tmp/"${FN}"
+			echo "installing ${GUP_REL_VERSION}"
+
+			local tmp_dir
+			tmp_dir=$(gup_mktemp_dir)
+			trap 'rm -rf "${tmp_dir}"' RETURN
+
+			gup_download "${GUP_REL_DL}" "${tmp_dir}/${GUP_REL_FN}"
+			_gup_extract_tarball "${tmp_dir}/${GUP_REL_FN}" "${tmp_dir}/${APP}"
+			_gup_install_binary "${tmp_dir}/${APP}/${APP}"
 	}
 
-	if [ -z "$(command -v ${APP})" ]; then
+	if [ -z "$(command -v "${APP}")" ]; then
 			download new
 	else
-			APPVER=$($(command -v ${APP}) version 2>&1 | grep ^Version | awk '{print $2}')
-			if [ "${APPVER}" = "${vers}" ]; then
+			APPVER=$($(command -v "${APP}") version 2>&1 | grep ^Version | awk '{print $2}')
+			if [ "${APPVER}" = "${GUP_REL_VERSION}" ]; then
 					echo "${APP} version is current"
 			else
-					download "${vers}"
+					download "${GUP_REL_VERSION}"
 			fi
 	fi
 
@@ -3555,35 +3507,37 @@ gup_install_hugo_command() {
 	# src/install_hugo_command.sh
 	APP="hugo"
 	REPO="gohugoio/hugo"
-	RURL="https://api.github.com/repos/${REPO}/releases/latest"
-	vers=$(wget -qO- "${RURL}" | jq .tag_name | tr -d '"' | tr -d 'v')
-	DL=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains("extended") and contains("linux-amd64.tar.gz") and (contains("withdeploy") | not)) | .browser_download_url' | tr -d '"')
-	FN=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains("extended") and contains("linux-amd64.tar.gz") and (contains("withdeploy") | not)) | .name' | tr -d '"')
+	gup_fetch_release "${REPO}" 'contains("extended") and contains("linux-amd64.tar.gz") and (contains("withdeploy") | not)'
 
-	function download() {
+	download() {
 			echo "download $1 version"
-			echo "installing ${vers}"
-			wget -qc "${DL}" -O /tmp/"${FN}"
-			if [ "$(id -u)" == 0 ]; then
+			echo "installing ${GUP_REL_VERSION}"
+
+			local tmp_dir
+			tmp_dir=$(gup_mktemp_dir)
+			trap 'rm -rf "${tmp_dir}"' RETURN
+
+			gup_download "${GUP_REL_DL}" "${tmp_dir}/${GUP_REL_FN}"
+			if [ "$(id -u)" = 0 ]; then
 					BDIR="/usr/local/bin"
-					tar -axf /tmp/"${FN}" -C "${BDIR}" hugo
+					tar -axf "${tmp_dir}/${GUP_REL_FN}" -C "${BDIR}" "${APP}"
 			else
 					BDIR="${HOME}/.local/bin"
-					tar -axf /tmp/"${FN}" -C "${BDIR}" hugo
+					tar -axf "${tmp_dir}/${GUP_REL_FN}" -C "${BDIR}" "${APP}"
 			fi
-			rm -f /tmp/"${FN}"
 	}
 
-	if [ -z "$(command -v ${APP})" ]; then
+	if [ -z "$(command -v "${APP}")" ]; then
 			download new
 	else
-			APPVER=$($(command -v ${APP}) version 2>&1 | awk '{print $2}' | awk -F'-' '{print $1}')
-			if [ "${APPVER}" = "${vers}" ]; then
+			APPVER=$($(command -v "${APP}") version 2>&1 | awk '{print $2}' | awk -F'-' '{print $1}')
+			if [ "${APPVER}" = "${GUP_REL_VERSION}" ]; then
 					echo "${APP} version is current"
 			else
-					download "${vers}"
+					download "${GUP_REL_VERSION}"
 			fi
 	fi
+
 }
 
 # :command.function
@@ -3592,36 +3546,28 @@ gup_install_tailwindcss_command() {
 	# src/install_tailwindcss_command.sh
 	APP="tailwindcss"
 	REPO="tailwindlabs/tailwindcss"
-	RURL="https://api.github.com/repos/${REPO}/releases/latest"
-	vers=$(wget -qO- "${RURL}" | jq .tag_name | tr -d '"' | tr -d 'v')
-	DL=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains("linux-x64") and (contains("musl") | not)) | .browser_download_url' | tr -d '"')
-	FN=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains("linux-x64") and (contains("musl") | not)) | .name' | tr -d '"')
+	gup_fetch_release "${REPO}" 'contains("linux-x64") and (contains("musl") | not)'
 
 	download() {
 			echo "download $1 version"
-			echo "installing ${vers}"
-			rm -rf /tmp/"${FN}"
-			wget -qc "${DL}" -O /tmp/"${FN}"
-			if [ "$(id -u)" == 0 ]; then
-					BDIR="/usr/local/bin"
-					sudo rm -f "${BDIR}/${APP}"
-					sudo install /tmp/"${FN}" "${BDIR}/${APP}"
-			else
-					BDIR="${HOME}/.local/bin"
-					rm -f "${BDIR}/${APP}"
-					install /tmp/"${FN}" "${BDIR}/${APP}"
-			fi
-			rm -rf /tmp/"${FN}"
+			echo "installing ${GUP_REL_VERSION}"
+
+			local tmp_dir
+			tmp_dir=$(gup_mktemp_dir)
+			trap 'rm -rf "${tmp_dir}"' RETURN
+
+			gup_download "${GUP_REL_DL}" "${tmp_dir}/${GUP_REL_FN}"
+			_gup_install_binary "${tmp_dir}/${GUP_REL_FN}"
 	}
 
-	if [ -z "$(command -v ${APP})" ]; then
+	if [ -z "$(command -v "${APP}")" ]; then
 			download new
 	else
-			APPVER=$($(command -v ${APP}) --help 2>&1 | grep "${APP}.*v" | awk '{print $3}' | tr -d 'v')
-			if [ "${APPVER}" = "${vers}" ]; then
+			APPVER=$($(command -v "${APP}") --help 2>&1 | grep "${APP}.*v" | awk '{print $3}' | tr -d 'v')
+			if [ "${APPVER}" = "${GUP_REL_VERSION}" ]; then
 					echo "${APP} version is current"
 			else
-					download "${vers}"
+					download "${GUP_REL_VERSION}"
 			fi
 	fi
 
@@ -3633,37 +3579,29 @@ gup_install_marp_command() {
 	# src/install_marp_command.sh
 	APP="marp"
 	REPO="marp-team/marp-cli"
-	RURL="https://api.github.com/repos/${REPO}/releases/latest"
-	vers=$(wget -qO- "${RURL}" | jq .tag_name | tr -d '"' | tr -d 'v')
-	DL=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains ("linux")) | .browser_download_url' | tr -d '"')
-	FN=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains ("linux")) | .name' | tr -d '"')
+	gup_fetch_release "${REPO}" 'contains("linux")'
 
 	download() {
 			echo "download $1 version"
-			echo "installing ${vers}"
-			rm -f "/tmp/${FN}" /tmp/"${APP}"
-			wget -qc "${DL}" -O "/tmp/${FN}"
-			tar axf "/tmp/${FN}" -C /tmp/ "${APP}"
-			if [ "$(id -u)" == 0 ]; then
-					BDIR="/usr/local/bin"
-					sudo rm -f "${BDIR}"/${APP}
-					sudo install /tmp/"${APP}" "${BDIR}"
-			else
-					BDIR="${HOME}/.local/bin"
-					rm -f "${BDIR}"/${APP}
-					install /tmp/"${APP}" "${BDIR}"
-			fi
-			rm -f "/tmp/${FN}" /tmp/"${APP}"
+			echo "installing ${GUP_REL_VERSION}"
+
+			local tmp_dir
+			tmp_dir=$(gup_mktemp_dir)
+			trap 'rm -rf "${tmp_dir}"' RETURN
+
+			gup_download "${GUP_REL_DL}" "${tmp_dir}/${GUP_REL_FN}"
+			tar axf "${tmp_dir}/${GUP_REL_FN}" -C "${tmp_dir}" "${APP}"
+			_gup_install_binary "${tmp_dir}/${APP}"
 	}
 
-	if [ -z "$(command -v ${APP})" ]; then
+	if [ -z "$(command -v "${APP}")" ]; then
 			download new
 	else
-			APPVER=$($(command -v ${APP}) --version 2>&1 | grep marp-cli | awk '{print $2}' | tr -d 'v')
-			if [ "${APPVER}" = "${vers}" ]; then
+			APPVER=$($(command -v "${APP}") --version 2>&1 | grep marp-cli | awk '{print $2}' | tr -d 'v')
+			if [ "${APPVER}" = "${GUP_REL_VERSION}" ]; then
 					echo "${APP} version is current"
 			else
-					download "${vers}"
+					download "${GUP_REL_VERSION}"
 			fi
 	fi
 
@@ -3711,38 +3649,30 @@ gup_install_lazygit_command() {
 	# src/install_lazygit_command.sh
 	APP="lazygit"
 	REPO="jesseduffield/lazygit"
-	RURL="https://api.github.com/repos/${REPO}/releases/latest"
-	vers=$(wget -qO- "${RURL}" | jq .tag_name | tr -d '"' | tr -d 'v')
-	DL=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains("linux_x86_64")) | .browser_download_url' | tr -d '"')
-	FN=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains("linux_x86_64")) | .name' | tr -d '"')
+	gup_fetch_release "${REPO}" 'contains("linux_x86_64")'
 
-	function download() {
+	download() {
 			echo "download $1 version"
-			echo "installing ${vers}"
-			rm -rf /tmp/lazygit /tmp/"${FN}"
-			wget -qc "${DL}" -O /tmp/"${FN}"
-			tar axf /tmp/"${FN}" lazygit
-			if [ "$(id -u)" == 0 ]; then
-					IDIR="/usr/local/bin"
-					sudo mkdir -p "${IDIR}"
-					sudo install lazygit "${IDIR}"
-			else
-					IDIR="${HOME}/.local/bin"
-					mkdir -p "${IDIR}"
-					install lazygit "${IDIR}"
-			fi
-			rm -rf lazygit /tmp/"${FN}"
+			echo "installing ${GUP_REL_VERSION}"
+
+			local tmp_dir
+			tmp_dir=$(gup_mktemp_dir)
+			trap 'rm -rf "${tmp_dir}"' RETURN
+
+			gup_download "${GUP_REL_DL}" "${tmp_dir}/${GUP_REL_FN}"
+			tar axf "${tmp_dir}/${GUP_REL_FN}" -C "${tmp_dir}" "${APP}"
+			_gup_install_binary "${tmp_dir}/${APP}"
 	}
 
-	if [ -z "$(command -v ${APP})" ]; then
+	if [ -z "$(command -v "${APP}")" ]; then
 			download new
 	else
-		APPVER=$($(command -v ${APP}) --version 2>&1 | awk '{print $6}' | sed 's/,//g' | awk -F'=' '{print $2}')
-		if [ "${APPVER}" = "${vers}" ]; then
-				echo "${APP} version is current"
-		else
-				download "${vers}"
-		fi
+			APPVER=$($(command -v "${APP}") --version 2>&1 | awk '{print $6}' | sed 's/,//g' | awk -F'=' '{print $2}')
+			if [ "${APPVER}" = "${GUP_REL_VERSION}" ]; then
+					echo "${APP} version is current"
+			else
+					download "${GUP_REL_VERSION}"
+			fi
 	fi
 
 }
@@ -3782,41 +3712,31 @@ gup_install_sshconfig_command() {
 gup_install_task_command() {
 
 	# src/install_task_command.sh
-	# go install github.com/go-task/task/v3/cmd/task@latest
 	APP="task"
 	REPO="go-task/task"
-	RURL="https://api.github.com/repos/${REPO}/releases/latest"
-	vers=$(wget -qO- "${RURL}" | jq .tag_name | tr -d '"' | tr -d 'v')
-	DL=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains("linux_amd64.tar.gz")) | .browser_download_url' | tr -d '"')
-	FN=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains("linux_amd64.tar.gz")) | .name' | tr -d '"')
+	gup_fetch_release "${REPO}" 'contains("linux_amd64.tar.gz")'
 
-	function download() {
+	download() {
 			echo "download $1 version"
-			echo "installing ${vers}"
-			rm -rf /tmp/"${FN}" /tmp/"${APP}_${vers}"
-			wget -qc "${DL}" -O /tmp/"${FN}"
-			mkdir -p /tmp/"${APP}_${vers}"
-			tar -axf /tmp/"${FN}" -C /tmp/"${APP}_${vers}"
-			if [ "$(id -u)" == 0 ]; then
-					BDIR="/usr/local/bin"
-					sudo rm -f "${BDIR}"/${APP}
-					sudo install /tmp/"${APP}_${vers}/${APP}" "${BDIR}/${APP}"
-			else
-					BDIR="${HOME}/.local/bin"
-					rm -f "${BDIR}"/${APP}
-					install /tmp/"${APP}_${vers}/${APP}" "${BDIR}/${APP}"
-			fi
-			rm -rf /tmp/"${FN}" /tmp/"${APP}_${vers}"
+			echo "installing ${GUP_REL_VERSION}"
+
+			local tmp_dir
+			tmp_dir=$(gup_mktemp_dir)
+			trap 'rm -rf "${tmp_dir}"' RETURN
+
+			gup_download "${GUP_REL_DL}" "${tmp_dir}/${GUP_REL_FN}"
+			_gup_extract_tarball "${tmp_dir}/${GUP_REL_FN}" "${tmp_dir}/${APP}"
+			_gup_install_binary "${tmp_dir}/${APP}/${APP}"
 	}
 
-	if [ -z "$(command -v ${APP})" ]; then
+	if [ -z "$(command -v "${APP}")" ]; then
 			download new
 	else
 			APPVER=$($(command -v "${APP}") --version 2>&1 | tr -d 'v')
-			if [ "${APPVER}" = "${vers}" ]; then
+			if [ "${APPVER}" = "${GUP_REL_VERSION}" ]; then
 					echo "${APP} version is current"
 			else
-					download "${vers}"
+					download "${GUP_REL_VERSION}"
 			fi
 	fi
 
@@ -3840,44 +3760,31 @@ gup_install_ytdlp_command() {
 	# src/install_ytdlp_command.sh
 	APP="yt-dlp"
 	REPO="yt-dlp/yt-dlp"
-	RURL="https://api.github.com/repos/${REPO}/releases/latest"
-	vers=$(wget -qO- "${RURL}" | jq .tag_name | tr -d '"')
-	DL=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains ("_linux")) | .browser_download_url' | tr -d '"' | grep "_linux$")
-	FN=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains ("_linux")) | .name' | tr -d '"' | grep "_linux$")
+	gup_fetch_release "${REPO}" 'contains("_linux")'
 
-	function download() {
+	download() {
 			echo "download $1 version"
-			echo "installing ${vers}"
+			echo "installing ${GUP_REL_VERSION}"
 
-			rm -f /tmp/"${FN}"
-			wget -qO /tmp/"${FN}" "${DL}"
+			local tmp_dir
+			tmp_dir=$(gup_mktemp_dir)
+			trap 'rm -rf "${tmp_dir}"' RETURN
 
-			if [ "$(id -u)" == 0 ]; then
-					BDIR="/usr/local/bin"
-					sudo rm -f "${BDIR}/${APP}"
-					sudo install /tmp/"${FN}" "${BDIR}/${APP}"
-			else
-					BDIR="${HOME}/.local/bin"
-					rm -f "${BDIR}/${APP}"
-					install /tmp/"${FN}" "${BDIR}/${APP}"
-			fi
-
-			# cleanup
-			rm -f /tmp/"${APP}"
-			rm -f /tmp/"${FN}"
+			gup_download "${GUP_REL_DL}" "${tmp_dir}/${GUP_REL_FN}"
+			_gup_install_binary "${tmp_dir}/${GUP_REL_FN}"
 	}
 
-	if [ -z "$(command -v ${APP})" ]; then
+	if [ -z "$(command -v "${APP}")" ]; then
 			download new
 	else
-			APPVER=$($(command -v ${APP}) --version)
-			version=$(echo "${vers}" | sed 's/^v//')
-			if [ "${APPVER}" = "${version}" ]; then
+			APPVER=$($(command -v "${APP}") --version)
+			if [ "${APPVER}" = "${GUP_REL_VERSION}" ]; then
 					echo "${APP} version is current"
 			else
-					download "${vers}"
+					download "${GUP_REL_VERSION}"
 			fi
 	fi
+
 }
 
 # :command.function
@@ -3908,54 +3815,44 @@ gup_install_terraform_command() {
 	# src/install_terraform_command.sh
 	APP="terraform"
 	REPO="hashicorp/terraform"
-	RURL="https://api.github.com/repos/${REPO}/releases/latest"
-	vers=$(wget -qO- "${RURL}" | jq .tag_name | tr -d '"' | tr -d 'v')
+	gup_fetch_release "${REPO}" 'contains("linux_amd64.zip")'
 
-	DLREPO="https://releases.hashicorp.com/terraform"
-	FN="${APP}_${vers}_linux_amd64.zip"
-	DL="${DLREPO}/${vers}/${FN}"
-
-	function download() {
+	download() {
 			echo "download $1 version"
-			echo "installing ${vers}"
-			rm -rf /tmp/"${FN}" /tmp/"${APP}_${vers}"
-			wget -qc "${DL}" -O /tmp/"${FN}"
-			mkdir -p /tmp/"${APP}_${vers}"
-			unzip /tmp/"${FN}" -d /tmp/"${APP}_${vers}"
-			if [ "$(id -u)" == 0 ]; then
-					BDIR="/usr/local/bin"
-					sudo install /tmp/"${APP}_${vers}"/"${APP}" "${BDIR}/${APP}"
-			else
-					BDIR="${HOME}/.local/bin"
-					install /tmp/"${APP}_${vers}"/"${APP}" "${BDIR}/${APP}"
-			fi
-			rm -rf /tmp/"${FN}"
+			echo "installing ${GUP_REL_VERSION}"
+
+			local tmp_dir
+			tmp_dir=$(gup_mktemp_dir)
+			trap 'rm -rf "${tmp_dir}"' RETURN
+
+			gup_download "${GUP_REL_DL}" "${tmp_dir}/${GUP_REL_FN}"
+			_gup_extract_zip "${tmp_dir}/${GUP_REL_FN}" "${tmp_dir}/${APP}"
+			_gup_install_binary "${tmp_dir}/${APP}/${APP}"
 	}
 
-	if [ -z "$(command -v ${APP})" ]; then
+	if [ -z "$(command -v "${APP}")" ]; then
 			download new
 	else
-			APPVER=$($(command -v ${APP}) version 2>&1 | grep -i "^${APP}" | awk '{print $2}' | tr -d 'v')
-			if [ "${APPVER}" = "${vers}" ]; then
+			APPVER=$($(command -v "${APP}") version 2>&1 | grep -i "^${APP}" | awk '{print $2}' | tr -d 'v')
+			if [ "${APPVER}" = "${GUP_REL_VERSION}" ]; then
 					echo "${APP} version is current"
 			else
-					download "${vers}"
+					download "${GUP_REL_VERSION}"
 			fi
 	fi
+
 }
 
 # :command.function
 gup_install_distrobuilder_command() {
 
 	# src/install_distrobuilder_command.sh
-	PWD=$(pwd)
+	TMP_WORK=$(gup_mktemp_dir)
+	trap 'rm -rf "${TMP_WORK}"' RETURN
+
 	REPO="https://github.com/lxc/distrobuilder"
-	rm -rf /tmp/distrobuilder
-	git clone "${REPO}" /tmp/distrobuilder
-	cd /tmp/distrobuilder
-	make
-	cd "$PWD"
-	rm -rf /tmp/distrobuilder
+	git clone "${REPO}" "${TMP_WORK}/distrobuilder"
+	cd "${TMP_WORK}/distrobuilder" && make
 
 }
 
@@ -3965,40 +3862,32 @@ gup_install_upx_command() {
 	# src/install_upx_command.sh
 	APP="upx"
 	REPO="upx/upx"
-	RURL="https://api.github.com/repos/${REPO}/releases/latest"
-	vers=$(wget -qO- "${RURL}" | jq .tag_name | tr -d '"' | tr -d 'v')
-	DL=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | (contains("sha256") | not) and contains("amd64_linux.tar.xz")) | .browser_download_url' | tr -d '"')
-	FN=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | (contains("sha256") | not) and contains("amd64_linux.tar.xz")) | .name' | tr -d '"')
+	gup_fetch_release "${REPO}" '(contains("sha256") | not) and contains("amd64_linux.tar.xz")'
 
-	function download() {
+	download() {
 			echo "download $1 version"
-			echo "installing ${vers}"
-			rm -rf /tmp/"${FN}" /tmp/"${APP}_${vers}"
-			wget -qc "${DL}" -O /tmp/"${FN}"
-			mkdir -p /tmp/"${APP}_${vers}"
-			tar -axf /tmp/"${FN}" -C /tmp/"${APP}_${vers}" --strip-components=1
-			if [ "$(id -u)" == 0 ]; then
-					BDIR="/usr/local/bin"
-					sudo rm -f "${BDIR}/${APP}"
-					sudo install /tmp/"${APP}_${vers}/${APP}" "${BDIR}/${APP}"
-			else
-					BDIR="${HOME}/.local/bin"
-					rm -f "${BDIR}/${APP}"
-					install /tmp/"${APP}_${vers}/${APP}" "${BDIR}/${APP}"
-			fi
-			rm -rf /tmp/"${FN}" /tmp/"${APP}_${vers}"
+			echo "installing ${GUP_REL_VERSION}"
+
+			local tmp_dir
+			tmp_dir=$(gup_mktemp_dir)
+			trap 'rm -rf "${tmp_dir}"' RETURN
+
+			gup_download "${GUP_REL_DL}" "${tmp_dir}/${GUP_REL_FN}"
+			_gup_extract_tarball "${tmp_dir}/${GUP_REL_FN}" "${tmp_dir}/${APP}"
+			_gup_install_binary "${tmp_dir}/${APP}/${APP}"
 	}
 
 	if [ -z "$(command -v "${APP}")" ]; then
 			download new
 	else
 			APPVER=$($(command -v "${APP}") -V 2>&1 | grep -e "^${APP}" | awk '{print $2}')
-			if [ "${APPVER}" = "${vers}" ]; then
+			if [ "${APPVER}" = "${GUP_REL_VERSION}" ]; then
 					echo "${APP} version is current"
 			else
-					download "${vers}"
+					download "${GUP_REL_VERSION}"
 			fi
 	fi
+
 }
 
 # :command.function
@@ -4044,20 +3933,23 @@ gup_install_nerdfonts_command() {
 
 	# src/install_nerdfonts_command.sh
 	REPO="ryanoasis/nerd-fonts"
-	RURL="https://api.github.com/repos/${REPO}/releases/latest"
 	FONTDIR="${HOME}/.local/share/fonts"
 
 	download() {
 			echo "installing $1 font"
-			DL=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains("tar.xz")) | .browser_download_url' | tr -d '"' | grep "$1")
+			local DL
+			DL=$(echo "${GUP_REL_JSON}" | jq -r '.assets[] | select(.name | contains("tar.xz")) | .browser_download_url' | grep "$1")
 			for font in ${DL}; do
-					rm -f /tmp/font.tar.xz
-					wget -qc "${font}" -O /tmp/font.tar.xz
-					tar -xf /tmp/font.tar.xz -C "${FONTDIR}" --wildcards "*ttf"
-					rm -f /tmp/font.tar.xz
+					local tmp_dir
+					tmp_dir=$(gup_mktemp_dir)
+					trap 'rm -rf "${tmp_dir}"' RETURN
+
+					gup_download "${font}" "${tmp_dir}/font.tar.xz"
+					tar -xf "${tmp_dir}/font.tar.xz" -C "${FONTDIR}" --wildcards "*ttf"
 			done
 	}
 
+	gup_fetch_release "${REPO}" 'contains("tar.xz")'
 	fonts="${args[font]}"
 	for font in ${fonts}; do
 		download "$font"

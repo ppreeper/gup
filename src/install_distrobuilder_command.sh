@@ -1,8 +1,6 @@
-PWD=$(pwd)
+TMP_WORK=$(gup_mktemp_dir)
+trap 'rm -rf "${TMP_WORK}"' RETURN
+
 REPO="https://github.com/lxc/distrobuilder"
-rm -rf /tmp/distrobuilder
-git clone "${REPO}" /tmp/distrobuilder
-cd /tmp/distrobuilder
-make
-cd "$PWD"
-rm -rf /tmp/distrobuilder
+git clone "${REPO}" "${TMP_WORK}/distrobuilder"
+cd "${TMP_WORK}/distrobuilder" && make

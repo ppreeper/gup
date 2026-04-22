@@ -1,34 +1,27 @@
 APP="gotop"
 REPO="xxxserxxx/gotop"
-RURL="https://api.github.com/repos/${REPO}/releases/latest"
-vers=$(wget -qO- "${RURL}" | jq .tag_name | tr -d '"' | tr -d 'v')
+gup_fetch_release "${REPO}" 'contains("linux_amd64.tgz")'
 
-
-function download() {
+download() {
     echo "download $1 version"
-    echo "installing ${vers}"
-    DL=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains ("linux_amd64.tgz")) | .browser_download_url' | tr -d '"')
-    FN=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains ("linux_amd64.tgz")) | .name' | tr -d '"')
-    rm -f /tmp/"${FN}"
-    wget -qc "${DL}" -O /tmp/"${FN}"
-    rm -f "${BDIR}/${APP}"
-    if [ "$(id -u)" == 0 ]; then
-        BDIR="/usr/local/bin"
-        tar axf /tmp/"${FN}" -C "${BDIR}"
-    else
-        BDIR="${HOME}/.local/bin"
-        tar axf /tmp/"${FN}" -C "${BDIR}"
-    fi
-    rm -f /tmp/"${FN}"
+    echo "installing ${GUP_REL_VERSION}"
+
+    local tmp_dir
+    tmp_dir=$(gup_mktemp_dir)
+    trap 'rm -rf "${tmp_dir}"' RETURN
+
+    gup_download "${GUP_REL_DL}" "${tmp_dir}/${GUP_REL_FN}"
+    tar axf "${tmp_dir}/${GUP_REL_FN}" -C "${tmp_dir}" "${APP}"
+    _gup_install_binary "${tmp_dir}/${APP}"
 }
 
-if [ -z "$(command -v ${APP})" ]; then
+if [ -z "$(command -v "${APP}")" ]; then
     download new
 else
-    APPVER=$($(command -v ${APP}) --version 2>&1 | grep ^${APP} | awk '{print $2}')
-    if [ "${APPVER}" = "${vers}" ]; then
+    APPVER=$($(command -v "${APP}") --version 2>&1 | grep "^${APP}" | awk '{print $2}')
+    if [ "${APPVER}" = "${GUP_REL_VERSION}" ]; then
         echo "${APP} version is current"
     else
-        download "${vers}"
+        download "${GUP_REL_VERSION}"
     fi
 fi

@@ -1,30 +1,29 @@
 APP="zls"
 REPO="zigtools/zls"
-RURL="https://api.github.com/repos/${REPO}/releases/latest"
-vers=$(wget -qO- "${RURL}" | jq .tag_name | tr -d '"' | tr -d 'v')
-DL=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | (contains("minisig") | not) and contains("x86_64-linux")) | .browser_download_url' | tr -d '"')
-FN=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | (contains("minisig") | not) and contains("x86_64-linux")) | .name' | tr -d '"')
+gup_fetch_release "${REPO}" '(contains("minisig") | not) and contains("x86_64-linux")'
 
-function download(){
+download() {
     echo "download $1 version"
-    echo "installing $vers"
-    rm -rf /tmp/"${FN}" /tmp/"${APP}_${vers}"
-    wget -qc "${DL}" -O /tmp/"${FN}"
-    mkdir -p /tmp/"${APP}_${vers}"
-    tar axf /tmp/"${FN}" -C /tmp/"${APP}_${vers}"
-    BDIR=/usr/local/bin
-    sudo rm -f "${BDIR}"/zls
-    sudo install /tmp/"${APP}_${vers}"/zls "${BDIR}"/zls
-    rm -rf /tmp/"${FN}" /tmp/"${APP}_${vers}"
+    echo "installing ${GUP_REL_VERSION}"
+
+    local tmp_dir
+    tmp_dir=$(gup_mktemp_dir)
+    trap 'rm -rf "${tmp_dir}"' RETURN
+
+    gup_download "${GUP_REL_DL}" "${tmp_dir}/${GUP_REL_FN}"
+    _gup_extract_tarball "${tmp_dir}/${GUP_REL_FN}" "${tmp_dir}/${APP}"
+    BDIR="/usr/local/bin"
+    sudo rm -f "${BDIR}/zls"
+    sudo install "${tmp_dir}/${APP}/zls" "${BDIR}/zls"
 }
 
-if [ -z "$(command -v ${APP})" ]; then
+if [ -z "$(command -v "${APP}")" ]; then
     download new
 else
-    APPVER=$($(command -v ${APP}) version 2>&1)
-    if [ "${APPVER}" = "${vers}" ]; then
+    APPVER=$($(command -v "${APP}") version 2>&1)
+    if [ "${APPVER}" = "${GUP_REL_VERSION}" ]; then
         echo "${APP} version is current"
     else
-        download "${vers}"
+        download "${GUP_REL_VERSION}"
     fi
 fi

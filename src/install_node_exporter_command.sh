@@ -1,36 +1,27 @@
 APP="node_exporter"
 REPO="prometheus/node_exporter"
-RURL="https://api.github.com/repos/${REPO}/releases/latest"
-vers=$(wget -qO- "${RURL}" | jq .tag_name | tr -d '"' | tr -d 'v')
-DL=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains("linux-amd64")) | .browser_download_url' | tr -d '"')
-FN=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains("linux-amd64")) | .name' | tr -d '"')
+gup_fetch_release "${REPO}" 'contains("linux-amd64")'
 
 download() {
     echo "download $1 version"
-    echo "installing ${vers}"
-    rm -rf /tmp/${APP}_"${vers}" /tmp/"${FN}"
-    wget -qc "${DL}" -O /tmp/"${FN}"
-    mkdir -p /tmp/${APP}_"${vers}"
-    tar axf /tmp/"${FN}" -C /tmp/${APP}_"${vers}" --strip-components=1
-    if [ "$(id -u)" == 0 ]; then
-        BDIR="/usr/local/bin"
-        sudo rm -f "${BDIR}/${APP}"
-        sudo install /tmp/"${APP}_${vers}"/"${APP}" "${BDIR}/${APP}"
-    else
-        BDIR="${HOME}/.local/bin"
-        rm -f "${BDIR}/${APP}"
-        install /tmp/"${APP}_${vers}"/"${APP}" "${BDIR}/${APP}"
-    fi
-    rm -rf /tmp/${APP}_"${vers}" /tmp/"${FN}"
+    echo "installing ${GUP_REL_VERSION}"
+
+    local tmp_dir
+    tmp_dir=$(gup_mktemp_dir)
+    trap 'rm -rf "${tmp_dir}"' RETURN
+
+    gup_download "${GUP_REL_DL}" "${tmp_dir}/${GUP_REL_FN}"
+    _gup_extract_tarball "${tmp_dir}/${GUP_REL_FN}" "${tmp_dir}/${APP}"
+    _gup_install_binary "${tmp_dir}/${APP}/${APP}"
 }
 
-if [ -z "$(command -v ${APP})" ]; then
+if [ -z "$(command -v "${APP}")" ]; then
     download new
 else
-    APPVER=$($(command -v ${APP}) --version 2>&1 | grep -i ^${APP} | awk '{print $3}' | tr -d 'v')
-    if [ "${APPVER}" = "$vers" ]; then
+    APPVER=$($(command -v "${APP}") --version 2>&1 | grep -i "^${APP}" | awk '{print $3}' | tr -d 'v')
+    if [ "${APPVER}" = "${GUP_REL_VERSION}" ]; then
         echo "${APP} version is current"
     else
-        download "${vers}"
+        download "${GUP_REL_VERSION}"
     fi
 fi

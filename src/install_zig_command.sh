@@ -7,23 +7,26 @@ FN=$(basename "${DL}")
 IDIR=/usr/local/lib
 BDIR=/usr/local/bin
 
-function download(){
+download() {
     echo "download $1 version"
     echo "installing $vers"
-    rm -f /tmp/"${FN}"
-    wget -qc "${DL}" -O /tmp/"${FN}"
-    sudo rm -f "${BDIR}"/zig
-    sudo rm -rf "${IDIR}"/zig
-    sudo mkdir -p "${IDIR}"/zig
-    sudo tar axf /tmp/"${FN}" -C "${IDIR}"/zig  --strip-components=1
-    sudo ln -sf "${IDIR}"/zig/zig "${BDIR}"/zig
-    rm -f /tmp/"${FN}"
+
+    local tmp_dir
+    tmp_dir=$(gup_mktemp_dir)
+    trap 'rm -rf "${tmp_dir}"' RETURN
+
+    gup_download "${DL}" "${tmp_dir}/${FN}"
+    sudo rm -f "${BDIR}/zig"
+    sudo rm -rf "${IDIR}/zig"
+    sudo mkdir -p "${IDIR}/zig"
+    sudo tar axf "${tmp_dir}/${FN}" -C "${IDIR}/zig" --strip-components=1
+    sudo ln -sf "${IDIR}/zig/zig" "${BDIR}/zig"
 }
 
-if [ -z "$(command -v ${APP})" ]; then
+if [ -z "$(command -v "${APP}")" ]; then
     download new
 else
-    APPVER=$($(command -v ${APP}) version 2>&1)
+    APPVER=$($(command -v "${APP}") version 2>&1)
     if [ "${APPVER}" = "${vers}" ]; then
         echo "${APP} version is current"
     else

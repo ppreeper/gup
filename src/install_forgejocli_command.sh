@@ -6,16 +6,13 @@ BDIR=/usr/local/bin
 
 function download() {
     echo "download $1 version"
-    echo "installing ${vers}"
-    sudo rm -f /tmp/"${FN}"
-    sudo rm -f /tmp/"${APP}"
-    wget -qc "${DL}" -O /tmp/"${FN}"
-    sudo tar -axf /tmp/"${FN}" -C /tmp
-    ls -l /tmp
-    sudo rm -rf "${BDIR}/${APP}"
-    sudo install -Dm755 /tmp/"${APP}" "${BDIR}/${APP}"
-    sudo rm -f /tmp/"${FN}"
-    sudo rm -f /tmp/"${APP}"
-}
 
-download new
+    local tmp_dir
+    tmp_dir=$(gup_mktemp_dir)
+    trap 'rm -rf "${tmp_dir}"' RETURN
+
+    wget -qc "${DL}" -O "${tmp_dir}/${FN}"
+    sudo tar -axf "${tmp_dir}/${FN}" -C "${tmp_dir}"
+    sudo rm -rf "${BDIR}/${APP}"
+    sudo install -Dm755 "${tmp_dir}/${APP}" "${BDIR}/${APP}"
+}

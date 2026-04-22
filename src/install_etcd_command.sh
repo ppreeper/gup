@@ -1,31 +1,28 @@
 APP="etcd"
 REPO="etcd-io/etcd"
-RURL="https://api.github.com/repos/${REPO}/releases/latest"
-vers=$(wget -qO- "${RURL}" | jq .tag_name | tr -d '"' | tr -d 'v')
-
 BDIR="/usr/local/bin"
+gup_fetch_release "${REPO}" 'contains("linux-amd64")'
 
 download() {
     echo "download $1 version"
-    echo "installing ${vers}"
-    DL=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains ("linux-amd64")) | .browser_download_url' | tr -d '"')
-    FN=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains ("linux-amd64")) | .name' | tr -d '"')
-    rm -rf /tmp/etcd
-    wget -qc "${DL}" -O "/tmp/${FN}"
-    mkdir -p /tmp/etcd
-    tar -axf "/tmp/${FN}" -C /tmp/etcd --strip-components=1
-    sudo install /tmp/etcd/etcd* "${BDIR}"/.
-    rm -rf /tmp/etcd
-    rm -f "/tmp/${FN}"
+    echo "installing ${GUP_REL_VERSION}"
+
+    local tmp_dir
+    tmp_dir=$(gup_mktemp_dir)
+    trap 'rm -rf "${tmp_dir}"' RETURN
+
+    gup_download "${GUP_REL_DL}" "${tmp_dir}/${GUP_REL_FN}"
+    _gup_extract_tarball "${tmp_dir}/${GUP_REL_FN}" "${tmp_dir}/etcd"
+    sudo install "${tmp_dir}/etcd/etcd"* "${BDIR}"/.
 }
 
-if [ -z "$(command -v ${APP})" ]; then
+if [ -z "$(command -v "${APP}")" ]; then
     download new
 else
-    APPVER=$($(command -v ${APP}) --version 2>&1 | grep "etcd.*Version" | awk '{print $3}' | sed 's/^v//')
-    if [ "${APPVER}" = "${vers}" ]; then
+    APPVER=$($(command -v "${APP}") --version 2>&1 | grep "etcd.*Version" | awk '{print $3}' | sed 's/^v//')
+    if [ "${APPVER}" = "${GUP_REL_VERSION}" ]; then
         echo "${APP} version is current"
     else
-        download "${vers}"
+        download "${GUP_REL_VERSION}"
     fi
 fi

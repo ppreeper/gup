@@ -1,40 +1,27 @@
 APP="prometheus"
 REPO="prometheus/prometheus"
-RURL="https://api.github.com/repos/${REPO}/releases/latest"
-vers=$(wget -qO- "${RURL}" | jq .tag_name | tr -d '"' | tr -d 'v')
-DL=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains("linux-amd64.tar.gz")) | .browser_download_url' | tr -d '"')
-FN=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains("linux-amd64.tar.gz")) | .name' | tr -d '"')
+gup_fetch_release "${REPO}" 'contains("linux-amd64.tar.gz")'
 
 download() {
     echo "download $1 version"
-    echo "installing ${vers}"
-    rm -rf /tmp/"${FN}" /tmp/"${APP}_${vers}"
-    wget -qc "${DL}" -O /tmp/"${FN}"
-    mkdir -p /tmp/"${APP}_${vers}"
-    tar axf /tmp/"${FN}" -C /tmp/"${APP}_${vers}" --strip-components=1
-    if [ "$(id -u)" == 0 ]; then
-        BDIR="/usr/local/bin"
-        sudo rm -f "${BDIR}/${APP}"
-        sudo rm -f "${BDIR}/promtool"
-        sudo install /tmp/"${APP}_${vers}"/"${APP}" "${BDIR}/${APP}"
-        sudo install /tmp/"${APP}_${vers}"/promtool "${BDIR}/promtool"
-    else
-        BDIR="${HOME}/.local/bin"
-        rm -f "${BDIR}/${APP}"
-        rm -f "${BDIR}/promtool"
-        install /tmp/"${APP}_${vers}"/"${APP}" "${BDIR}/${APP}"
-        install /tmp/"${APP}_${vers}"/promtool "${BDIR}/promtool"
-    fi
-    rm -rf /tmp/"${FN}" /tmp/"${APP}_${vers}"
+    echo "installing ${GUP_REL_VERSION}"
+
+    local tmp_dir
+    tmp_dir=$(gup_mktemp_dir)
+    trap 'rm -rf "${tmp_dir}"' RETURN
+
+    gup_download "${GUP_REL_DL}" "${tmp_dir}/${GUP_REL_FN}"
+    _gup_extract_tarball "${tmp_dir}/${GUP_REL_FN}" "${tmp_dir}/${APP}"
+    _gup_install_binaries "${tmp_dir}/${APP}" "${APP}" promtool
 }
 
-if [ -z "$(command -v ${APP})" ]; then
+if [ -z "$(command -v "${APP}")" ]; then
     download new
 else
-    APPVER=$($(command -v ${APP}) --version 2>&1 | grep -i ^${APP} | awk '{print $3}')
-    if [ "${APPVER}" = "${vers}" ]; then
+    APPVER=$($(command -v "${APP}") --version 2>&1 | grep -i "^${APP}" | awk '{print $3}')
+    if [ "${APPVER}" = "${GUP_REL_VERSION}" ]; then
         echo "${APP} version is current"
     else
-        download "${vers}"
+        download "${GUP_REL_VERSION}"
     fi
 fi

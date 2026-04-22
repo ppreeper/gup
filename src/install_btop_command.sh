@@ -1,23 +1,18 @@
 APP="btop"
 REPO="aristocratos/btop"
-RURL="https://api.github.com/repos/${REPO}/releases/latest"
-RELEASE_JSON=$(wget -qO- "${RURL}")
-vers=$(echo "${RELEASE_JSON}" | jq .tag_name | tr -d '"')
-DL=$(echo "${RELEASE_JSON}" | jq '.assets[] | select(.name | contains ("x86_64") and contains (".tbz")) | .browser_download_url' | tr -d '"')
-FN=$(echo "${RELEASE_JSON}" | jq '.assets[] | select(.name | contains ("x86_64") and contains (".tbz")) | .name' | tr -d '"')
-
 PREFIX="/usr/local"
+gup_fetch_release "${REPO}" 'contains("x86_64") and contains(".tbz")'
 
-function download() {
+download() {
     echo "download $1 version"
-    echo "installing ${vers}"
+    echo "installing ${GUP_REL_VERSION}"
 
-    rm -f /tmp/"${FN}"
-    wget -qO /tmp/"${FN}" "${DL}"
+    local tmp_dir
+    tmp_dir=$(gup_mktemp_dir)
+    trap 'rm -rf "${tmp_dir}"' RETURN
 
-    rm -rf /tmp/"${APP}"
-    mkdir -p /tmp/"${APP}"
-    tar -xjf /tmp/"${FN}" -C /tmp/"${APP}" --strip-components=2
+    gup_download "${GUP_REL_DL}" "${tmp_dir}/${GUP_REL_FN}"
+    _gup_extract_tarball "${tmp_dir}/${GUP_REL_FN}" "${tmp_dir}/${APP}"
 
     # required directories
     sudo mkdir -p "${PREFIX}/bin"
@@ -28,34 +23,29 @@ function download() {
     sudo mkdir -p "${PREFIX}/share/icons/hicolor/scalable/apps"
 
     # btop binary
-    sudo install /tmp/btop/bin/btop "${PREFIX}/bin/btop"
+    sudo install "${tmp_dir}/btop/bin/btop" "${PREFIX}/bin/btop"
 
     # doc
-    sudo cp /tmp/btop/README.md "${PREFIX}/share/${APP}/README.md"
+    sudo cp "${tmp_dir}/btop/README.md" "${PREFIX}/share/${APP}/README.md"
 
     # Themes
-    sudo cp /tmp/btop/themes/* "${PREFIX}/share/${APP}/themes/"
+    sudo cp "${tmp_dir}/btop/themes/"* "${PREFIX}/share/${APP}/themes/"
 
     # desktop file
-    sudo cp /tmp/btop/btop.desktop "${PREFIX}/share/applications/btop.desktop"
+    sudo cp "${tmp_dir}/btop/btop.desktop" "${PREFIX}/share/applications/btop.desktop"
 
     # icons
-    sudo cp /tmp/btop/Img/icon.png "${PREFIX}/share/icons/hicolor/48x48/apps/btop.png"
-    sudo cp /tmp/btop/Img/icon.svg "${PREFIX}/share/icons/hicolor/scalable/apps/btop.svg"
-
-    # cleanup
-    rm -rf /tmp/"${APP}"
-    rm -f /tmp/"${FN}"
+    sudo cp "${tmp_dir}/btop/Img/icon.png" "${PREFIX}/share/icons/hicolor/48x48/apps/btop.png"
+    sudo cp "${tmp_dir}/btop/Img/icon.svg" "${PREFIX}/share/icons/hicolor/scalable/apps/btop.svg"
 }
 
-if [ -z "$(command -v ${APP})" ]; then
+if [ -z "$(command -v "${APP}")" ]; then
     download new
 else
-    APPVER=$($(command -v ${APP}) --version | grep "^btop version:" | awk -F':' '{print $2}' | sed -E 's/\x1B\[[0-9;]*[a-zA-Z]//g' | awk '{$1=$1; print}')
-    version=$(echo "${vers}" | sed 's/^v//')
-    if [ "${APPVER}" = "${version}" ]; then
+    APPVER=$($(command -v "${APP}") --version | grep "^btop version:" | awk -F':' '{print $2}' | sed -E 's/\x1B\[[0-9;]*[a-zA-Z]//g' | awk '{$1=$1; print}')
+    if [ "${APPVER}" = "${GUP_REL_VERSION}" ]; then
         echo "${APP} version is current"
     else
-        download "${vers}"
+        download "${GUP_REL_VERSION}"
     fi
 fi

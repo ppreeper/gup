@@ -17,7 +17,7 @@ function download() {
 
     rm -rf /tmp/"${APP}"
     mkdir -p /tmp/"${APP}"
-    tar -xjf /tmp/"${FN}" -C /tmp/"${APP}" --strip-components=1
+    tar -xjf /tmp/"${FN}" -C /tmp/"${APP}" --strip-components=2
 
     # required directories
     sudo mkdir -p "${PREFIX}/bin"

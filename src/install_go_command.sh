@@ -16,10 +16,10 @@ download() {
 
     FN="${vers}.linux-amd64.tar.gz"
     gup_download "${DLREPO}/${FN}" "${tmp_dir}/${FN}"
-    sudo ls "${IDIR}/go/bin" 2>/dev/null | sudo xargs -I {} rm -f "${BDIR}/{}"
+    find "${IDIR}/go/bin" -type f -exec rm -f {} + 2>/dev/null
     sudo rm -rf "${IDIR}/go"
     sudo tar axf "${tmp_dir}/${FN}" -C "${IDIR}"
-    sudo ls "${IDIR}/go/bin" | sudo xargs -I {} ln -sf "${IDIR}/go/bin/{}" "${BDIR}/{}"
+    find "${IDIR}/go/bin" -type f -exec sh -c 'sudo ln -sf "$1" "${BDIR}/$(basename "$1")"' _ {} +
 }
 
 if [ -z "$(command -v "${APP}")" ]; then

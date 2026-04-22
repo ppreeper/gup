@@ -17,22 +17,20 @@ download() {
         sudo rm -rf "${IDIR}/tinygo"
         sudo mkdir -p "${IDIR}/tinygo"
         _gup_extract_tarball "${tmp_dir}/${GUP_REL_FN}" "${IDIR}/tinygo"
-        for f in $(find "${IDIR}/tinygo/bin/" -type f); do
-            fname=$(basename "${f}")
-            sudo rm -f "${BDIR}/${fname}"
-            sudo ln -s "${IDIR}/tinygo/bin/${fname}" "${BDIR}/${fname}"
-        done
+        find "${IDIR}/tinygo/bin/" -type f -exec sh -c '
+            sudo rm -f "${BDIR}/$(basename "$1")"
+            sudo ln -s "$1" "${BDIR}/$(basename "$1")"
+        ' _ {} +
     else
         BDIR="${HOME}/.local/bin"
         IDIR="${HOME}/.local/share"
         rm -rf "${IDIR}/tinygo"
         mkdir -p "${IDIR}/tinygo"
         _gup_extract_tarball "${tmp_dir}/${GUP_REL_FN}" "${IDIR}/tinygo"
-        for f in $(find "${IDIR}/tinygo/bin/" -type f); do
-            fname=$(basename "${f}")
-            rm -f "${BDIR}/${fname}"
-            ln -s "${IDIR}/tinygo/bin/${fname}" "${BDIR}/${fname}"
-        done
+        find "${IDIR}/tinygo/bin/" -type f -exec sh -c '
+            rm -f "${BDIR}/$(basename "$1")"
+            ln -s "$1" "${BDIR}/$(basename "$1")"
+        ' _ {} +
     fi
 }
 

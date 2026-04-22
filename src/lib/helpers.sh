@@ -2,7 +2,6 @@ gup_ensure_go() {
     local missing_deps=()
     for dep in go; do
         if ! command -v "$dep" >/dev/null 2>&1; then
-            echo "$dep"
             missing_deps+=("$dep")
         fi
     done
@@ -25,10 +24,15 @@ gup_download() {
 }
 
 # get the latest release tag from GitHub API
+# uses curl if available, falls back to wget
 gup_get_latest_release() {
     local repo="$1"
     local api_url="https://api.github.com/repos/${repo}/releases/latest"
-    wget -qO- "${api_url}" | jq -r .tag_name
+    if command -v curl >/dev/null 2>&1; then
+        curl -fsSL "${api_url}" | jq -r .tag_name
+    else
+        wget -qO- "${api_url}" | jq -r .tag_name
+    fi
 }
 
 # create a secure temporary directory
@@ -43,7 +47,11 @@ gup_fetch_release() {
     local repo="$1"
     local jq_filter="$2"
     local api_url="https://api.github.com/repos/${repo}/releases/latest"
-    GUP_REL_JSON=$(wget -qO- "${api_url}")
+    if command -v curl >/dev/null 2>&1; then
+        GUP_REL_JSON=$(curl -fsSL "${api_url}")
+    else
+        GUP_REL_JSON=$(wget -qO- "${api_url}")
+    fi
     GUP_REL_VERSION=$(echo "${GUP_REL_JSON}" | jq -r '.tag_name' | sed 's/^v//')
     GUP_REL_DL=$(echo "${GUP_REL_JSON}" | jq -r ".assets[] | select(.name | ${jq_filter}) | .browser_download_url")
     GUP_REL_FN=$(echo "${GUP_REL_JSON}" | jq -r ".assets[] | select(.name | ${jq_filter}) | .name")

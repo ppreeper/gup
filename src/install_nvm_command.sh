@@ -1,6 +1,10 @@
 REPO="nvm-sh/nvm"
-RURL="https://api.github.com/repos/${REPO}/releases/latest"
-vers=$(wget -qO- "${RURL}" | jq .tag_name | tr -d '"' | tr -d 'v')
+vers=$(gup_get_latest_release "${REPO}")
 
 DLREPO="https://raw.githubusercontent.com/nvm-sh/nvm"
-wget -qO- "${DLREPO}/${vers}/install.sh" | bash
+
+tmp_dir=$(gup_mktemp_dir)
+trap 'rm -rf "${tmp_dir}"' RETURN
+
+gup_download "${DLREPO}/${vers}/install.sh" "${tmp_dir}/install.sh"
+bash "${tmp_dir}/install.sh"

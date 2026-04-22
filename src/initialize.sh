@@ -5,7 +5,7 @@ gup_ensure_deps() {
     local missing_deps=()
     for dep in git wget jq tar unzip; do
         if ! command -v "$dep" >/dev/null 2>&1; then
-            echo $dep
+            echo "$dep"
             missing_deps+=("$dep")
         fi
     done

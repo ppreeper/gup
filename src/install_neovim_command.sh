@@ -15,7 +15,7 @@ download() {
     gup_download "${GUP_REL_DL}" "${tmp_dir}/${GUP_REL_FN}"
     rm -rf "${IDIR:?}"
     mkdir -p "${IDIR}"
-    tar -zxf "${tmp_dir}/${GUP_REL_FN}" --strip-components=1 -C "${IDIR}"
+    _gup_extract_tarball "${tmp_dir}/${GUP_REL_FN}" "${IDIR}"
     ln -sf "${IDIR}/bin/nvim" "${BDIR}/nvim"
 }
 

@@ -16,7 +16,7 @@ download() {
     sudo rm -rf "${IDIR}/${APP}"
     sudo mkdir -p "${IDIR}/${APP}"
     sudo tar -axf "${tmp_dir}/${GUP_REL_FN}" --strip-components=1 -C "${IDIR}/${APP}"
-    sudo ls "${IDIR}/${APP}/bin" | sudo xargs -I {} ln -sf "${IDIR}/${APP}/bin/{}" "${BDIR}/{}"
+    find "${IDIR}/${APP}/bin" -type f -exec sh -c 'sudo ln -sf "$1" "${BDIR}/$(basename "$1")"' _ {} +
 }
 
 if [ -z "$(command -v "${APP}")" ]; then

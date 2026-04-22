@@ -1,10 +1,15 @@
 APP="go"
 REPO="https://go.googlesource.com/go"
 DLREPO="https://dl.google.com/go"
-vers=$(git ls-remote --tags "${REPO}" | grep -E 'refs/tags/go[0-9]+\.[0-9]+(\.[0-9]+)?$' | awk '{print $2}' | sed 's/refs\/tags\///' | sort -V | uniq | tail -1)
-
 IDIR=/usr/local/lib
 BDIR=/usr/local/bin
+
+if [ "$(id -u)" != 0 ]; then
+    echo "Error: ${APP} requires root privileges for system-wide install" >&2
+    exit 1
+fi
+
+vers=$(git ls-remote --tags "${REPO}" | grep -E 'refs/tags/go[0-9]+\.[0-9]+(\.[0-9]+)?$' | awk '{print $2}' | sed 's/refs\/tags\///' | sort -V | uniq | tail -1)
 
 download() {
     echo "download $1 version"
@@ -16,9 +21,9 @@ download() {
 
     FN="${vers}.linux-amd64.tar.gz"
     gup_download "${DLREPO}/${FN}" "${tmp_dir}/${FN}"
-    sudo rm -rf "${IDIR}/go"
-    sudo tar axf "${tmp_dir}/${FN}" -C "${IDIR}"
-    find "${IDIR}/go/bin" -type f -exec sh -c 'sudo ln -sf "$1" "${BDIR}/$(basename "$1")"' _ {} +
+    rm -rf "${IDIR}/go"
+    tar axf "${tmp_dir}/${FN}" -C "${IDIR}"
+    find "${IDIR}/go/bin" -type f -exec sh -c 'ln -sf "$1" "${BDIR}/$(basename "$1")"' _ {} +
 }
 
 if [ -z "$(command -v "${APP}")" ]; then

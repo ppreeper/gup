@@ -1,6 +1,5 @@
 APP="etcd"
 REPO="etcd-io/etcd"
-BDIR="/usr/local/bin"
 gup_fetch_release "${REPO}" 'contains("linux-amd64")'
 
 download() {
@@ -13,7 +12,17 @@ download() {
 
     gup_download "${GUP_REL_DL}" "${tmp_dir}/${GUP_REL_FN}"
     _gup_extract_tarball "${tmp_dir}/${GUP_REL_FN}" "${tmp_dir}/etcd"
-    sudo install "${tmp_dir}/etcd/etcd"* "${BDIR}"/.
+
+    if [ "$(id -u)" = 0 ]; then
+        BDIR="/usr/local/bin"
+    else
+        BDIR="${HOME}/.local/bin"
+        mkdir -p "${BDIR}"
+    fi
+
+    install "${tmp_dir}/etcd/etcd" "${BDIR}/etcd"
+    install "${tmp_dir}/etcd/etcdctl" "${BDIR}/etcdctl"
+    install "${tmp_dir}/etcd/etcdutl" "${BDIR}/etcdutl"
 }
 
 if [ -z "$(command -v "${APP}")" ]; then

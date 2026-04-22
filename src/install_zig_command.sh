@@ -1,11 +1,16 @@
 APP="zig"
+IDIR=/usr/local/lib
+BDIR=/usr/local/bin
+
+if [ "$(id -u)" != 0 ]; then
+    echo "Error: ${APP} requires root privileges for system-wide install" >&2
+    exit 1
+fi
+
 vers=$(wget -qO- https://ziglang.org/download/index.json | jq 'to_entries | map(select(.key !="master")) | .[] | .key' | tr -d '"' | sort -V | uniq | tail -1)
 qstring=".\"${vers}\".\"x86_64-linux\".\"tarball\""
 DL=$(wget -qO- https://ziglang.org/download/index.json | jq "${qstring}" | tr -d '"')
 FN=$(basename "${DL}")
-
-IDIR=/usr/local/lib
-BDIR=/usr/local/bin
 
 download() {
     echo "download $1 version"
@@ -16,11 +21,11 @@ download() {
     trap 'rm -rf "${tmp_dir}"' RETURN
 
     gup_download "${DL}" "${tmp_dir}/${FN}"
-    sudo rm -f "${BDIR}/zig"
-    sudo rm -rf "${IDIR}/zig"
-    sudo mkdir -p "${IDIR}/zig"
-    sudo tar axf "${tmp_dir}/${FN}" -C "${IDIR}/zig" --strip-components=1
-    sudo ln -sf "${IDIR}/zig/zig" "${BDIR}/zig"
+    rm -f "${BDIR}/zig"
+    rm -rf "${IDIR}/zig"
+    mkdir -p "${IDIR}/zig"
+    tar axf "${tmp_dir}/${FN}" -C "${IDIR}/zig" --strip-components=1
+    ln -sf "${IDIR}/zig/zig" "${BDIR}/zig"
 }
 
 if [ -z "$(command -v "${APP}")" ]; then

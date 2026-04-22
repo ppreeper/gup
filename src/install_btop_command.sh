@@ -1,6 +1,5 @@
 APP="btop"
 REPO="aristocratos/btop"
-PREFIX="/usr/local"
 gup_fetch_release "${REPO}" 'contains("x86_64") and contains(".tbz")'
 
 download() {
@@ -14,29 +13,35 @@ download() {
     gup_download "${GUP_REL_DL}" "${tmp_dir}/${GUP_REL_FN}"
     _gup_extract_tarball "${tmp_dir}/${GUP_REL_FN}" "${tmp_dir}/${APP}"
 
+    if [ "$(id -u)" = 0 ]; then
+        PREFIX="/usr/local"
+    else
+        PREFIX="${HOME}/.local"
+    fi
+
     # required directories
-    sudo mkdir -p "${PREFIX}/bin"
-    sudo mkdir -p "${PREFIX}/share/${APP}"
-    sudo mkdir -p "${PREFIX}/share/${APP}/themes"
-    sudo mkdir -p "${PREFIX}/share/applications"
-    sudo mkdir -p "${PREFIX}/share/icons/hicolor/48x48/apps"
-    sudo mkdir -p "${PREFIX}/share/icons/hicolor/scalable/apps"
+    mkdir -p "${PREFIX}/bin"
+    mkdir -p "${PREFIX}/share/${APP}"
+    mkdir -p "${PREFIX}/share/${APP}/themes"
+    mkdir -p "${PREFIX}/share/applications"
+    mkdir -p "${PREFIX}/share/icons/hicolor/48x48/apps"
+    mkdir -p "${PREFIX}/share/icons/hicolor/scalable/apps"
 
     # btop binary
-    sudo install "${tmp_dir}/btop/bin/btop" "${PREFIX}/bin/btop"
+    install "${tmp_dir}/btop/bin/btop" "${PREFIX}/bin/btop"
 
     # doc
-    sudo cp "${tmp_dir}/btop/README.md" "${PREFIX}/share/${APP}/README.md"
+    cp "${tmp_dir}/btop/README.md" "${PREFIX}/share/${APP}/README.md"
 
     # Themes
-    sudo cp "${tmp_dir}/btop/themes/"* "${PREFIX}/share/${APP}/themes/"
+    cp "${tmp_dir}/btop/themes/"* "${PREFIX}/share/${APP}/themes/"
 
     # desktop file
-    sudo cp "${tmp_dir}/btop/btop.desktop" "${PREFIX}/share/applications/btop.desktop"
+    cp "${tmp_dir}/btop/btop.desktop" "${PREFIX}/share/applications/btop.desktop"
 
     # icons
-    sudo cp "${tmp_dir}/btop/Img/icon.png" "${PREFIX}/share/icons/hicolor/48x48/apps/btop.png"
-    sudo cp "${tmp_dir}/btop/Img/icon.svg" "${PREFIX}/share/icons/hicolor/scalable/apps/btop.svg"
+    cp "${tmp_dir}/btop/Img/icon.png" "${PREFIX}/share/icons/hicolor/48x48/apps/btop.png"
+    cp "${tmp_dir}/btop/Img/icon.svg" "${PREFIX}/share/icons/hicolor/scalable/apps/btop.svg"
 }
 
 if [ -z "$(command -v "${APP}")" ]; then

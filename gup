@@ -2203,10 +2203,15 @@ gup_install_go_command() {
 	APP="go"
 	REPO="https://go.googlesource.com/go"
 	DLREPO="https://dl.google.com/go"
-	vers=$(git ls-remote --tags "${REPO}" | grep -E 'refs/tags/go[0-9]+\.[0-9]+(\.[0-9]+)?$' | awk '{print $2}' | sed 's/refs\/tags\///' | sort -V | uniq | tail -1)
-
 	IDIR=/usr/local/lib
 	BDIR=/usr/local/bin
+
+	if [ "$(id -u)" != 0 ]; then
+			echo "Error: ${APP} requires root privileges for system-wide install" >&2
+			exit 1
+	fi
+
+	vers=$(git ls-remote --tags "${REPO}" | grep -E 'refs/tags/go[0-9]+\.[0-9]+(\.[0-9]+)?$' | awk '{print $2}' | sed 's/refs\/tags\///' | sort -V | uniq | tail -1)
 
 	download() {
 			echo "download $1 version"
@@ -2218,9 +2223,9 @@ gup_install_go_command() {
 
 			FN="${vers}.linux-amd64.tar.gz"
 			gup_download "${DLREPO}/${FN}" "${tmp_dir}/${FN}"
-			sudo rm -rf "${IDIR}/go"
-			sudo tar axf "${tmp_dir}/${FN}" -C "${IDIR}"
-			find "${IDIR}/go/bin" -type f -exec sh -c 'sudo ln -sf "$1" "${BDIR}/$(basename "$1")"' _ {} +
+			rm -rf "${IDIR}/go"
+			tar axf "${tmp_dir}/${FN}" -C "${IDIR}"
+			find "${IDIR}/go/bin" -type f -exec sh -c 'ln -sf "$1" "${BDIR}/$(basename "$1")"' _ {} +
 	}
 
 	if [ -z "$(command -v "${APP}")" ]; then
@@ -2492,13 +2497,18 @@ gup_install_zig_command() {
 
 	# src/install_zig_command.sh
 	APP="zig"
+	IDIR=/usr/local/lib
+	BDIR=/usr/local/bin
+
+	if [ "$(id -u)" != 0 ]; then
+			echo "Error: ${APP} requires root privileges for system-wide install" >&2
+			exit 1
+	fi
+
 	vers=$(wget -qO- https://ziglang.org/download/index.json | jq 'to_entries | map(select(.key !="master")) | .[] | .key' | tr -d '"' | sort -V | uniq | tail -1)
 	qstring=".\"${vers}\".\"x86_64-linux\".\"tarball\""
 	DL=$(wget -qO- https://ziglang.org/download/index.json | jq "${qstring}" | tr -d '"')
 	FN=$(basename "${DL}")
-
-	IDIR=/usr/local/lib
-	BDIR=/usr/local/bin
 
 	download() {
 			echo "download $1 version"
@@ -2509,11 +2519,11 @@ gup_install_zig_command() {
 			trap 'rm -rf "${tmp_dir}"' RETURN
 
 			gup_download "${DL}" "${tmp_dir}/${FN}"
-			sudo rm -f "${BDIR}/zig"
-			sudo rm -rf "${IDIR}/zig"
-			sudo mkdir -p "${IDIR}/zig"
-			sudo tar axf "${tmp_dir}/${FN}" -C "${IDIR}/zig" --strip-components=1
-			sudo ln -sf "${IDIR}/zig/zig" "${BDIR}/zig"
+			rm -f "${BDIR}/zig"
+			rm -rf "${IDIR}/zig"
+			mkdir -p "${IDIR}/zig"
+			tar axf "${tmp_dir}/${FN}" -C "${IDIR}/zig" --strip-components=1
+			ln -sf "${IDIR}/zig/zig" "${BDIR}/zig"
 	}
 
 	if [ -z "$(command -v "${APP}")" ]; then
@@ -2938,9 +2948,15 @@ gup_install_prometheus_command() {
 gup_install_grafana_command() {
 
 	# src/install_grafana_command.sh
-	sudo wget https://packages.grafana.com/gpg.key -O /etc/apt/trusted.gpg.d/grafana.gpg.asc
-	echo "deb https://packages.grafana.com/oss/deb stable main" | sudo tee /etc/apt/sources.list.d/grafana.list
-	sudo apt update -y && sudo apt install -y grafana && sudo systemctl enable grafana-server
+	if [ "$(id -u)" != 0 ]; then
+			echo "Error: grafana requires root privileges for apt-based install" >&2
+			exit 1
+	fi
+
+	wget -q https://packages.grafana.com/gpg.key -O /etc/apt/trusted.gpg.d/grafana.gpg.asc
+	echo "deb https://packages.grafana.com/oss/deb stable main" | tee /etc/apt/sources.list.d/grafana.list
+	apt update -y && apt install -y grafana && systemctl enable grafana-server
+
 }
 
 # :command.function
@@ -3119,7 +3135,6 @@ gup_install_btop_command() {
 	# src/install_btop_command.sh
 	APP="btop"
 	REPO="aristocratos/btop"
-	PREFIX="/usr/local"
 	gup_fetch_release "${REPO}" 'contains("x86_64") and contains(".tbz")'
 
 	download() {
@@ -3133,29 +3148,35 @@ gup_install_btop_command() {
 			gup_download "${GUP_REL_DL}" "${tmp_dir}/${GUP_REL_FN}"
 			_gup_extract_tarball "${tmp_dir}/${GUP_REL_FN}" "${tmp_dir}/${APP}"
 
+			if [ "$(id -u)" = 0 ]; then
+					PREFIX="/usr/local"
+			else
+					PREFIX="${HOME}/.local"
+			fi
+
 			# required directories
-			sudo mkdir -p "${PREFIX}/bin"
-			sudo mkdir -p "${PREFIX}/share/${APP}"
-			sudo mkdir -p "${PREFIX}/share/${APP}/themes"
-			sudo mkdir -p "${PREFIX}/share/applications"
-			sudo mkdir -p "${PREFIX}/share/icons/hicolor/48x48/apps"
-			sudo mkdir -p "${PREFIX}/share/icons/hicolor/scalable/apps"
+			mkdir -p "${PREFIX}/bin"
+			mkdir -p "${PREFIX}/share/${APP}"
+			mkdir -p "${PREFIX}/share/${APP}/themes"
+			mkdir -p "${PREFIX}/share/applications"
+			mkdir -p "${PREFIX}/share/icons/hicolor/48x48/apps"
+			mkdir -p "${PREFIX}/share/icons/hicolor/scalable/apps"
 
 			# btop binary
-			sudo install "${tmp_dir}/btop/bin/btop" "${PREFIX}/bin/btop"
+			install "${tmp_dir}/btop/bin/btop" "${PREFIX}/bin/btop"
 
 			# doc
-			sudo cp "${tmp_dir}/btop/README.md" "${PREFIX}/share/${APP}/README.md"
+			cp "${tmp_dir}/btop/README.md" "${PREFIX}/share/${APP}/README.md"
 
 			# Themes
-			sudo cp "${tmp_dir}/btop/themes/"* "${PREFIX}/share/${APP}/themes/"
+			cp "${tmp_dir}/btop/themes/"* "${PREFIX}/share/${APP}/themes/"
 
 			# desktop file
-			sudo cp "${tmp_dir}/btop/btop.desktop" "${PREFIX}/share/applications/btop.desktop"
+			cp "${tmp_dir}/btop/btop.desktop" "${PREFIX}/share/applications/btop.desktop"
 
 			# icons
-			sudo cp "${tmp_dir}/btop/Img/icon.png" "${PREFIX}/share/icons/hicolor/48x48/apps/btop.png"
-			sudo cp "${tmp_dir}/btop/Img/icon.svg" "${PREFIX}/share/icons/hicolor/scalable/apps/btop.svg"
+			cp "${tmp_dir}/btop/Img/icon.png" "${PREFIX}/share/icons/hicolor/48x48/apps/btop.png"
+			cp "${tmp_dir}/btop/Img/icon.svg" "${PREFIX}/share/icons/hicolor/scalable/apps/btop.svg"
 	}
 
 	if [ -z "$(command -v "${APP}")" ]; then
@@ -3316,7 +3337,6 @@ gup_install_etcd_command() {
 	# src/install_etcd_command.sh
 	APP="etcd"
 	REPO="etcd-io/etcd"
-	BDIR="/usr/local/bin"
 	gup_fetch_release "${REPO}" 'contains("linux-amd64")'
 
 	download() {
@@ -3329,7 +3349,17 @@ gup_install_etcd_command() {
 
 			gup_download "${GUP_REL_DL}" "${tmp_dir}/${GUP_REL_FN}"
 			_gup_extract_tarball "${tmp_dir}/${GUP_REL_FN}" "${tmp_dir}/etcd"
-			sudo install "${tmp_dir}/etcd/etcd"* "${BDIR}"/.
+
+			if [ "$(id -u)" = 0 ]; then
+					BDIR="/usr/local/bin"
+			else
+					BDIR="${HOME}/.local/bin"
+					mkdir -p "${BDIR}"
+			fi
+
+			install "${tmp_dir}/etcd/etcd" "${BDIR}/etcd"
+			install "${tmp_dir}/etcd/etcdctl" "${BDIR}/etcdctl"
+			install "${tmp_dir}/etcd/etcdutl" "${BDIR}/etcdutl"
 	}
 
 	if [ -z "$(command -v "${APP}")" ]; then
@@ -3349,10 +3379,16 @@ gup_install_etcd_command() {
 gup_install_vagrant_command() {
 
 	# src/install_vagrant_command.sh
+	if [ "$(id -u)" != 0 ]; then
+			echo "Error: vagrant requires root privileges for apt-based install" >&2
+			exit 1
+	fi
+
 	lsb=$(grep VERSION_CODENAME /etc/os-release | awk -F'=' '{print $2}')
-	wget -O- https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
-	echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com ${lsb} main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
-	sudo apt update -y && sudo apt install vagrant
+	wget -O- https://apt.releases.hashicorp.com/gpg | gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
+	echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com ${lsb} main" | tee /etc/apt/sources.list.d/hashicorp.list
+	apt update -y && apt install -y vagrant
+
 }
 
 # :command.function
@@ -3425,8 +3461,6 @@ gup_install_githubcli_command() {
 	# src/install_githubcli_command.sh
 	APP="gh"
 	REPO="cli/cli"
-	IDIR="/usr/local/lib"
-	BDIR="/usr/local/bin"
 	gup_fetch_release "${REPO}" 'contains("linux_amd64.tar.gz")'
 
 	download() {
@@ -3438,10 +3472,22 @@ gup_install_githubcli_command() {
 			trap 'rm -rf "${tmp_dir}"' RETURN
 
 			gup_download "${GUP_REL_DL}" "${tmp_dir}/${GUP_REL_FN}"
-			sudo rm -rf "${IDIR}/${APP}"
-			sudo mkdir -p "${IDIR}/${APP}"
-			sudo tar -axf "${tmp_dir}/${GUP_REL_FN}" --strip-components=1 -C "${IDIR}/${APP}"
-			find "${IDIR}/${APP}/bin" -type f -exec sh -c 'sudo ln -sf "$1" "${BDIR}/$(basename "$1")"' _ {} +
+
+			if [ "$(id -u)" = 0 ]; then
+					IDIR="/usr/local/lib"
+					BDIR="/usr/local/bin"
+					rm -rf "${IDIR}/${APP}"
+					mkdir -p "${IDIR}/${APP}"
+					tar -axf "${tmp_dir}/${GUP_REL_FN}" --strip-components=1 -C "${IDIR}/${APP}"
+					find "${IDIR}/${APP}/bin" -type f -exec sh -c 'ln -sf "$1" "${BDIR}/$(basename "$1")"' _ {} +
+			else
+					IDIR="${HOME}/.local/lib"
+					BDIR="${HOME}/.local/bin"
+					rm -rf "${IDIR}/${APP}"
+					mkdir -p "${IDIR}/${APP}"
+					tar -axf "${tmp_dir}/${GUP_REL_FN}" --strip-components=1 -C "${IDIR}/${APP}"
+					find "${IDIR}/${APP}/bin" -type f -exec sh -c 'ln -sf "$1" "${BDIR}/$(basename "$1")"' _ {} +
+			fi
 	}
 
 	if [ -z "$(command -v "${APP}")" ]; then
@@ -3465,20 +3511,27 @@ gup_install_forgejocli_command() {
 	DL="https://codeberg.org/forgejo-contrib/forgejo-cli/releases/download/latest/forgejo-cli-linux.tar.gz"
 	FN="forgejo-cli-linux.tar.gz"
 
-	BDIR=/usr/local/bin
-
-	function download() {
+	download() {
 			echo "download $1 version"
 
 			local tmp_dir
 			tmp_dir=$(gup_mktemp_dir)
 			trap 'rm -rf "${tmp_dir}"' RETURN
 
-			wget -qc "${DL}" -O "${tmp_dir}/${FN}"
-			sudo tar -axf "${tmp_dir}/${FN}" -C "${tmp_dir}"
-			sudo rm -rf "${BDIR}/${APP}"
-			sudo install -Dm755 "${tmp_dir}/${APP}" "${BDIR}/${APP}"
+			gup_download "${DL}" "${tmp_dir}/${FN}"
+			tar -axf "${tmp_dir}/${FN}" -C "${tmp_dir}"
+
+			if [ "$(id -u)" = 0 ]; then
+					BDIR="/usr/local/bin"
+			else
+					BDIR="${HOME}/.local/bin"
+					mkdir -p "${BDIR}"
+			fi
+
+			install -Dm755 "${tmp_dir}/${APP}" "${BDIR}/${APP}"
 	}
+
+	download new
 
 }
 

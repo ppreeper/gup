@@ -1,7 +1,5 @@
 APP="gh"
 REPO="cli/cli"
-IDIR="/usr/local/lib"
-BDIR="/usr/local/bin"
 gup_fetch_release "${REPO}" 'contains("linux_amd64.tar.gz")'
 
 download() {
@@ -13,10 +11,22 @@ download() {
     trap 'rm -rf "${tmp_dir}"' RETURN
 
     gup_download "${GUP_REL_DL}" "${tmp_dir}/${GUP_REL_FN}"
-    sudo rm -rf "${IDIR}/${APP}"
-    sudo mkdir -p "${IDIR}/${APP}"
-    sudo tar -axf "${tmp_dir}/${GUP_REL_FN}" --strip-components=1 -C "${IDIR}/${APP}"
-    find "${IDIR}/${APP}/bin" -type f -exec sh -c 'sudo ln -sf "$1" "${BDIR}/$(basename "$1")"' _ {} +
+
+    if [ "$(id -u)" = 0 ]; then
+        IDIR="/usr/local/lib"
+        BDIR="/usr/local/bin"
+        rm -rf "${IDIR}/${APP}"
+        mkdir -p "${IDIR}/${APP}"
+        tar -axf "${tmp_dir}/${GUP_REL_FN}" --strip-components=1 -C "${IDIR}/${APP}"
+        find "${IDIR}/${APP}/bin" -type f -exec sh -c 'ln -sf "$1" "${BDIR}/$(basename "$1")"' _ {} +
+    else
+        IDIR="${HOME}/.local/lib"
+        BDIR="${HOME}/.local/bin"
+        rm -rf "${IDIR}/${APP}"
+        mkdir -p "${IDIR}/${APP}"
+        tar -axf "${tmp_dir}/${GUP_REL_FN}" --strip-components=1 -C "${IDIR}/${APP}"
+        find "${IDIR}/${APP}/bin" -type f -exec sh -c 'ln -sf "$1" "${BDIR}/$(basename "$1")"' _ {} +
+    fi
 }
 
 if [ -z "$(command -v "${APP}")" ]; then

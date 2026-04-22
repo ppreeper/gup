@@ -1,3 +1,5 @@
+set -euo pipefail
+
 APP="yt-dlp"
 REPO="yt-dlp/yt-dlp"
 gup_fetch_release "${REPO}" 'contains("_linux")'

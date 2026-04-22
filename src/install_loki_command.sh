@@ -1,3 +1,5 @@
+set -euo pipefail
+
 APP="loki"
 REPO="grafana/loki"
 gup_fetch_release "${REPO}" 'contains("loki-linux-amd64")'

@@ -1,3 +1,5 @@
+set -euo pipefail
+
 APP="blackbox_exporter"
 REPO="prometheus/blackbox_exporter"
 gup_fetch_release "${REPO}" '(contains("sha256") | not) and contains("linux-amd64.tar.gz")'

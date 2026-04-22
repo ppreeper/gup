@@ -1,3 +1,5 @@
+set -euo pipefail
+
 APP="deno"
 target="x86_64-unknown-linux-gnu"
 
@@ -11,5 +13,4 @@ trap 'rm -rf "${tmp_dir}"' RETURN
 
 gup_download "${deno_uri}" "${tmp_dir}/deno.zip"
 unzip -d "${tmp_dir}" -o "${tmp_dir}/deno.zip"
-chmod +x "${tmp_dir}/deno"
 _gup_install_binary "${tmp_dir}/deno"

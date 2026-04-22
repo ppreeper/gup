@@ -1,3 +1,5 @@
+set -euo pipefail
+
 APP="upx"
 REPO="upx/upx"
 gup_fetch_release "${REPO}" '(contains("sha256") | not) and contains("amd64_linux.tar.xz")'

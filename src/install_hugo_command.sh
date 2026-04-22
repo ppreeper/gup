@@ -1,3 +1,5 @@
+set -euo pipefail
+
 APP="hugo"
 REPO="gohugoio/hugo"
 gup_fetch_release "${REPO}" 'contains("extended") and contains("linux-amd64.tar.gz") and (contains("withdeploy") | not)'
@@ -15,10 +17,9 @@ download() {
         BDIR="/usr/local/bin"
     else
         BDIR="${HOME}/.local/bin"
-        mkdir -p "${BDIR}"
     fi
+    mkdir -p "${BDIR}"
     tar -axf "${tmp_dir}/${GUP_REL_FN}" -C "${BDIR}" "${APP}"
-    chmod +x "${BDIR}/${APP}"
 }
 
 if [ -z "$(command -v "${APP}")" ]; then

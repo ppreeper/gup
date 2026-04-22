@@ -1,3 +1,5 @@
+set -euo pipefail
+
 APPBIN=$(command -v rustup 2>/dev/null || echo "")
 
 if [ -z "${APPBIN}" ]; then

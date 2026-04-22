@@ -1,3 +1,5 @@
+set -euo pipefail
+
 APP="nvim"
 REPO="neovim/neovim"
 IDIR="${HOME}/.local/nvim"

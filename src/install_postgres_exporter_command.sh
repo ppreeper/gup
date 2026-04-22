@@ -1,3 +1,5 @@
+set -euo pipefail
+
 APP="postgres_exporter"
 REPO="prometheus-community/postgres_exporter"
 gup_fetch_release "${REPO}" 'contains("linux-amd64.tar.gz")'

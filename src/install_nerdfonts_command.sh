@@ -1,3 +1,5 @@
+set -euo pipefail
+
 REPO="ryanoasis/nerd-fonts"
 FONTDIR="${HOME}/.local/share/fonts"
 

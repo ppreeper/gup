@@ -1,3 +1,5 @@
+set -euo pipefail
+
 APP="terraform"
 REPO="hashicorp/terraform"
 gup_fetch_release "${REPO}" 'contains("linux_amd64.zip")'

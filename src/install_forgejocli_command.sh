@@ -1,3 +1,5 @@
+set -euo pipefail
+
 APP="fj"
 DL="https://codeberg.org/forgejo-contrib/forgejo-cli/releases/download/latest/forgejo-cli-linux.tar.gz"
 FN="forgejo-cli-linux.tar.gz"

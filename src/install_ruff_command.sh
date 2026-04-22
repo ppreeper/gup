@@ -1,3 +1,5 @@
+set -euo pipefail
+
 APP="ruff"
 REPO="astral-sh/ruff"
 gup_fetch_release "${REPO}" '(contains("sha256") | not) and contains("x86_64-unknown-linux-gnu.tar.gz")'

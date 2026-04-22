@@ -1,3 +1,5 @@
+set -euo pipefail
+
 if [ "$(id -u)" -ne 0 ]; then
     echo "Error: loki systemd service requires root privileges" >&2
     exit 1

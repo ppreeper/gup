@@ -1,3 +1,5 @@
+set -euo pipefail
+
 if [ "$(id -u)" = 0 ]; then
     IDIR="/usr/local/bin"
     mkdir -p "${IDIR}"

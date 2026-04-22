@@ -1,1 +1,3 @@
+set -euo pipefail
+
 rm -rf "${HOME:?}/.local/nvim" "${HOME:?}/.local/share/nvim" "${HOME:?}/.local/state/nvim" "${HOME:?}/.cache/nvim" "${HOME:?}/.config/nvim" "${HOME:?}/.local/bin/nvim"

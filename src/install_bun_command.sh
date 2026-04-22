@@ -1,3 +1,5 @@
+set -euo pipefail
+
 APP="bun"
 REPO="oven-sh/bun"
 target="linux-x64"

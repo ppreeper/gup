@@ -1,13 +1,12 @@
+set -euo pipefail
+
 APP="go"
 REPO="https://go.googlesource.com/go"
 DLREPO="https://dl.google.com/go"
 IDIR=/usr/local/lib
 BDIR=/usr/local/bin
 
-if [ "$(id -u)" -ne 0 ]; then
-    echo "Error: ${APP} requires root privileges for system-wide install" >&2
-    exit 1
-fi
+_gup_require_root "${APP}"
 
 vers=$(git ls-remote --tags "${REPO}" | grep -E 'refs/tags/go[0-9]+\.[0-9]+(\.[0-9]+)?$' | awk '{print $2}' | sed 's/refs\/tags\///' | sort -V | uniq | tail -1)
 
@@ -23,6 +22,7 @@ download() {
     gup_download "${DLREPO}/${FN}" "${tmp_dir}/${FN}"
     tar axf "${tmp_dir}/${FN}" -C "${tmp_dir}"
     rm -rf "${IDIR}/go"
+    mkdir -p "${IDIR}"
     mv "${tmp_dir}/go" "${IDIR}/go"
     find "${IDIR}/go/bin" -type f -exec sh -c 'ln -sf "$1" "${BDIR}/$(basename "$1")"' _ {} +
 }

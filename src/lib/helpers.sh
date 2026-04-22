@@ -1,3 +1,5 @@
+set -euo pipefail
+
 gup_ensure_go() {
     local missing_deps=()
     for dep in go; do
@@ -8,6 +10,14 @@ gup_ensure_go() {
 
     if [ ${#missing_deps[@]} -ne 0 ]; then
         echo "Missing go: please install Go (run 'gup install go')" >&2
+        exit 1
+    fi
+}
+
+# Abort if not running as root
+_gup_require_root() {
+    if [ "$(id -u)" != 0 ]; then
+        echo "Error: ${1:-this command} requires root privileges" >&2
         exit 1
     fi
 }
@@ -74,12 +84,14 @@ _gup_install_binary() {
     local name="${2:-$(basename "$1")}"
     if [ "$(id -u)" = 0 ]; then
         BDIR="/usr/local/bin"
+        mkdir -p "${BDIR}"
         rm -f "${BDIR}/${name}"
-        install "${src}" "${BDIR}/${name}"
+        install -m 0755 "${src}" "${BDIR}/${name}"
     else
         BDIR="${HOME}/.local/bin"
+        mkdir -p "${BDIR}"
         rm -f "${BDIR}/${name}"
-        install "${src}" "${BDIR}/${name}"
+        install -m 0755 "${src}" "${BDIR}/${name}"
     fi
 }
 
@@ -91,15 +103,17 @@ _gup_install_binaries() {
     shift
     if [ "$(id -u)" = 0 ]; then
         BDIR="/usr/local/bin"
+        mkdir -p "${BDIR}"
         for name in "$@"; do
             rm -f "${BDIR}/${name}"
-            install "${src_dir}/${name}" "${BDIR}/${name}"
+            install -m 0755 "${src_dir}/${name}" "${BDIR}/${name}"
         done
     else
         BDIR="${HOME}/.local/bin"
+        mkdir -p "${BDIR}"
         for name in "$@"; do
             rm -f "${BDIR}/${name}"
-            install "${src_dir}/${name}" "${BDIR}/${name}"
+            install -m 0755 "${src_dir}/${name}" "${BDIR}/${name}"
         done
     fi
 }
@@ -121,4 +135,23 @@ _gup_extract_zip() {
     local dest="$2"
     mkdir -p "${dest}"
     unzip -o "${archive}" -d "${dest}"
+}
+
+# _gup_symlink_binaries src_dir [pattern]
+# Creates symlinks for all binaries in src_dir to BDIR.
+# Sets BDIR globally based on root/user detection.
+_gup_symlink_binaries() {
+    local src_dir="$1"
+    if [ "$(id -u)" = 0 ]; then
+        BDIR="/usr/local/bin"
+        mkdir -p "${BDIR}"
+    else
+        BDIR="${HOME}/.local/bin"
+        mkdir -p "${BDIR}"
+    fi
+    find "${src_dir}" -maxdepth 1 -type f -executable -exec sh -c '
+        for f; do
+            ln -sf "$f" "${BDIR}/$(basename "$f")"
+        done
+    ' _ {} +
 }

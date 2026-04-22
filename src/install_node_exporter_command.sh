@@ -1,3 +1,5 @@
+set -euo pipefail
+
 APP="node_exporter"
 REPO="prometheus/node_exporter"
 gup_fetch_release "${REPO}" 'contains("linux-amd64")'

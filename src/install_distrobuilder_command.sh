@@ -1,3 +1,5 @@
+set -euo pipefail
+
 APP="distrobuilder"
 REPO="https://github.com/lxc/distrobuilder"
 

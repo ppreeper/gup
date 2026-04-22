@@ -1,3 +1,5 @@
+set -euo pipefail
+
 APP="btop"
 REPO="aristocratos/btop"
 gup_fetch_release "${REPO}" 'contains("x86_64") and contains(".tbz")'

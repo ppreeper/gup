@@ -1,3 +1,5 @@
+set -euo pipefail
+
 APP="caddy"
 REPO="caddyserver/caddy"
 gup_fetch_release "${REPO}" '(contains(".sig") | not) and contains("linux_amd64.tar.gz")'

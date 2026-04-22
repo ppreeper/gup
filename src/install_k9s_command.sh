@@ -1,3 +1,5 @@
+set -euo pipefail
+
 APP="k9s"
 REPO="derailed/k9s"
 gup_fetch_release "${REPO}" '(contains("json") | not) and contains("Linux") and contains("amd64")'

@@ -1,3 +1,5 @@
+set -euo pipefail
+
 APP="etcd"
 REPO="etcd-io/etcd"
 gup_fetch_release "${REPO}" 'contains("linux-amd64")'

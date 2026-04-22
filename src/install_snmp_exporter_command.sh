@@ -1,3 +1,5 @@
+set -euo pipefail
+
 APP="snmp_exporter"
 REPO="prometheus/${APP}"
 gup_fetch_release "${REPO}" 'contains("linux-amd64.tar.gz")'

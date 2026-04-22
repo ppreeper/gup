@@ -1,3 +1,5 @@
+set -euo pipefail
+
 target="linux-x64.tar.xz"
 
 tmp_dir=$(gup_mktemp_dir)

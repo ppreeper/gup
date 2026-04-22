@@ -1,3 +1,5 @@
+set -euo pipefail
+
 APP="gotop"
 REPO="xxxserxxx/gotop"
 gup_fetch_release "${REPO}" 'contains("linux_amd64.tgz")'

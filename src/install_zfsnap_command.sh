@@ -1,3 +1,5 @@
+set -euo pipefail
+
 APP="zfsnap"
 REPO="https://github.com/zfsnap/zfsnap"
 BREPO="https://raw.githubusercontent.com/zfsnap/zfsnap"

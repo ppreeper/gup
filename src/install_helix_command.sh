@@ -1,3 +1,5 @@
+set -euo pipefail
+
 APP="hx"
 REPO="helix-editor/helix"
 IDIR="${HOME}/.config/helix"

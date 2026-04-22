@@ -1,3 +1,5 @@
+set -euo pipefail
+
 APP="marp"
 REPO="marp-team/marp-cli"
 gup_fetch_release "${REPO}" 'contains("linux")'

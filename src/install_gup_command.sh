@@ -1,3 +1,5 @@
+set -euo pipefail
+
 REPO="https://raw.githubusercontent.com/ppreeper/gup"
 
 if [ "$(id -u)" = 0 ]; then

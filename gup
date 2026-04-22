@@ -2037,6 +2037,8 @@ inspect_args() {
 
 # :command.user_lib
 # src/lib/helpers.sh
+set -euo pipefail
+
 gup_ensure_go() {
 		local missing_deps=()
 		for dep in go; do
@@ -2047,6 +2049,14 @@ gup_ensure_go() {
 
 		if [ ${#missing_deps[@]} -ne 0 ]; then
 				echo "Missing go: please install Go (run 'gup install go')" >&2
+				exit 1
+		fi
+}
+
+# Abort if not running as root
+_gup_require_root() {
+		if [ "$(id -u)" != 0 ]; then
+				echo "Error: ${1:-this command} requires root privileges" >&2
 				exit 1
 		fi
 }
@@ -2113,12 +2123,14 @@ _gup_install_binary() {
 		local name="${2:-$(basename "$1")}"
 		if [ "$(id -u)" = 0 ]; then
 				BDIR="/usr/local/bin"
+				mkdir -p "${BDIR}"
 				rm -f "${BDIR}/${name}"
-				install "${src}" "${BDIR}/${name}"
+				install -m 0755 "${src}" "${BDIR}/${name}"
 		else
 				BDIR="${HOME}/.local/bin"
+				mkdir -p "${BDIR}"
 				rm -f "${BDIR}/${name}"
-				install "${src}" "${BDIR}/${name}"
+				install -m 0755 "${src}" "${BDIR}/${name}"
 		fi
 }
 
@@ -2130,15 +2142,17 @@ _gup_install_binaries() {
 		shift
 		if [ "$(id -u)" = 0 ]; then
 				BDIR="/usr/local/bin"
+				mkdir -p "${BDIR}"
 				for name in "$@"; do
 						rm -f "${BDIR}/${name}"
-						install "${src_dir}/${name}" "${BDIR}/${name}"
+						install -m 0755 "${src_dir}/${name}" "${BDIR}/${name}"
 				done
 		else
 				BDIR="${HOME}/.local/bin"
+				mkdir -p "${BDIR}"
 				for name in "$@"; do
 						rm -f "${BDIR}/${name}"
-						install "${src_dir}/${name}" "${BDIR}/${name}"
+						install -m 0755 "${src_dir}/${name}" "${BDIR}/${name}"
 				done
 		fi
 }
@@ -2162,12 +2176,33 @@ _gup_extract_zip() {
 		unzip -o "${archive}" -d "${dest}"
 }
 
+# _gup_symlink_binaries src_dir [pattern]
+# Creates symlinks for all binaries in src_dir to BDIR.
+# Sets BDIR globally based on root/user detection.
+_gup_symlink_binaries() {
+		local src_dir="$1"
+		if [ "$(id -u)" = 0 ]; then
+				BDIR="/usr/local/bin"
+				mkdir -p "${BDIR}"
+		else
+				BDIR="${HOME}/.local/bin"
+				mkdir -p "${BDIR}"
+		fi
+		find "${src_dir}" -maxdepth 1 -type f -executable -exec sh -c '
+				for f; do
+						ln -sf "$f" "${BDIR}/$(basename "$f")"
+				done
+		' _ {} +
+}
+
 # :command.command_functions
 
 # :command.function
 gup_install_gup_command() {
 
 	# src/install_gup_command.sh
+	set -euo pipefail
+
 	REPO="https://raw.githubusercontent.com/ppreeper/gup"
 
 	if [ "$(id -u)" = 0 ]; then
@@ -2188,6 +2223,8 @@ gup_install_gup_command() {
 gup_install_update_command() {
 
 	# src/install_update_command.sh
+	set -euo pipefail
+
 	if [ "$(id -u)" = 0 ]; then
 			IDIR="/usr/local/bin"
 			mkdir -p "${IDIR}"
@@ -2209,16 +2246,15 @@ _EOF_
 gup_install_go_command() {
 
 	# src/install_go_command.sh
+	set -euo pipefail
+
 	APP="go"
 	REPO="https://go.googlesource.com/go"
 	DLREPO="https://dl.google.com/go"
 	IDIR=/usr/local/lib
 	BDIR=/usr/local/bin
 
-	if [ "$(id -u)" -ne 0 ]; then
-			echo "Error: ${APP} requires root privileges for system-wide install" >&2
-			exit 1
-	fi
+	_gup_require_root "${APP}"
 
 	vers=$(git ls-remote --tags "${REPO}" | grep -E 'refs/tags/go[0-9]+\.[0-9]+(\.[0-9]+)?$' | awk '{print $2}' | sed 's/refs\/tags\///' | sort -V | uniq | tail -1)
 
@@ -2234,6 +2270,7 @@ gup_install_go_command() {
 			gup_download "${DLREPO}/${FN}" "${tmp_dir}/${FN}"
 			tar axf "${tmp_dir}/${FN}" -C "${tmp_dir}"
 			rm -rf "${IDIR}/go"
+			mkdir -p "${IDIR}"
 			mv "${tmp_dir}/go" "${IDIR}/go"
 			find "${IDIR}/go/bin" -type f -exec sh -c 'ln -sf "$1" "${BDIR}/$(basename "$1")"' _ {} +
 	}
@@ -2255,6 +2292,8 @@ gup_install_go_command() {
 gup_install_tinygo_command() {
 
 	# src/install_tinygo_command.sh
+	set -euo pipefail
+
 	APP="tinygo"
 	REPO="tinygo-org/tinygo"
 	gup_fetch_release "${REPO}" '(contains("sha256") | not) and contains("linux-amd64.tar.gz")'
@@ -2309,6 +2348,8 @@ gup_install_tinygo_command() {
 gup_install_nodejs_command() {
 
 	# src/install_nodejs_command.sh
+	set -euo pipefail
+
 	target="linux-x64.tar.xz"
 
 	tmp_dir=$(gup_mktemp_dir)
@@ -2362,6 +2403,8 @@ gup_install_nodejs_command() {
 gup_install_nvm_command() {
 
 	# src/install_nvm_command.sh
+	set -euo pipefail
+
 	REPO="nvm-sh/nvm"
 	vers=$(gup_get_latest_release "${REPO}")
 
@@ -2379,6 +2422,8 @@ gup_install_nvm_command() {
 gup_install_deno_command() {
 
 	# src/install_deno_command.sh
+	set -euo pipefail
+
 	APP="deno"
 	target="x86_64-unknown-linux-gnu"
 
@@ -2392,7 +2437,6 @@ gup_install_deno_command() {
 
 	gup_download "${deno_uri}" "${tmp_dir}/deno.zip"
 	unzip -d "${tmp_dir}" -o "${tmp_dir}/deno.zip"
-	chmod +x "${tmp_dir}/deno"
 	_gup_install_binary "${tmp_dir}/deno"
 
 }
@@ -2401,6 +2445,8 @@ gup_install_deno_command() {
 gup_install_bun_command() {
 
 	# src/install_bun_command.sh
+	set -euo pipefail
+
 	APP="bun"
 	REPO="oven-sh/bun"
 	target="linux-x64"
@@ -2454,6 +2500,8 @@ gup_install_bun_command() {
 gup_install_uv_command() {
 
 	# src/install_uv_command.sh
+	set -euo pipefail
+
 	APP="uv"
 	REPO="astral-sh/uv"
 	gup_fetch_release "${REPO}" '(contains("sha256") | not) and contains("x86_64-unknown-linux-gnu.tar.gz")'
@@ -2488,6 +2536,8 @@ gup_install_uv_command() {
 gup_install_rust_command() {
 
 	# src/install_rust_command.sh
+	set -euo pipefail
+
 	APPBIN=$(command -v rustup 2>/dev/null || echo "")
 
 	if [ -z "${APPBIN}" ]; then
@@ -2510,18 +2560,18 @@ gup_install_rust_command() {
 gup_install_zig_command() {
 
 	# src/install_zig_command.sh
+	set -euo pipefail
+
 	APP="zig"
 	IDIR=/usr/local/lib
 	BDIR=/usr/local/bin
 
-	if [ "$(id -u)" -ne 0 ]; then
-			echo "Error: ${APP} requires root privileges for system-wide install" >&2
-			exit 1
-	fi
+	_gup_require_root "${APP}"
 
-	vers=$(wget -qO- https://ziglang.org/download/index.json | jq 'to_entries | map(select(.key !="master")) | .[] | .key' | tr -d '"' | sort -V | uniq | tail -1)
+	zig_json=$(wget -qO- https://ziglang.org/download/index.json)
+	vers=$(echo "${zig_json}" | jq 'to_entries | map(select(.key !="master")) | .[] | .key' | tr -d '"' | sort -V | uniq | tail -1)
 	qstring=".\"${vers}\".\"x86_64-linux\".\"tarball\""
-	DL=$(wget -qO- https://ziglang.org/download/index.json | jq "${qstring}" | tr -d '"')
+	DL=$(echo "${zig_json}" | jq -r "${qstring}")
 	FN=$(basename "${DL}")
 
 	download() {
@@ -2557,36 +2607,42 @@ gup_install_zig_command() {
 gup_install_go_blueprint_command() {
 
 	# src/install_go_blueprint_command.sh
+	set -euo pipefail
+
 	APP="go-blueprint"
 	REPO="melkeydev/go-blueprint"
 	vers=$(gup_get_latest_release "${REPO}")
 
 	gup_ensure_go
-	go install github.com/melkeydev/go-blueprint@${vers}
+	go install github.com/melkeydev/go-blueprint@"${vers}"
 }
 
 # :command.function
 gup_install_gowebly_command() {
 
 	# src/install_gowebly_command.sh
+	set -euo pipefail
+
 	APP="gowebly"
 	REPO="gowebly/gowebly"
 	vers=$(gup_get_latest_release "${REPO}")
 
 	gup_ensure_go
-	go install github.com/gowebly/gowebly/v2@${vers}
+	go install github.com/gowebly/gowebly/v2@"${vers}"
 }
 
 # :command.function
 gup_install_goplay_command() {
 
 	# src/install_goplay_command.sh
+	set -euo pipefail
+
 	APP="goplay"
 	REPO="haya14busa/goplay"
 	vers=$(gup_get_latest_release "${REPO}")
 
 	gup_ensure_go
-	go install github.com/haya14busa/goplay/cmd/goplay@${vers}
+	go install github.com/haya14busa/goplay/cmd/goplay@"${vers}"
 
 }
 
@@ -2594,12 +2650,14 @@ gup_install_goplay_command() {
 gup_install_gotests_command() {
 
 	# src/install_gotests_command.sh
+	set -euo pipefail
+
 	APP="gotests"
 	REPO="cweill/gotests"
 	vers=$(gup_get_latest_release "${REPO}")
 
 	gup_ensure_go
-	go install github.com/cweill/gotests/gotests@${vers}
+	go install github.com/cweill/gotests/gotests@"${vers}"
 
 }
 
@@ -2607,12 +2665,14 @@ gup_install_gotests_command() {
 gup_install_impl_command() {
 
 	# src/install_impl_command.sh
+	set -euo pipefail
+
 	APP="impl"
 	REPO="josharian/impl"
 	vers=$(gup_get_latest_release "${REPO}")
 
 	gup_ensure_go
-	go install github.com/josharian/impl@${vers}
+	go install github.com/josharian/impl@"${vers}"
 
 }
 
@@ -2620,12 +2680,14 @@ gup_install_impl_command() {
 gup_install_gomodifytags_command() {
 
 	# src/install_gomodifytags_command.sh
+	set -euo pipefail
+
 	APP="gomodifytags"
 	REPO="fatih/gomodifytags"
 	vers=$(gup_get_latest_release "${REPO}")
 
 	gup_ensure_go
-	go install github.com/fatih/gomodifytags@${vers}
+	go install github.com/fatih/gomodifytags@"${vers}"
 
 }
 
@@ -2633,12 +2695,14 @@ gup_install_gomodifytags_command() {
 gup_install_air_command() {
 
 	# src/install_air_command.sh
+	set -euo pipefail
+
 	APP="air"
 	REPO="cosmtrek/air"
 	vers=$(gup_get_latest_release "${REPO}")
 
 	gup_ensure_go
-	go install github.com/cosmtrek/air@${vers}
+	go install github.com/cosmtrek/air@"${vers}"
 
 }
 
@@ -2646,48 +2710,56 @@ gup_install_air_command() {
 gup_install_gofumpt_command() {
 
 	# src/install_gofumpt_command.sh
+	set -euo pipefail
+
 	APP="gofumpt"
 	REPO="mvdan/gofumpt"
 	vers=$(gup_get_latest_release "${REPO}")
 
 	gup_ensure_go
-	go install mvdan.cc/gofumpt@${vers}
+	go install mvdan.cc/gofumpt@"${vers}"
 }
 
 # :command.function
 gup_install_goimports_command() {
 
 	# src/install_goimports_command.sh
+	set -euo pipefail
+
 	APP="goimports"
 	REPO="golang/tools"
 	vers=$(gup_get_latest_release "${REPO}")
 
 	gup_ensure_go
-	go install golang.org/x/tools/cmd/goimports@${vers}
+	go install golang.org/x/tools/cmd/goimports@"${vers}"
 }
 
 # :command.function
 gup_install_golangci_lint_command() {
 
 	# src/install_golangci_lint_command.sh
+	set -euo pipefail
+
 	APP="golangci-lint"
 	REPO="golangci/golangci-lint"
 	vers=$(gup_get_latest_release "${REPO}")
 
 	gup_ensure_go
-	go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@${vers}
+	go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@"${vers}"
 }
 
 # :command.function
 gup_install_staticcheck_command() {
 
 	# src/install_staticcheck_command.sh
+	set -euo pipefail
+
 	APP="staticcheck"
 	REPO="dominikh/go-tools"
 	vers=$(gup_get_latest_release "${REPO}")
 
 	gup_ensure_go
-	go install honnef.co/go/tools/cmd/staticcheck@${vers}
+	go install honnef.co/go/tools/cmd/staticcheck@"${vers}"
 
 }
 
@@ -2695,36 +2767,42 @@ gup_install_staticcheck_command() {
 gup_install_nilaway_command() {
 
 	# src/install_nilaway_command.sh
+	set -euo pipefail
+
 	APP="nilaway"
 	REPO="uber-go/nilaway"
 	vers=$(gup_get_latest_release "${REPO}")
 
 	gup_ensure_go
-	go install go.uber.org/nilaway/cmd/nilaway@${vers}
+	go install go.uber.org/nilaway/cmd/nilaway@"${vers}"
 }
 
 # :command.function
 gup_install_swag_command() {
 
 	# src/install_swag_command.sh
+	set -euo pipefail
+
 	APP="swag"
 	REPO="swaggo/swag"
 	vers=$(gup_get_latest_release "${REPO}")
 
 	gup_ensure_go
-	go install github.com/swaggo/swag/cmd/swag@${vers}
+	go install github.com/swaggo/swag/cmd/swag@"${vers}"
 }
 
 # :command.function
 gup_install_templ_command() {
 
 	# src/install_templ_command.sh
+	set -euo pipefail
+
 	APP="templ"
 	REPO="a-h/templ"
 	vers=$(gup_get_latest_release "${REPO}")
 
 	gup_ensure_go
-	go install github.com/a-h/templ/cmd/templ@${vers}
+	go install github.com/a-h/templ/cmd/templ@"${vers}"
 
 }
 
@@ -2732,6 +2810,8 @@ gup_install_templ_command() {
 gup_install_ruff_command() {
 
 	# src/install_ruff_command.sh
+	set -euo pipefail
+
 	APP="ruff"
 	REPO="astral-sh/ruff"
 	gup_fetch_release "${REPO}" '(contains("sha256") | not) and contains("x86_64-unknown-linux-gnu.tar.gz")'
@@ -2766,36 +2846,42 @@ gup_install_ruff_command() {
 gup_install_scc_command() {
 
 	# src/install_scc_command.sh
+	set -euo pipefail
+
 	APP="scc"
 	REPO="boyter/scc"
 	vers=$(gup_get_latest_release "${REPO}")
 
 	gup_ensure_go
-	go install github.com/boyter/scc/v3@${vers}
+	go install github.com/boyter/scc/v3@"${vers}"
 }
 
 # :command.function
 gup_install_yamlfmt_command() {
 
 	# src/install_yamlfmt_command.sh
+	set -euo pipefail
+
 	APP="yamlfmt"
 	REPO="google/yamlfmt"
 	vers=$(gup_get_latest_release "${REPO}")
 
 	gup_ensure_go
-	go install github.com/google/yamlfmt/cmd/yamlfmt@${vers}
+	go install github.com/google/yamlfmt/cmd/yamlfmt@"${vers}"
 }
 
 # :command.function
 gup_install_gopls_command() {
 
 	# src/install_gopls_command.sh
+	set -euo pipefail
+
 	APP="gopls"
 	REPO="golang/tools"
 	vers=$(gup_get_latest_release "${REPO}")
 
 	gup_ensure_go
-	go install golang.org/x/tools/gopls@${vers}
+	go install golang.org/x/tools/gopls@"${vers}"
 
 }
 
@@ -2803,12 +2889,14 @@ gup_install_gopls_command() {
 gup_install_dlv_command() {
 
 	# src/install_dlv_command.sh
+	set -euo pipefail
+
 	APP="dlv"
 	REPO="go-delve/delve"
 	vers=$(gup_get_latest_release "${REPO}")
 
 	gup_ensure_go
-	go install github.com/go-delve/delve/cmd/dlv@${vers}
+	go install github.com/go-delve/delve/cmd/dlv@"${vers}"
 
 }
 
@@ -2850,6 +2938,8 @@ gup_install_zls_command() {
 gup_install_neovim_command() {
 
 	# src/install_neovim_command.sh
+	set -euo pipefail
+
 	APP="nvim"
 	REPO="neovim/neovim"
 	IDIR="${HOME}/.local/nvim"
@@ -2888,6 +2978,8 @@ gup_install_neovim_command() {
 gup_install_helix_command() {
 
 	# src/install_helix_command.sh
+	set -euo pipefail
+
 	APP="hx"
 	REPO="helix-editor/helix"
 	IDIR="${HOME}/.config/helix"
@@ -2928,6 +3020,8 @@ gup_install_helix_command() {
 gup_install_prometheus_command() {
 
 	# src/install_prometheus_command.sh
+	set -euo pipefail
+
 	APP="prometheus"
 	REPO="prometheus/prometheus"
 	gup_fetch_release "${REPO}" 'contains("linux-amd64.tar.gz")'
@@ -2962,6 +3056,8 @@ gup_install_prometheus_command() {
 gup_install_grafana_command() {
 
 	# src/install_grafana_command.sh
+	set -euo pipefail
+
 	if [ "$(id -u)" -ne 0 ]; then
 			echo "Error: grafana requires root privileges for apt-based install" >&2
 			exit 1
@@ -2977,6 +3073,8 @@ gup_install_grafana_command() {
 gup_install_loki_command() {
 
 	# src/install_loki_command.sh
+	set -euo pipefail
+
 	APP="loki"
 	REPO="grafana/loki"
 	gup_fetch_release "${REPO}" 'contains("loki-linux-amd64")'
@@ -3011,6 +3109,8 @@ gup_install_loki_command() {
 gup_install_node_exporter_command() {
 
 	# src/install_node_exporter_command.sh
+	set -euo pipefail
+
 	APP="node_exporter"
 	REPO="prometheus/node_exporter"
 	gup_fetch_release "${REPO}" 'contains("linux-amd64")'
@@ -3045,6 +3145,8 @@ gup_install_node_exporter_command() {
 gup_install_postgres_exporter_command() {
 
 	# src/install_postgres_exporter_command.sh
+	set -euo pipefail
+
 	APP="postgres_exporter"
 	REPO="prometheus-community/postgres_exporter"
 	gup_fetch_release "${REPO}" 'contains("linux-amd64.tar.gz")'
@@ -3079,6 +3181,8 @@ gup_install_postgres_exporter_command() {
 gup_install_blackbox_exporter_command() {
 
 	# src/install_blackbox_exporter_command.sh
+	set -euo pipefail
+
 	APP="blackbox_exporter"
 	REPO="prometheus/blackbox_exporter"
 	gup_fetch_release "${REPO}" '(contains("sha256") | not) and contains("linux-amd64.tar.gz")'
@@ -3113,6 +3217,8 @@ gup_install_blackbox_exporter_command() {
 gup_install_snmp_exporter_command() {
 
 	# src/install_snmp_exporter_command.sh
+	set -euo pipefail
+
 	APP="snmp_exporter"
 	REPO="prometheus/${APP}"
 	gup_fetch_release "${REPO}" 'contains("linux-amd64.tar.gz")'
@@ -3147,6 +3253,8 @@ gup_install_snmp_exporter_command() {
 gup_install_btop_command() {
 
 	# src/install_btop_command.sh
+	set -euo pipefail
+
 	APP="btop"
 	REPO="aristocratos/btop"
 	gup_fetch_release "${REPO}" 'contains("x86_64") and contains(".tbz")'
@@ -3210,6 +3318,8 @@ gup_install_btop_command() {
 gup_install_gotop_command() {
 
 	# src/install_gotop_command.sh
+	set -euo pipefail
+
 	APP="gotop"
 	REPO="xxxserxxx/gotop"
 	gup_fetch_release "${REPO}" 'contains("linux_amd64.tgz")'
@@ -3244,6 +3354,8 @@ gup_install_gotop_command() {
 gup_install_lazydocker_command() {
 
 	# src/install_lazydocker_command.sh
+	set -euo pipefail
+
 	APP="lazydocker"
 	REPO="jesseduffield/lazydocker"
 	gup_fetch_release "${REPO}" 'contains("linux_x86_64")'
@@ -3278,6 +3390,8 @@ gup_install_lazydocker_command() {
 gup_install_minikube_command() {
 
 	# src/install_minikube_command.sh
+	set -euo pipefail
+
 	APP="minikube"
 	DL="https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64"
 
@@ -3287,7 +3401,6 @@ gup_install_minikube_command() {
 	trap 'rm -rf "${tmp_dir}"' RETURN
 
 	gup_download "${DL}" "${tmp_dir}/${APP}"
-	chmod +x "${tmp_dir}/${APP}"
 	_gup_install_binary "${tmp_dir}/${APP}"
 
 }
@@ -3296,6 +3409,8 @@ gup_install_minikube_command() {
 gup_install_kubectl_command() {
 
 	# src/install_kubectl_command.sh
+	set -euo pipefail
+
 	APP="kubectl"
 	STABLE_URL="https://storage.googleapis.com/kubernetes-release/release/stable.txt"
 	BASE_URL="https://storage.googleapis.com/kubernetes-release/release"
@@ -3306,7 +3421,6 @@ gup_install_kubectl_command() {
 	gup_download "${STABLE_URL}" "${tmp_dir}/stable.txt"
 	stable=$(cat "${tmp_dir}/stable.txt")
 	gup_download "${BASE_URL}/${stable}/bin/linux/amd64/kubectl" "${tmp_dir}/${APP}"
-	chmod +x "${tmp_dir}/${APP}"
 	_gup_install_binary "${tmp_dir}/${APP}"
 
 }
@@ -3315,6 +3429,8 @@ gup_install_kubectl_command() {
 gup_install_k9s_command() {
 
 	# src/install_k9s_command.sh
+	set -euo pipefail
+
 	APP="k9s"
 	REPO="derailed/k9s"
 	gup_fetch_release "${REPO}" '(contains("json") | not) and contains("Linux") and contains("amd64")'
@@ -3349,6 +3465,8 @@ gup_install_k9s_command() {
 gup_install_etcd_command() {
 
 	# src/install_etcd_command.sh
+	set -euo pipefail
+
 	APP="etcd"
 	REPO="etcd-io/etcd"
 	gup_fetch_release "${REPO}" 'contains("linux-amd64")'
@@ -3393,6 +3511,8 @@ gup_install_etcd_command() {
 gup_install_vagrant_command() {
 
 	# src/install_vagrant_command.sh
+	set -euo pipefail
+
 	if [ "$(id -u)" -ne 0 ]; then
 			echo "Error: vagrant requires root privileges for apt-based install" >&2
 			exit 1
@@ -3409,6 +3529,8 @@ gup_install_vagrant_command() {
 gup_install_doctl_command() {
 
 	# src/install_doctl_command.sh
+	set -euo pipefail
+
 	APP="doctl"
 	REPO="digitalocean/doctl"
 	gup_fetch_release "${REPO}" 'contains("linux-amd64")'
@@ -3426,10 +3548,9 @@ gup_install_doctl_command() {
 					BDIR="/usr/local/bin"
 			else
 					BDIR="${HOME}/.local/bin"
-					mkdir -p "${BDIR}"
 			fi
+			mkdir -p "${BDIR}"
 			tar -axf "${tmp_dir}/${GUP_REL_FN}" -C "${BDIR}" "${APP}"
-			chmod +x "${BDIR}/${APP}"
 	}
 
 	if [ -z "$(command -v "${APP}")" ]; then
@@ -3449,6 +3570,8 @@ gup_install_doctl_command() {
 gup_install_b2_command() {
 
 	# src/install_b2_command.sh
+	set -euo pipefail
+
 	APP="b2"
 	DL="https://github.com/Backblaze/B2_Command_Line_Tool/releases/latest/download/b2-linux"
 
@@ -3460,7 +3583,6 @@ gup_install_b2_command() {
 			trap 'rm -rf "${tmp_dir}"' RETURN
 
 			gup_download "${DL}" "${tmp_dir}/${APP}"
-			chmod +x "${tmp_dir}/${APP}"
 			_gup_install_binary "${tmp_dir}/${APP}"
 	}
 
@@ -3472,6 +3594,8 @@ gup_install_b2_command() {
 gup_install_githubcli_command() {
 
 	# src/install_githubcli_command.sh
+	set -euo pipefail
+
 	APP="gh"
 	REPO="cli/cli"
 	gup_fetch_release "${REPO}" 'contains("linux_amd64.tar.gz")'
@@ -3520,6 +3644,8 @@ gup_install_githubcli_command() {
 gup_install_forgejocli_command() {
 
 	# src/install_forgejocli_command.sh
+	set -euo pipefail
+
 	APP="fj"
 	DL="https://codeberg.org/forgejo-contrib/forgejo-cli/releases/download/latest/forgejo-cli-linux.tar.gz"
 	FN="forgejo-cli-linux.tar.gz"
@@ -3552,6 +3678,8 @@ gup_install_forgejocli_command() {
 gup_install_caddy2_command() {
 
 	# src/install_caddy2_command.sh
+	set -euo pipefail
+
 	APP="caddy"
 	REPO="caddyserver/caddy"
 	gup_fetch_release "${REPO}" '(contains(".sig") | not) and contains("linux_amd64.tar.gz")'
@@ -3586,6 +3714,8 @@ gup_install_caddy2_command() {
 gup_install_traefik_command() {
 
 	# src/install_traefik_command.sh
+	set -euo pipefail
+
 	APP="traefik"
 	REPO="traefik/traefik"
 	gup_fetch_release "${REPO}" 'contains("linux_amd64.tar.gz")'
@@ -3620,6 +3750,8 @@ gup_install_traefik_command() {
 gup_install_hugo_command() {
 
 	# src/install_hugo_command.sh
+	set -euo pipefail
+
 	APP="hugo"
 	REPO="gohugoio/hugo"
 	gup_fetch_release "${REPO}" 'contains("extended") and contains("linux-amd64.tar.gz") and (contains("withdeploy") | not)'
@@ -3637,10 +3769,9 @@ gup_install_hugo_command() {
 					BDIR="/usr/local/bin"
 			else
 					BDIR="${HOME}/.local/bin"
-					mkdir -p "${BDIR}"
 			fi
+			mkdir -p "${BDIR}"
 			tar -axf "${tmp_dir}/${GUP_REL_FN}" -C "${BDIR}" "${APP}"
-			chmod +x "${BDIR}/${APP}"
 	}
 
 	if [ -z "$(command -v "${APP}")" ]; then
@@ -3660,6 +3791,8 @@ gup_install_hugo_command() {
 gup_install_tailwindcss_command() {
 
 	# src/install_tailwindcss_command.sh
+	set -euo pipefail
+
 	APP="tailwindcss"
 	REPO="tailwindlabs/tailwindcss"
 	gup_fetch_release "${REPO}" 'contains("linux-x64") and (contains("musl") | not)'
@@ -3693,6 +3826,8 @@ gup_install_tailwindcss_command() {
 gup_install_marp_command() {
 
 	# src/install_marp_command.sh
+	set -euo pipefail
+
 	APP="marp"
 	REPO="marp-team/marp-cli"
 	gup_fetch_release "${REPO}" 'contains("linux")'
@@ -3727,42 +3862,50 @@ gup_install_marp_command() {
 gup_install_duf_command() {
 
 	# src/install_duf_command.sh
+	set -euo pipefail
+
 	APP="duf"
 	REPO="muesli/duf"
 	vers=$(gup_get_latest_release "${REPO}")
 
 	gup_ensure_go
-	go install github.com/muesli/duf@${vers}
+	go install github.com/muesli/duf@"${vers}"
 }
 
 # :command.function
 gup_install_gdu_command() {
 
 	# src/install_gdu_command.sh
+	set -euo pipefail
+
 	APP="gdu"
 	REPO="dundee/gdu"
 	vers=$(gup_get_latest_release "${REPO}")
 
 	gup_ensure_go
-	go install github.com/dundee/gdu/v5/cmd/gdu@${vers}
+	go install github.com/dundee/gdu/v5/cmd/gdu@"${vers}"
 }
 
 # :command.function
 gup_install_gum_command() {
 
 	# src/install_gum_command.sh
+	set -euo pipefail
+
 	APP="gum"
 	REPO="charmbracelet/gum"
 	vers=$(gup_get_latest_release "${REPO}")
 
 	gup_ensure_go
-	go install github.com/charmbracelet/gum@${vers}
+	go install github.com/charmbracelet/gum@"${vers}"
 }
 
 # :command.function
 gup_install_lazygit_command() {
 
 	# src/install_lazygit_command.sh
+	set -euo pipefail
+
 	APP="lazygit"
 	REPO="jesseduffield/lazygit"
 	gup_fetch_release "${REPO}" 'contains("linux_x86_64")'
@@ -3797,24 +3940,28 @@ gup_install_lazygit_command() {
 gup_install_muffet_command() {
 
 	# src/install_muffet_command.sh
+	set -euo pipefail
+
 	APP="muffet"
 	REPO="raviqqe/muffet"
 	vers=$(gup_get_latest_release "${REPO}")
 
 	gup_ensure_go
-	go install github.com/raviqqe/muffet/v2@${vers}
+	go install github.com/raviqqe/muffet/v2@"${vers}"
 }
 
 # :command.function
 gup_install_s5cmd_command() {
 
 	# src/install_s5cmd_command.sh
+	set -euo pipefail
+
 	APP="s5cmd"
 	REPO="peak/s5cmd"
 	vers=$(gup_get_latest_release "${REPO}")
 
 	gup_ensure_go
-	go install github.com/peak/s5cmd/v2@${vers}
+	go install github.com/peak/s5cmd/v2@"${vers}"
 
 }
 
@@ -3822,12 +3969,14 @@ gup_install_s5cmd_command() {
 gup_install_sshconfig_command() {
 
 	# src/install_sshconfig_command.sh
+	set -euo pipefail
+
 	APP="sshconfig"
 	REPO="ppreeper/sshconfig"
 	vers=$(gup_get_latest_release "${REPO}")
 
 	gup_ensure_go
-	go install github.com/ppreeper/sshconfig@${vers}
+	go install github.com/ppreeper/sshconfig@"${vers}"
 
 }
 
@@ -3835,6 +3984,8 @@ gup_install_sshconfig_command() {
 gup_install_task_command() {
 
 	# src/install_task_command.sh
+	set -euo pipefail
+
 	APP="task"
 	REPO="go-task/task"
 	gup_fetch_release "${REPO}" 'contains("linux_amd64.tar.gz")'
@@ -3869,18 +4020,22 @@ gup_install_task_command() {
 gup_install_timer_command() {
 
 	# src/install_timer_command.sh
+	set -euo pipefail
+
 	APP="timer"
 	REPO="caarlos0/timer"
 	vers=$(gup_get_latest_release "${REPO}")
 
 	gup_ensure_go
-	go install github.com/caarlos0/timer@${vers}
+	go install github.com/caarlos0/timer@"${vers}"
 }
 
 # :command.function
 gup_install_ytdlp_command() {
 
 	# src/install_ytdlp_command.sh
+	set -euo pipefail
+
 	APP="yt-dlp"
 	REPO="yt-dlp/yt-dlp"
 	gup_fetch_release "${REPO}" 'contains("_linux")'
@@ -3914,6 +4069,8 @@ gup_install_ytdlp_command() {
 gup_install_zfsnap_command() {
 
 	# src/install_zfsnap_command.sh
+	set -euo pipefail
+
 	APP="zfsnap"
 	REPO="https://github.com/zfsnap/zfsnap"
 	BREPO="https://raw.githubusercontent.com/zfsnap/zfsnap"
@@ -3954,6 +4111,8 @@ gup_install_zfsnap_command() {
 gup_install_terraform_command() {
 
 	# src/install_terraform_command.sh
+	set -euo pipefail
+
 	APP="terraform"
 	REPO="hashicorp/terraform"
 	gup_fetch_release "${REPO}" 'contains("linux_amd64.zip")'
@@ -3988,6 +4147,8 @@ gup_install_terraform_command() {
 gup_install_distrobuilder_command() {
 
 	# src/install_distrobuilder_command.sh
+	set -euo pipefail
+
 	APP="distrobuilder"
 	REPO="https://github.com/lxc/distrobuilder"
 
@@ -4019,6 +4180,8 @@ gup_install_distrobuilder_command() {
 gup_install_upx_command() {
 
 	# src/install_upx_command.sh
+	set -euo pipefail
+
 	APP="upx"
 	REPO="upx/upx"
 	gup_fetch_release "${REPO}" '(contains("sha256") | not) and contains("amd64_linux.tar.xz")'
@@ -4053,18 +4216,22 @@ gup_install_upx_command() {
 gup_install_sqlc_command() {
 
 	# src/install_sqlc_command.sh
+	set -euo pipefail
+
 	APP="sqlc"
 	REPO="sqlc-dev/sqlc"
 	vers=$(gup_get_latest_release "${REPO}")
 
 	gup_ensure_go
-	go install github.com/sqlc-dev/sqlc/cmd/sqlc@${vers}
+	go install github.com/sqlc-dev/sqlc/cmd/sqlc@"${vers}"
 }
 
 # :command.function
 gup_install_mkcert_command() {
 
 	# src/install_mkcert_command.sh
+	set -euo pipefail
+
 	APP="mkcert"
 
 	echo "installing ${APP}"
@@ -4073,7 +4240,6 @@ gup_install_mkcert_command() {
 	trap 'rm -rf "${tmp_dir}"' RETURN
 
 	gup_download "https://dl.filippo.io/mkcert/latest?for=linux/amd64" "${tmp_dir}/${APP}"
-	chmod +x "${tmp_dir}/${APP}"
 	_gup_install_binary "${tmp_dir}/${APP}"
 
 }
@@ -4082,12 +4248,14 @@ gup_install_mkcert_command() {
 gup_install_govulncheck_command() {
 
 	# src/install_govulncheck_command.sh
+	set -euo pipefail
+
 	APP="govulncheck"
 	REPO="golang/vuln"
 	vers=$(gup_get_latest_release "${REPO}")
 
 	gup_ensure_go
-	go install golang.org/x/vuln/cmd/govulncheck@${vers}
+	go install golang.org/x/vuln/cmd/govulncheck@"${vers}"
 
 }
 
@@ -4095,6 +4263,8 @@ gup_install_govulncheck_command() {
 gup_install_nerdfonts_command() {
 
 	# src/install_nerdfonts_command.sh
+	set -euo pipefail
+
 	REPO="ryanoasis/nerd-fonts"
 	FONTDIR="${HOME}/.local/share/fonts"
 
@@ -4127,6 +4297,8 @@ gup_install_nerdfonts_command() {
 gup_remove_neovim_command() {
 
 	# src/remove_neovim_command.sh
+	set -euo pipefail
+
 	rm -rf "${HOME:?}/.local/nvim" "${HOME:?}/.local/share/nvim" "${HOME:?}/.local/state/nvim" "${HOME:?}/.cache/nvim" "${HOME:?}/.config/nvim" "${HOME:?}/.local/bin/nvim"
 
 }
@@ -4135,6 +4307,8 @@ gup_remove_neovim_command() {
 gup_systemd_loki_command() {
 
 	# src/systemd_loki_command.sh
+	set -euo pipefail
+
 	if [ "$(id -u)" -ne 0 ]; then
 			echo "Error: loki systemd service requires root privileges" >&2
 			exit 1
@@ -4165,6 +4339,8 @@ _EOF_
 gup_systemd_promtail_command() {
 
 	# src/systemd_promtail_command.sh
+	set -euo pipefail
+
 	if [ "$(id -u)" -ne 0 ]; then
 			echo "Error: promtail systemd service requires root privileges" >&2
 			exit 1

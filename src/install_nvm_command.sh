@@ -1,3 +1,5 @@
+set -euo pipefail
+
 REPO="nvm-sh/nvm"
 vers=$(gup_get_latest_release "${REPO}")
 

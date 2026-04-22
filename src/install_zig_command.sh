@@ -1,15 +1,15 @@
+set -euo pipefail
+
 APP="zig"
 IDIR=/usr/local/lib
 BDIR=/usr/local/bin
 
-if [ "$(id -u)" -ne 0 ]; then
-    echo "Error: ${APP} requires root privileges for system-wide install" >&2
-    exit 1
-fi
+_gup_require_root "${APP}"
 
-vers=$(wget -qO- https://ziglang.org/download/index.json | jq 'to_entries | map(select(.key !="master")) | .[] | .key' | tr -d '"' | sort -V | uniq | tail -1)
+zig_json=$(wget -qO- https://ziglang.org/download/index.json)
+vers=$(echo "${zig_json}" | jq 'to_entries | map(select(.key !="master")) | .[] | .key' | tr -d '"' | sort -V | uniq | tail -1)
 qstring=".\"${vers}\".\"x86_64-linux\".\"tarball\""
-DL=$(wget -qO- https://ziglang.org/download/index.json | jq "${qstring}" | tr -d '"')
+DL=$(echo "${zig_json}" | jq -r "${qstring}")
 FN=$(basename "${DL}")
 
 download() {

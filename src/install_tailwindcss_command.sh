@@ -1,3 +1,5 @@
+set -euo pipefail
+
 APP="tailwindcss"
 REPO="tailwindlabs/tailwindcss"
 gup_fetch_release "${REPO}" 'contains("linux-x64") and (contains("musl") | not)'

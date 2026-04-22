@@ -1,3 +1,5 @@
+set -euo pipefail
+
 APP="task"
 REPO="go-task/task"
 gup_fetch_release "${REPO}" 'contains("linux_amd64.tar.gz")'

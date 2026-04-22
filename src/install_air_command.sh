@@ -1,6 +1,8 @@
+set -euo pipefail
+
 APP="air"
 REPO="cosmtrek/air"
 vers=$(gup_get_latest_release "${REPO}")
 
 gup_ensure_go
-go install github.com/cosmtrek/air@${vers}
+go install github.com/cosmtrek/air@"${vers}"

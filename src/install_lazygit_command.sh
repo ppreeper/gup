@@ -1,3 +1,5 @@
+set -euo pipefail
+
 APP="lazygit"
 REPO="jesseduffield/lazygit"
 gup_fetch_release "${REPO}" 'contains("linux_x86_64")'

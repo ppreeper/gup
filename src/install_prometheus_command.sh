@@ -1,3 +1,5 @@
+set -euo pipefail
+
 APP="prometheus"
 REPO="prometheus/prometheus"
 gup_fetch_release "${REPO}" 'contains("linux-amd64.tar.gz")'

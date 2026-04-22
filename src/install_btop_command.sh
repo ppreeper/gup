@@ -1,9 +1,10 @@
 APP="btop"
 REPO="aristocratos/btop"
 RURL="https://api.github.com/repos/${REPO}/releases/latest"
-vers=$(wget -qO- "${RURL}" | jq .tag_name | tr -d '"')
-DL=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains ("x86_64-linux")) | .browser_download_url' | tr -d '"')
-FN=$(wget -qO- "${RURL}" | jq '.assets[] | select(.name | contains ("x86_64-linux")) | .name' | tr -d '"')
+RELEASE_JSON=$(wget -qO- "${RURL}")
+vers=$(echo "${RELEASE_JSON}" | jq .tag_name | tr -d '"')
+DL=$(echo "${RELEASE_JSON}" | jq '.assets[] | select(.name | contains ("x86_64") and contains (".tbz")) | .browser_download_url' | tr -d '"')
+FN=$(echo "${RELEASE_JSON}" | jq '.assets[] | select(.name | contains ("x86_64") and contains (".tbz")) | .name' | tr -d '"')
 
 PREFIX="/usr/local"
 
@@ -14,9 +15,9 @@ function download() {
     rm -f /tmp/"${FN}"
     wget -qO /tmp/"${FN}" "${DL}"
 
-    rm -f /tmp/"${APP}"
+    rm -rf /tmp/"${APP}"
     mkdir -p /tmp/"${APP}"
-    tar -xjf /tmp/"${FN}" -C /tmp/"${APP}" --strip-components=2
+    tar -xjf /tmp/"${FN}" -C /tmp/"${APP}" --strip-components=1
 
     # required directories
     sudo mkdir -p "${PREFIX}/bin"
@@ -27,7 +28,6 @@ function download() {
     sudo mkdir -p "${PREFIX}/share/icons/hicolor/scalable/apps"
 
     # btop binary
-    sudo mkdir -p "${PREFIX}/bin"
     sudo install /tmp/btop/bin/btop "${PREFIX}/bin/btop"
 
     # doc
@@ -44,7 +44,7 @@ function download() {
     sudo cp /tmp/btop/Img/icon.svg "${PREFIX}/share/icons/hicolor/scalable/apps/btop.svg"
 
     # cleanup
-    rm -f /tmp/"${APP}"
+    rm -rf /tmp/"${APP}"
     rm -f /tmp/"${FN}"
 }
 

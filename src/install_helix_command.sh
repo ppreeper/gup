@@ -12,7 +12,7 @@ download() {
     tmp_dir=$(gup_mktemp_dir)
     trap 'rm -rf "${tmp_dir}"' RETURN
 
-    mkdir -p "${IDIR}" "${BDIR}"
+    mkdir -p "${IDIR}"
     touch "${IDIR}/config.toml"
     gup_download "${GUP_REL_DL}" "${tmp_dir}/${GUP_REL_FN}"
     rm -rf "${BDIR:?}"

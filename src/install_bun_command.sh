@@ -1,6 +1,5 @@
 APP="bun"
 REPO="oven-sh/bun"
-BDIR="${HOME}/.bun"
 target="linux-x64"
 gup_fetch_release "${REPO}" 'contains("linux-x64.zip")'
 

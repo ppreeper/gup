@@ -13,13 +13,14 @@ gup_ensure_go() {
 }
 
 # download using curl or wget
+# returns 1 on failure
 gup_download() {
     local url="$1"
     local output="$2"
     if command -v curl >/dev/null 2>&1; then
-        curl -fsSL -o "$output" "$url"
+        curl -fsSL -o "$output" "$url" || return 1
     else
-        wget -qO "$output" "$url"
+        wget -qO "$output" "$url" || return 1
     fi
 }
 
@@ -37,7 +38,7 @@ gup_get_latest_release() {
 
 # create a secure temporary directory
 gup_mktemp_dir() {
-    mktemp -d "${TMPDIR:-/tmp}/gup.XXXXXXXXXX"
+    mktemp -d
 }
 
 # gup_fetch_release repo jq_asset_filter
@@ -52,9 +53,17 @@ gup_fetch_release() {
     else
         GUP_REL_JSON=$(wget -qO- "${api_url}")
     fi
+    if [ -z "${GUP_REL_JSON}" ]; then
+        echo "Error: failed to fetch release info for ${repo}" >&2
+        return 1
+    fi
     GUP_REL_VERSION=$(echo "${GUP_REL_JSON}" | jq -r '.tag_name' | sed 's/^v//')
     GUP_REL_DL=$(echo "${GUP_REL_JSON}" | jq -r ".assets[] | select(.name | ${jq_filter}) | .browser_download_url")
     GUP_REL_FN=$(echo "${GUP_REL_JSON}" | jq -r ".assets[] | select(.name | ${jq_filter}) | .name")
+    if [ -z "${GUP_REL_DL}" ]; then
+        echo "Error: no matching asset found for ${repo} with filter: ${jq_filter}" >&2
+        return 1
+    fi
 }
 
 # _gup_install_binary src_path [dest_name]
@@ -65,8 +74,8 @@ _gup_install_binary() {
     local name="${2:-$(basename "$1")}"
     if [ "$(id -u)" = 0 ]; then
         BDIR="/usr/local/bin"
-        sudo rm -f "${BDIR}/${name}"
-        sudo install "${src}" "${BDIR}/${name}"
+        rm -f "${BDIR}/${name}"
+        install "${src}" "${BDIR}/${name}"
     else
         BDIR="${HOME}/.local/bin"
         rm -f "${BDIR}/${name}"
@@ -83,8 +92,8 @@ _gup_install_binaries() {
     if [ "$(id -u)" = 0 ]; then
         BDIR="/usr/local/bin"
         for name in "$@"; do
-            sudo rm -f "${BDIR}/${name}"
-            sudo install "${src_dir}/${name}" "${BDIR}/${name}"
+            rm -f "${BDIR}/${name}"
+            install "${src_dir}/${name}" "${BDIR}/${name}"
         done
     else
         BDIR="${HOME}/.local/bin"

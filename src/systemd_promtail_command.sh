@@ -1,5 +1,10 @@
-function servicefile() {
-cat <<-_EOF_ | sudo tee /etc/systemd/system/promtail.service > /dev/null
+if [ "$(id -u)" -ne 0 ]; then
+    echo "Error: promtail systemd service requires root privileges" >&2
+    exit 1
+fi
+
+servicefile() {
+cat <<-_EOF_ | tee /etc/systemd/system/promtail.service > /dev/null
 [Unit]
 Description=Promtail service
 After=network.target
@@ -15,4 +20,4 @@ _EOF_
 }
 
 servicefile
-sudo systemctl daemon-reload
+systemctl daemon-reload

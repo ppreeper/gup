@@ -1,4 +1,4 @@
-if [ "$(id -u)" != 0 ]; then
+if [ "$(id -u)" -ne 0 ]; then
     echo "Error: vagrant requires root privileges for apt-based install" >&2
     exit 1
 fi

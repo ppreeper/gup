@@ -2052,13 +2052,14 @@ gup_ensure_go() {
 }
 
 # download using curl or wget
+# returns 1 on failure
 gup_download() {
 		local url="$1"
 		local output="$2"
 		if command -v curl >/dev/null 2>&1; then
-				curl -fsSL -o "$output" "$url"
+				curl -fsSL -o "$output" "$url" || return 1
 		else
-				wget -qO "$output" "$url"
+				wget -qO "$output" "$url" || return 1
 		fi
 }
 
@@ -2076,7 +2077,7 @@ gup_get_latest_release() {
 
 # create a secure temporary directory
 gup_mktemp_dir() {
-		mktemp -d "${TMPDIR:-/tmp}/gup.XXXXXXXXXX"
+		mktemp -d
 }
 
 # gup_fetch_release repo jq_asset_filter
@@ -2091,9 +2092,17 @@ gup_fetch_release() {
 		else
 				GUP_REL_JSON=$(wget -qO- "${api_url}")
 		fi
+		if [ -z "${GUP_REL_JSON}" ]; then
+				echo "Error: failed to fetch release info for ${repo}" >&2
+				return 1
+		fi
 		GUP_REL_VERSION=$(echo "${GUP_REL_JSON}" | jq -r '.tag_name' | sed 's/^v//')
 		GUP_REL_DL=$(echo "${GUP_REL_JSON}" | jq -r ".assets[] | select(.name | ${jq_filter}) | .browser_download_url")
 		GUP_REL_FN=$(echo "${GUP_REL_JSON}" | jq -r ".assets[] | select(.name | ${jq_filter}) | .name")
+		if [ -z "${GUP_REL_DL}" ]; then
+				echo "Error: no matching asset found for ${repo} with filter: ${jq_filter}" >&2
+				return 1
+		fi
 }
 
 # _gup_install_binary src_path [dest_name]
@@ -2104,8 +2113,8 @@ _gup_install_binary() {
 		local name="${2:-$(basename "$1")}"
 		if [ "$(id -u)" = 0 ]; then
 				BDIR="/usr/local/bin"
-				sudo rm -f "${BDIR}/${name}"
-				sudo install "${src}" "${BDIR}/${name}"
+				rm -f "${BDIR}/${name}"
+				install "${src}" "${BDIR}/${name}"
 		else
 				BDIR="${HOME}/.local/bin"
 				rm -f "${BDIR}/${name}"
@@ -2122,8 +2131,8 @@ _gup_install_binaries() {
 		if [ "$(id -u)" = 0 ]; then
 				BDIR="/usr/local/bin"
 				for name in "$@"; do
-						sudo rm -f "${BDIR}/${name}"
-						sudo install "${src_dir}/${name}" "${BDIR}/${name}"
+						rm -f "${BDIR}/${name}"
+						install "${src_dir}/${name}" "${BDIR}/${name}"
 				done
 		else
 				BDIR="${HOME}/.local/bin"
@@ -2163,8 +2172,8 @@ gup_install_gup_command() {
 
 	if [ "$(id -u)" = 0 ]; then
 			IDIR="/usr/local/bin"
-			sudo mkdir -p "${IDIR}"
-			sudo wget -q "${REPO}/main/gup" -O "${IDIR}/gup"
+			mkdir -p "${IDIR}"
+			wget -q "${REPO}/main/gup" -O "${IDIR}/gup"
 			chmod +x "${IDIR}/gup"
 	else
 			IDIR="${HOME}/.local/bin"
@@ -2181,7 +2190,7 @@ gup_install_update_command() {
 	# src/install_update_command.sh
 	if [ "$(id -u)" = 0 ]; then
 			IDIR="/usr/local/bin"
-			sudo mkdir -p "${IDIR}"
+			mkdir -p "${IDIR}"
 	else
 			IDIR="${HOME}/.local/bin"
 			mkdir -p "${IDIR}"
@@ -2206,7 +2215,7 @@ gup_install_go_command() {
 	IDIR=/usr/local/lib
 	BDIR=/usr/local/bin
 
-	if [ "$(id -u)" != 0 ]; then
+	if [ "$(id -u)" -ne 0 ]; then
 			echo "Error: ${APP} requires root privileges for system-wide install" >&2
 			exit 1
 	fi
@@ -2223,8 +2232,9 @@ gup_install_go_command() {
 
 			FN="${vers}.linux-amd64.tar.gz"
 			gup_download "${DLREPO}/${FN}" "${tmp_dir}/${FN}"
+			tar axf "${tmp_dir}/${FN}" -C "${tmp_dir}"
 			rm -rf "${IDIR}/go"
-			tar axf "${tmp_dir}/${FN}" -C "${IDIR}"
+			mv "${tmp_dir}/go" "${IDIR}/go"
 			find "${IDIR}/go/bin" -type f -exec sh -c 'ln -sf "$1" "${BDIR}/$(basename "$1")"' _ {} +
 	}
 
@@ -2300,13 +2310,18 @@ gup_install_nodejs_command() {
 
 	# src/install_nodejs_command.sh
 	target="linux-x64.tar.xz"
-	node_version="$(wget -qO- https://nodejs.org/download/release/index.tab | awk '{print $10,$1}' | grep -v "^-" | awk '{print $2}' | grep -v "^version" | sort -V | tail -1)"
-	node_uri="https://nodejs.org/dist/${node_version}/node-${node_version}-${target}"
-
-	echo "installing ${node_version}"
 
 	tmp_dir=$(gup_mktemp_dir)
 	trap 'rm -rf "${tmp_dir}"' RETURN
+
+	if command -v curl >/dev/null 2>&1; then
+			node_version="$(curl -fsSL https://nodejs.org/download/release/index.tab | awk '{print $10,$1}' | grep -v "^-" | awk '{print $2}' | grep -v "^version" | sort -V | tail -1)"
+	else
+			node_version="$(wget -qO- https://nodejs.org/download/release/index.tab | awk '{print $10,$1}' | grep -v "^-" | awk '{print $2}' | grep -v "^version" | sort -V | tail -1)"
+	fi
+	node_uri="https://nodejs.org/dist/${node_version}/node-${node_version}-${target}"
+
+	echo "installing ${node_version}"
 
 	gup_download "${node_uri}" "${tmp_dir}/node-${target}"
 
@@ -2388,7 +2403,6 @@ gup_install_bun_command() {
 	# src/install_bun_command.sh
 	APP="bun"
 	REPO="oven-sh/bun"
-	BDIR="${HOME}/.bun"
 	target="linux-x64"
 	gup_fetch_release "${REPO}" 'contains("linux-x64.zip")'
 
@@ -2500,7 +2514,7 @@ gup_install_zig_command() {
 	IDIR=/usr/local/lib
 	BDIR=/usr/local/bin
 
-	if [ "$(id -u)" != 0 ]; then
+	if [ "$(id -u)" -ne 0 ]; then
 			echo "Error: ${APP} requires root privileges for system-wide install" >&2
 			exit 1
 	fi
@@ -2888,7 +2902,7 @@ gup_install_helix_command() {
 			tmp_dir=$(gup_mktemp_dir)
 			trap 'rm -rf "${tmp_dir}"' RETURN
 
-			mkdir -p "${IDIR}" "${BDIR}"
+			mkdir -p "${IDIR}"
 			touch "${IDIR}/config.toml"
 			gup_download "${GUP_REL_DL}" "${tmp_dir}/${GUP_REL_FN}"
 			rm -rf "${BDIR:?}"
@@ -2948,7 +2962,7 @@ gup_install_prometheus_command() {
 gup_install_grafana_command() {
 
 	# src/install_grafana_command.sh
-	if [ "$(id -u)" != 0 ]; then
+	if [ "$(id -u)" -ne 0 ]; then
 			echo "Error: grafana requires root privileges for apt-based install" >&2
 			exit 1
 	fi
@@ -3379,7 +3393,7 @@ gup_install_etcd_command() {
 gup_install_vagrant_command() {
 
 	# src/install_vagrant_command.sh
-	if [ "$(id -u)" != 0 ]; then
+	if [ "$(id -u)" -ne 0 ]; then
 			echo "Error: vagrant requires root privileges for apt-based install" >&2
 			exit 1
 	fi
@@ -3410,13 +3424,12 @@ gup_install_doctl_command() {
 			gup_download "${GUP_REL_DL}" "${tmp_dir}/${GUP_REL_FN}"
 			if [ "$(id -u)" = 0 ]; then
 					BDIR="/usr/local/bin"
-					sudo tar -axf "${tmp_dir}/${GUP_REL_FN}" -C "${BDIR}" "${APP}"
-					sudo chmod +x "${BDIR}/${APP}"
 			else
 					BDIR="${HOME}/.local/bin"
-					tar -axf "${tmp_dir}/${GUP_REL_FN}" -C "${BDIR}" "${APP}"
-					chmod +x "${BDIR}/${APP}"
+					mkdir -p "${BDIR}"
 			fi
+			tar -axf "${tmp_dir}/${GUP_REL_FN}" -C "${BDIR}" "${APP}"
+			chmod +x "${BDIR}/${APP}"
 	}
 
 	if [ -z "$(command -v "${APP}")" ]; then
@@ -3622,11 +3635,12 @@ gup_install_hugo_command() {
 			gup_download "${GUP_REL_DL}" "${tmp_dir}/${GUP_REL_FN}"
 			if [ "$(id -u)" = 0 ]; then
 					BDIR="/usr/local/bin"
-					sudo tar -axf "${tmp_dir}/${GUP_REL_FN}" -C "${BDIR}" "${APP}"
 			else
 					BDIR="${HOME}/.local/bin"
-					tar -axf "${tmp_dir}/${GUP_REL_FN}" -C "${BDIR}" "${APP}"
+					mkdir -p "${BDIR}"
 			fi
+			tar -axf "${tmp_dir}/${GUP_REL_FN}" -C "${BDIR}" "${APP}"
+			chmod +x "${BDIR}/${APP}"
 	}
 
 	if [ -z "$(command -v "${APP}")" ]; then
@@ -4086,9 +4100,10 @@ gup_install_nerdfonts_command() {
 
 	download() {
 			echo "installing $1 font"
-			local DL
-			DL=$(echo "${GUP_REL_JSON}" | jq -r '.assets[] | select(.name | contains("tar.xz")) | .browser_download_url' | grep "$1")
-			for font in ${DL}; do
+			local dl_urls
+			dl_urls=$(echo "${GUP_REL_JSON}" | jq -r '.assets[] | select(.name | contains("tar.xz")) | .browser_download_url' | grep "$1")
+			while IFS= read -r font; do
+					[ -z "${font}" ] && continue
 					local tmp_dir
 					tmp_dir=$(gup_mktemp_dir)
 					trap 'rm -rf "${tmp_dir}"' RETURN
@@ -4096,14 +4111,15 @@ gup_install_nerdfonts_command() {
 					gup_download "${font}" "${tmp_dir}/font.tar.xz"
 					mkdir -p "${FONTDIR}"
 					tar -xf "${tmp_dir}/font.tar.xz" -C "${FONTDIR}" --wildcards "*ttf"
-			done
+			done <<< "${dl_urls}"
 	}
 
 	gup_fetch_release "${REPO}" 'contains("tar.xz")'
 	fonts="${args[font]}"
-	for font in ${fonts}; do
-		download "$font"
-	done
+	while IFS= read -r font; do
+			[ -z "${font}" ] && continue
+			download "$font"
+	done <<< "${fonts}"
 
 }
 
@@ -4111,7 +4127,7 @@ gup_install_nerdfonts_command() {
 gup_remove_neovim_command() {
 
 	# src/remove_neovim_command.sh
-	rm -rf "${HOME}/.local/nvim" "${HOME}/.local/share/nvim" "${HOME}/.local/state/nvim" "${HOME}/.cache/nvim" "${HOME}/.config/nvim" "${HOME}/.local/bin/nvim"
+	rm -rf "${HOME:?}/.local/nvim" "${HOME:?}/.local/share/nvim" "${HOME:?}/.local/state/nvim" "${HOME:?}/.cache/nvim" "${HOME:?}/.config/nvim" "${HOME:?}/.local/bin/nvim"
 
 }
 
@@ -4119,8 +4135,13 @@ gup_remove_neovim_command() {
 gup_systemd_loki_command() {
 
 	# src/systemd_loki_command.sh
-	function servicefile() {
-	cat <<-_EOF_ | sudo tee /etc/systemd/system/loki.service > /dev/null
+	if [ "$(id -u)" -ne 0 ]; then
+			echo "Error: loki systemd service requires root privileges" >&2
+			exit 1
+	fi
+
+	servicefile() {
+	cat <<-_EOF_ | tee /etc/systemd/system/loki.service > /dev/null
 [Unit]
 Description=Loki service
 After=network.target
@@ -4136,15 +4157,21 @@ _EOF_
 	}
 
 	servicefile
-	sudo systemctl daemon-reload
+	systemctl daemon-reload
+
 }
 
 # :command.function
 gup_systemd_promtail_command() {
 
 	# src/systemd_promtail_command.sh
-	function servicefile() {
-	cat <<-_EOF_ | sudo tee /etc/systemd/system/promtail.service > /dev/null
+	if [ "$(id -u)" -ne 0 ]; then
+			echo "Error: promtail systemd service requires root privileges" >&2
+			exit 1
+	fi
+
+	servicefile() {
+	cat <<-_EOF_ | tee /etc/systemd/system/promtail.service > /dev/null
 [Unit]
 Description=Promtail service
 After=network.target
@@ -4160,7 +4187,8 @@ _EOF_
 	}
 
 	servicefile
-	sudo systemctl daemon-reload
+	systemctl daemon-reload
+
 }
 
 # :command.parse_requirements
@@ -8683,6 +8711,8 @@ initialize() {
 	set -e
 
 	# src/initialize.sh
+	set -euo pipefail
+
 	# default prefix (can be overridden)
 	: "${GUP_PREFIX:=${HOME}/.local}"
 
@@ -8690,7 +8720,6 @@ initialize() {
 			local missing_deps=()
 			for dep in git wget jq tar unzip; do
 					if ! command -v "$dep" >/dev/null 2>&1; then
-							echo "$dep"
 							missing_deps+=("$dep")
 					fi
 			done
@@ -8701,6 +8730,7 @@ initialize() {
 			fi
 	}
 	gup_ensure_deps
+
 }
 
 # :command.run

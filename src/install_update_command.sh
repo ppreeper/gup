@@ -1,6 +1,6 @@
 if [ "$(id -u)" = 0 ]; then
     IDIR="/usr/local/bin"
-    sudo mkdir -p "${IDIR}"
+    mkdir -p "${IDIR}"
 else
     IDIR="${HOME}/.local/bin"
     mkdir -p "${IDIR}"

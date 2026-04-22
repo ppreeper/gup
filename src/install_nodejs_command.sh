@@ -1,11 +1,16 @@
 target="linux-x64.tar.xz"
-node_version="$(wget -qO- https://nodejs.org/download/release/index.tab | awk '{print $10,$1}' | grep -v "^-" | awk '{print $2}' | grep -v "^version" | sort -V | tail -1)"
-node_uri="https://nodejs.org/dist/${node_version}/node-${node_version}-${target}"
-
-echo "installing ${node_version}"
 
 tmp_dir=$(gup_mktemp_dir)
 trap 'rm -rf "${tmp_dir}"' RETURN
+
+if command -v curl >/dev/null 2>&1; then
+    node_version="$(curl -fsSL https://nodejs.org/download/release/index.tab | awk '{print $10,$1}' | grep -v "^-" | awk '{print $2}' | grep -v "^version" | sort -V | tail -1)"
+else
+    node_version="$(wget -qO- https://nodejs.org/download/release/index.tab | awk '{print $10,$1}' | grep -v "^-" | awk '{print $2}' | grep -v "^version" | sort -V | tail -1)"
+fi
+node_uri="https://nodejs.org/dist/${node_version}/node-${node_version}-${target}"
+
+echo "installing ${node_version}"
 
 gup_download "${node_uri}" "${tmp_dir}/node-${target}"
 

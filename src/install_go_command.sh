@@ -4,7 +4,7 @@ DLREPO="https://dl.google.com/go"
 IDIR=/usr/local/lib
 BDIR=/usr/local/bin
 
-if [ "$(id -u)" != 0 ]; then
+if [ "$(id -u)" -ne 0 ]; then
     echo "Error: ${APP} requires root privileges for system-wide install" >&2
     exit 1
 fi
@@ -21,8 +21,9 @@ download() {
 
     FN="${vers}.linux-amd64.tar.gz"
     gup_download "${DLREPO}/${FN}" "${tmp_dir}/${FN}"
+    tar axf "${tmp_dir}/${FN}" -C "${tmp_dir}"
     rm -rf "${IDIR}/go"
-    tar axf "${tmp_dir}/${FN}" -C "${IDIR}"
+    mv "${tmp_dir}/go" "${IDIR}/go"
     find "${IDIR}/go/bin" -type f -exec sh -c 'ln -sf "$1" "${BDIR}/$(basename "$1")"' _ {} +
 }
 

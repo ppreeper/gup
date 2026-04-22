@@ -27,9 +27,12 @@ download() {
 
     gup_download "${GUP_REL_DL}" "${tmp_dir}/${GUP_REL_FN}"
     _gup_extract_zip "${tmp_dir}/${GUP_REL_FN}" "${tmp_dir}"
-    install "${tmp_dir}/${APP}-${target}/${APP}" "${BDIR}/bin/${APP}"
-    cd "${BDIR}/bin"
-    ln -f -s bun bunx
+    if [ "$(id -u)" = 0 ]; then
+        sudo install "${tmp_dir}/${APP}-${target}/${APP}" "${BDIR}/bin/${APP}"
+    else
+        install "${tmp_dir}/${APP}-${target}/${APP}" "${BDIR}/bin/${APP}"
+    fi
+    ln -f -s "${BDIR}/bin/bun" "${BDIR}/bin/bunx"
 }
 
 if [ -z "$(command -v "${APP}")" ]; then

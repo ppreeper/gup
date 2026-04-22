@@ -17,7 +17,7 @@ download() {
 if [ -z "$(command -v "${APP}")" ]; then
     download new
 else
-    APPVER=$($(command -v "${APP}") --version)
+    APPVER=$($(command -v "${APP}") --version 2>&1)
     if [ "${APPVER}" = "${GUP_REL_VERSION}" ]; then
         echo "${APP} version is current"
     else

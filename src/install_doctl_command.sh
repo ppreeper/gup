@@ -14,11 +14,12 @@ download() {
     if [ "$(id -u)" = 0 ]; then
         BDIR="/usr/local/bin"
         sudo tar -axf "${tmp_dir}/${GUP_REL_FN}" -C "${BDIR}" "${APP}"
+        sudo chmod +x "${BDIR}/${APP}"
     else
         BDIR="${HOME}/.local/bin"
         tar -axf "${tmp_dir}/${GUP_REL_FN}" -C "${BDIR}" "${APP}"
+        chmod +x "${BDIR}/${APP}"
     fi
-    chmod +x "${BDIR}/${APP}"
 }
 
 if [ -z "$(command -v "${APP}")" ]; then

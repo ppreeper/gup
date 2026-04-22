@@ -15,7 +15,8 @@ download() {
     mkdir -p "${IDIR}" "${BDIR}"
     touch "${IDIR}/config.toml"
     gup_download "${GUP_REL_DL}" "${tmp_dir}/${GUP_REL_FN}"
-    rm -rf "${BDIR:?}"/*
+    rm -rf "${BDIR:?}"
+    mkdir -p "${BDIR}"
     tar axf "${tmp_dir}/${GUP_REL_FN}" --strip-components=1 -C "${BDIR}"
     ln -sf "${BDIR}/hx" "${HOME}/.local/bin/hx"
 }

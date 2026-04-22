@@ -13,7 +13,7 @@ download() {
     gup_download "${GUP_REL_DL}" "${tmp_dir}/${GUP_REL_FN}"
     if [ "$(id -u)" = 0 ]; then
         BDIR="/usr/local/bin"
-        tar -axf "${tmp_dir}/${GUP_REL_FN}" -C "${BDIR}" "${APP}"
+        sudo tar -axf "${tmp_dir}/${GUP_REL_FN}" -C "${BDIR}" "${APP}"
     else
         BDIR="${HOME}/.local/bin"
         tar -axf "${tmp_dir}/${GUP_REL_FN}" -C "${BDIR}" "${APP}"

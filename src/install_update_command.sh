@@ -1,6 +1,14 @@
-cat <<-_EOF_ | sudo tee /usr/local/bin/update > /dev/null
+if [ "$(id -u)" = 0 ]; then
+    IDIR="/usr/local/bin"
+    sudo mkdir -p "${IDIR}"
+else
+    IDIR="${HOME}/.local/bin"
+    mkdir -p "${IDIR}"
+fi
+
+cat <<-_EOF_ > "${IDIR}/update"
 #!/bin/bash
-sudo bash -c "apt update -y && apt full-upgrade -y && apt autoremove -y && apt autoclean -y"
+apt update -y && apt full-upgrade -y && apt autoremove -y && apt autoclean -y
 _EOF_
 
-sudo chmod +x /usr/local/bin/update
+chmod +x "${IDIR}/update"

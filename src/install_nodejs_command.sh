@@ -2,20 +2,40 @@ target="linux-x64.tar.xz"
 node_version="$(wget -qO- https://nodejs.org/download/release/index.tab | awk '{print $10,$1}' | grep -v "^-" | awk '{print $2}' | grep -v "^version" | sort -V | tail -1)"
 node_uri="https://nodejs.org/dist/${node_version}/node-${node_version}-${target}"
 
-local_tmp_dir=$(gup_mktemp_dir)
-trap 'rm -rf "${local_tmp_dir}"' RETURN
+echo "installing ${node_version}"
 
-sudo mkdir -p /usr/local/share/node
-sudo rm -rf /usr/local/share/node/*
+tmp_dir=$(gup_mktemp_dir)
+trap 'rm -rf "${tmp_dir}"' RETURN
 
-wget -qO "${local_tmp_dir}/node-${target}" "${node_uri}"
-sudo tar axf "${local_tmp_dir}/node-${target}" --strip-components=1 -C /usr/local/share/node
+gup_download "${node_uri}" "${tmp_dir}/node-${target}"
 
-sudo rm -f /usr/local/bin/node
-sudo ln -s /usr/local/share/node/bin/node /usr/local/bin/node
-sudo rm -f /usr/local/bin/npm
-sudo ln -s /usr/local/share/node/bin/npm /usr/local/bin/npm
-sudo rm -f /usr/local/bin/npx
-sudo ln -s /usr/local/share/node/bin/npx /usr/local/bin/npx
-sudo rm -f /usr/local/bin/corepack
-sudo ln -s /usr/local/share/node/bin/corepack /usr/local/bin/corepack
+if [ "$(id -u)" = 0 ]; then
+    IDIR="/usr/local/share/node"
+    BDIR="/usr/local/bin"
+    sudo rm -rf "${IDIR}"
+    sudo mkdir -p "${IDIR}"
+    sudo tar axf "${tmp_dir}/node-${target}" --strip-components=1 -C "${IDIR}"
+    sudo rm -f "${BDIR}/node"
+    sudo ln -s "${IDIR}/bin/node" "${BDIR}/node"
+    sudo rm -f "${BDIR}/npm"
+    sudo ln -s "${IDIR}/bin/npm" "${BDIR}/npm"
+    sudo rm -f "${BDIR}/npx"
+    sudo ln -s "${IDIR}/bin/npx" "${BDIR}/npx"
+    sudo rm -f "${BDIR}/corepack"
+    sudo ln -s "${IDIR}/bin/corepack" "${BDIR}/corepack"
+else
+    IDIR="${HOME}/.local/share/node"
+    BDIR="${HOME}/.local/bin"
+    mkdir -p "${BDIR}"
+    rm -rf "${IDIR}"
+    mkdir -p "${IDIR}"
+    tar axf "${tmp_dir}/node-${target}" --strip-components=1 -C "${IDIR}"
+    rm -f "${BDIR}/node"
+    ln -s "${IDIR}/bin/node" "${BDIR}/node"
+    rm -f "${BDIR}/npm"
+    ln -s "${IDIR}/bin/npm" "${BDIR}/npm"
+    rm -f "${BDIR}/npx"
+    ln -s "${IDIR}/bin/npx" "${BDIR}/npx"
+    rm -f "${BDIR}/corepack"
+    ln -s "${IDIR}/bin/corepack" "${BDIR}/corepack"
+fi

@@ -12,9 +12,7 @@ download() {
 
     gup_download "${GUP_REL_DL}" "${tmp_dir}/${GUP_REL_FN}"
     _gup_extract_tarball "${tmp_dir}/${GUP_REL_FN}" "${tmp_dir}/${APP}"
-    BDIR="/usr/local/bin"
-    sudo rm -f "${BDIR}/zls"
-    sudo install "${tmp_dir}/${APP}/zls" "${BDIR}/zls"
+    _gup_install_binary "${tmp_dir}/${APP}/zls"
 }
 
 if [ -z "$(command -v "${APP}")" ]; then

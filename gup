@@ -2046,7 +2046,7 @@ gup_ensure_go() {
 		done
 
 		if [ ${#missing_deps[@]} -ne 0 ]; then
-				echo "Missing go: please install Go \`gup install go\`" >&2
+				echo "Missing go: please install Go (run 'gup install go')" >&2
 				exit 1
 		fi
 }
@@ -2163,10 +2163,12 @@ gup_install_gup_command() {
 
 	if [ "$(id -u)" = 0 ]; then
 			IDIR="/usr/local/bin"
+			sudo mkdir -p "${IDIR}"
 			sudo wget -q "${REPO}/main/gup" -O "${IDIR}/gup"
 			chmod +x "${IDIR}/gup"
 	else
 			IDIR="${HOME}/.local/bin"
+			mkdir -p "${IDIR}"
 			wget -q "${REPO}/main/gup" -O "${IDIR}/gup"
 			chmod +x "${IDIR}/gup"
 	fi
@@ -2177,12 +2179,21 @@ gup_install_gup_command() {
 gup_install_update_command() {
 
 	# src/install_update_command.sh
-	cat <<-_EOF_ | sudo tee /usr/local/bin/update > /dev/null
+	if [ "$(id -u)" = 0 ]; then
+			IDIR="/usr/local/bin"
+			sudo mkdir -p "${IDIR}"
+	else
+			IDIR="${HOME}/.local/bin"
+			mkdir -p "${IDIR}"
+	fi
+
+	cat <<-_EOF_ > "${IDIR}/update"
 #!/bin/bash
-sudo bash -c "apt update -y && apt full-upgrade -y && apt autoremove -y && apt autoclean -y"
+apt update -y && apt full-upgrade -y && apt autoremove -y && apt autoclean -y
 _EOF_
 
-	sudo chmod +x /usr/local/bin/update
+	chmod +x "${IDIR}/update"
+
 }
 
 # :command.function
@@ -2207,7 +2218,6 @@ gup_install_go_command() {
 
 			FN="${vers}.linux-amd64.tar.gz"
 			gup_download "${DLREPO}/${FN}" "${tmp_dir}/${FN}"
-			find "${IDIR}/go/bin" -type f -exec rm -f {} + 2>/dev/null
 			sudo rm -rf "${IDIR}/go"
 			sudo tar axf "${tmp_dir}/${FN}" -C "${IDIR}"
 			find "${IDIR}/go/bin" -type f -exec sh -c 'sudo ln -sf "$1" "${BDIR}/$(basename "$1")"' _ {} +
@@ -2288,23 +2298,43 @@ gup_install_nodejs_command() {
 	node_version="$(wget -qO- https://nodejs.org/download/release/index.tab | awk '{print $10,$1}' | grep -v "^-" | awk '{print $2}' | grep -v "^version" | sort -V | tail -1)"
 	node_uri="https://nodejs.org/dist/${node_version}/node-${node_version}-${target}"
 
-	local_tmp_dir=$(gup_mktemp_dir)
-	trap 'rm -rf "${local_tmp_dir}"' RETURN
+	echo "installing ${node_version}"
 
-	sudo mkdir -p /usr/local/share/node
-	sudo rm -rf /usr/local/share/node/*
+	tmp_dir=$(gup_mktemp_dir)
+	trap 'rm -rf "${tmp_dir}"' RETURN
 
-	wget -qO "${local_tmp_dir}/node-${target}" "${node_uri}"
-	sudo tar axf "${local_tmp_dir}/node-${target}" --strip-components=1 -C /usr/local/share/node
+	gup_download "${node_uri}" "${tmp_dir}/node-${target}"
 
-	sudo rm -f /usr/local/bin/node
-	sudo ln -s /usr/local/share/node/bin/node /usr/local/bin/node
-	sudo rm -f /usr/local/bin/npm
-	sudo ln -s /usr/local/share/node/bin/npm /usr/local/bin/npm
-	sudo rm -f /usr/local/bin/npx
-	sudo ln -s /usr/local/share/node/bin/npx /usr/local/bin/npx
-	sudo rm -f /usr/local/bin/corepack
-	sudo ln -s /usr/local/share/node/bin/corepack /usr/local/bin/corepack
+	if [ "$(id -u)" = 0 ]; then
+			IDIR="/usr/local/share/node"
+			BDIR="/usr/local/bin"
+			sudo rm -rf "${IDIR}"
+			sudo mkdir -p "${IDIR}"
+			sudo tar axf "${tmp_dir}/node-${target}" --strip-components=1 -C "${IDIR}"
+			sudo rm -f "${BDIR}/node"
+			sudo ln -s "${IDIR}/bin/node" "${BDIR}/node"
+			sudo rm -f "${BDIR}/npm"
+			sudo ln -s "${IDIR}/bin/npm" "${BDIR}/npm"
+			sudo rm -f "${BDIR}/npx"
+			sudo ln -s "${IDIR}/bin/npx" "${BDIR}/npx"
+			sudo rm -f "${BDIR}/corepack"
+			sudo ln -s "${IDIR}/bin/corepack" "${BDIR}/corepack"
+	else
+			IDIR="${HOME}/.local/share/node"
+			BDIR="${HOME}/.local/bin"
+			mkdir -p "${BDIR}"
+			rm -rf "${IDIR}"
+			mkdir -p "${IDIR}"
+			tar axf "${tmp_dir}/node-${target}" --strip-components=1 -C "${IDIR}"
+			rm -f "${BDIR}/node"
+			ln -s "${IDIR}/bin/node" "${BDIR}/node"
+			rm -f "${BDIR}/npm"
+			ln -s "${IDIR}/bin/npm" "${BDIR}/npm"
+			rm -f "${BDIR}/npx"
+			ln -s "${IDIR}/bin/npx" "${BDIR}/npx"
+			rm -f "${BDIR}/corepack"
+			ln -s "${IDIR}/bin/corepack" "${BDIR}/corepack"
+	fi
 
 }
 
@@ -2329,15 +2359,21 @@ gup_install_nvm_command() {
 gup_install_deno_command() {
 
 	# src/install_deno_command.sh
+	APP="deno"
 	target="x86_64-unknown-linux-gnu"
+
 	deno_version="$(wget -qO- https://dl.deno.land/release-latest.txt)"
 	deno_uri="https://dl.deno.land/release/${deno_version}/deno-${target}.zip"
 
-	local_tmp_dir=$(gup_mktemp_dir)
-	trap 'rm -rf "${local_tmp_dir}"' RETURN
+	echo "installing ${deno_version}"
 
-	wget -qO "${local_tmp_dir}/deno.zip" "${deno_uri}"
-	sudo unzip -d /usr/local/bin -o "${local_tmp_dir}/deno.zip"
+	tmp_dir=$(gup_mktemp_dir)
+	trap 'rm -rf "${tmp_dir}"' RETURN
+
+	gup_download "${deno_uri}" "${tmp_dir}/deno.zip"
+	unzip -d "${tmp_dir}" -o "${tmp_dir}/deno.zip"
+	chmod +x "${tmp_dir}/deno"
+	_gup_install_binary "${tmp_dir}/deno"
 
 }
 
@@ -2374,9 +2410,12 @@ gup_install_bun_command() {
 
 			gup_download "${GUP_REL_DL}" "${tmp_dir}/${GUP_REL_FN}"
 			_gup_extract_zip "${tmp_dir}/${GUP_REL_FN}" "${tmp_dir}"
-			install "${tmp_dir}/${APP}-${target}/${APP}" "${BDIR}/bin/${APP}"
-			cd "${BDIR}/bin"
-			ln -f -s bun bunx
+			if [ "$(id -u)" = 0 ]; then
+					sudo install "${tmp_dir}/${APP}-${target}/${APP}" "${BDIR}/bin/${APP}"
+			else
+					install "${tmp_dir}/${APP}-${target}/${APP}" "${BDIR}/bin/${APP}"
+			fi
+			ln -f -s "${BDIR}/bin/bun" "${BDIR}/bin/bunx"
 	}
 
 	if [ -z "$(command -v "${APP}")" ]; then
@@ -2767,9 +2806,7 @@ gup_install_zls_command() {
 
 			gup_download "${GUP_REL_DL}" "${tmp_dir}/${GUP_REL_FN}"
 			_gup_extract_tarball "${tmp_dir}/${GUP_REL_FN}" "${tmp_dir}/${APP}"
-			BDIR="/usr/local/bin"
-			sudo rm -f "${BDIR}/zls"
-			sudo install "${tmp_dir}/${APP}/zls" "${BDIR}/zls"
+			_gup_install_binary "${tmp_dir}/${APP}/zls"
 	}
 
 	if [ -z "$(command -v "${APP}")" ]; then
@@ -2844,7 +2881,8 @@ gup_install_helix_command() {
 			mkdir -p "${IDIR}" "${BDIR}"
 			touch "${IDIR}/config.toml"
 			gup_download "${GUP_REL_DL}" "${tmp_dir}/${GUP_REL_FN}"
-			rm -rf "${BDIR:?}"/*
+			rm -rf "${BDIR:?}"
+			mkdir -p "${BDIR}"
 			tar axf "${tmp_dir}/${GUP_REL_FN}" --strip-components=1 -C "${BDIR}"
 			ln -sf "${BDIR}/hx" "${HOME}/.local/bin/hx"
 	}
@@ -3123,7 +3161,7 @@ gup_install_btop_command() {
 	if [ -z "$(command -v "${APP}")" ]; then
 			download new
 	else
-			APPVER=$($(command -v "${APP}") --version | grep "^btop version:" | awk -F':' '{print $2}' | sed -E 's/\x1B\[[0-9;]*[a-zA-Z]//g' | awk '{$1=$1; print}')
+			APPVER=$($(command -v "${APP}") --version 2>&1 | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')
 			if [ "${APPVER}" = "${GUP_REL_VERSION}" ]; then
 					echo "${APP} version is current"
 			else
@@ -3205,9 +3243,17 @@ gup_install_lazydocker_command() {
 gup_install_minikube_command() {
 
 	# src/install_minikube_command.sh
-	curl -LO "https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64"
-	sudo install minikube-linux-amd64 /usr/local/bin/minikube
-	rm -f minikube-linux-amd64
+	APP="minikube"
+	DL="https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64"
+
+	echo "installing latest ${APP}"
+
+	tmp_dir=$(gup_mktemp_dir)
+	trap 'rm -rf "${tmp_dir}"' RETURN
+
+	gup_download "${DL}" "${tmp_dir}/${APP}"
+	chmod +x "${tmp_dir}/${APP}"
+	_gup_install_binary "${tmp_dir}/${APP}"
 
 }
 
@@ -3215,11 +3261,18 @@ gup_install_minikube_command() {
 gup_install_kubectl_command() {
 
 	# src/install_kubectl_command.sh
-	local_tmp_dir=$(gup_mktemp_dir)
-	trap 'rm -rf "${local_tmp_dir}"' RETURN
+	APP="kubectl"
+	STABLE_URL="https://storage.googleapis.com/kubernetes-release/release/stable.txt"
+	BASE_URL="https://storage.googleapis.com/kubernetes-release/release"
 
-	curl -Lo "${local_tmp_dir}/kubectl" "https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl"
-	sudo install "${local_tmp_dir}/kubectl" /usr/local/bin
+	tmp_dir=$(gup_mktemp_dir)
+	trap 'rm -rf "${tmp_dir}"' RETURN
+
+	gup_download "${STABLE_URL}" "${tmp_dir}/stable.txt"
+	stable=$(cat "${tmp_dir}/stable.txt")
+	gup_download "${BASE_URL}/${stable}/bin/linux/amd64/kubectl" "${tmp_dir}/${APP}"
+	chmod +x "${tmp_dir}/${APP}"
+	_gup_install_binary "${tmp_dir}/${APP}"
 
 }
 
@@ -3322,11 +3375,12 @@ gup_install_doctl_command() {
 			if [ "$(id -u)" = 0 ]; then
 					BDIR="/usr/local/bin"
 					sudo tar -axf "${tmp_dir}/${GUP_REL_FN}" -C "${BDIR}" "${APP}"
+					sudo chmod +x "${BDIR}/${APP}"
 			else
 					BDIR="${HOME}/.local/bin"
 					tar -axf "${tmp_dir}/${GUP_REL_FN}" -C "${BDIR}" "${APP}"
+					chmod +x "${BDIR}/${APP}"
 			fi
-			chmod +x "${BDIR}/${APP}"
 	}
 
 	if [ -z "$(command -v "${APP}")" ]; then
@@ -3515,7 +3569,7 @@ gup_install_hugo_command() {
 			gup_download "${GUP_REL_DL}" "${tmp_dir}/${GUP_REL_FN}"
 			if [ "$(id -u)" = 0 ]; then
 					BDIR="/usr/local/bin"
-					tar -axf "${tmp_dir}/${GUP_REL_FN}" -C "${BDIR}" "${APP}"
+					sudo tar -axf "${tmp_dir}/${GUP_REL_FN}" -C "${BDIR}" "${APP}"
 			else
 					BDIR="${HOME}/.local/bin"
 					tar -axf "${tmp_dir}/${GUP_REL_FN}" -C "${BDIR}" "${APP}"
@@ -3779,7 +3833,7 @@ gup_install_ytdlp_command() {
 	if [ -z "$(command -v "${APP}")" ]; then
 			download new
 	else
-			APPVER=$($(command -v "${APP}") --version)
+			APPVER=$($(command -v "${APP}") --version 2>&1)
 			if [ "${APPVER}" = "${GUP_REL_VERSION}" ]; then
 					echo "${APP} version is current"
 			else
@@ -3796,19 +3850,37 @@ gup_install_zfsnap_command() {
 	APP="zfsnap"
 	REPO="https://github.com/zfsnap/zfsnap"
 	BREPO="https://raw.githubusercontent.com/zfsnap/zfsnap"
-	vers=$(git ls-remote --tags ${REPO} | grep "refs/tags/v2.*[0-9]$" | grep -v -e rc -e alpha | awk '{print $2}' | sed 's/refs\/tags\///' | sort -V | uniq | tail -1)
+	vers=$(git ls-remote --tags "${REPO}" | grep "refs/tags/v2.*[0-9]$" | grep -v -e rc -e alpha | awk '{print $2}' | sed 's/refs\/tags\///' | sort -V | uniq | tail -1)
 
-	sudo mkdir -p /usr/share/zfsnap/commands
-	sudo wget -qc -O /usr/share/zfsnap/core.sh "${BREPO}/${vers}/share/zfsnap/core.sh"
-	sudo wget -qc -O /usr/share/zfsnap/commands/destroy.sh "${BREPO}/${vers}/share/zfsnap/commands/destroy.sh"
-	sudo wget -qc -O /usr/share/zfsnap/commands/recurseback.sh "${BREPO}/${vers}/share/zfsnap/commands/recurseback.sh"
-	sudo wget -qc -O /usr/share/zfsnap/commands/snapshot.sh "${BREPO}/${vers}/share/zfsnap/commands/snapshot.sh"
-	sudo wget -qc -O /usr/sbin/zfsnap "${BREPO}/${vers}/sbin/zfsnap.sh"
-	sudo chmod +x /usr/share/zfsnap/core.sh
-	sudo chmod +x /usr/share/zfsnap/commands/destroy.sh
-	sudo chmod +x /usr/share/zfsnap/commands/recurseback.sh
-	sudo chmod +x /usr/share/zfsnap/commands/snapshot.sh
-	sudo chmod +x /usr/sbin/zfsnap
+	echo "installing ${vers}"
+
+	tmp_dir=$(gup_mktemp_dir)
+	trap 'rm -rf "${tmp_dir}"' RETURN
+
+	if [ "$(id -u)" = 0 ]; then
+			SHARE_DIR="/usr/share/zfsnap"
+			SBIN_DIR="/usr/sbin"
+			DO_SUDO="sudo"
+	else
+			SHARE_DIR="${HOME}/.local/share/zfsnap"
+			SBIN_DIR="${HOME}/.local/bin"
+			DO_SUDO=""
+	fi
+
+	${DO_SUDO} mkdir -p "${SHARE_DIR}/commands"
+
+	gup_download "${BREPO}/${vers}/share/zfsnap/core.sh" "${tmp_dir}/core.sh"
+	gup_download "${BREPO}/${vers}/share/zfsnap/commands/destroy.sh" "${tmp_dir}/destroy.sh"
+	gup_download "${BREPO}/${vers}/share/zfsnap/commands/recurseback.sh" "${tmp_dir}/recurseback.sh"
+	gup_download "${BREPO}/${vers}/share/zfsnap/commands/snapshot.sh" "${tmp_dir}/snapshot.sh"
+	gup_download "${BREPO}/${vers}/sbin/zfsnap.sh" "${tmp_dir}/zfsnap"
+
+	${DO_SUDO} install -m 0755 "${tmp_dir}/core.sh" "${SHARE_DIR}/core.sh"
+	${DO_SUDO} install -m 0755 "${tmp_dir}/destroy.sh" "${SHARE_DIR}/commands/destroy.sh"
+	${DO_SUDO} install -m 0755 "${tmp_dir}/recurseback.sh" "${SHARE_DIR}/commands/recurseback.sh"
+	${DO_SUDO} install -m 0755 "${tmp_dir}/snapshot.sh" "${SHARE_DIR}/commands/snapshot.sh"
+	${DO_SUDO} install -m 0755 "${tmp_dir}/zfsnap" "${SBIN_DIR}/zfsnap"
+
 }
 
 # :command.function
@@ -3849,12 +3921,30 @@ gup_install_terraform_command() {
 gup_install_distrobuilder_command() {
 
 	# src/install_distrobuilder_command.sh
-	TMP_WORK=$(gup_mktemp_dir)
-	trap 'rm -rf "${TMP_WORK}"' RETURN
-
+	APP="distrobuilder"
 	REPO="https://github.com/lxc/distrobuilder"
-	git clone "${REPO}" "${TMP_WORK}/distrobuilder"
-	cd "${TMP_WORK}/distrobuilder" && make
+
+	if ! command -v make >/dev/null 2>&1; then
+			echo "Error: 'make' is required to build distrobuilder" >&2
+			exit 1
+	fi
+
+	tmp_dir=$(gup_mktemp_dir)
+	trap 'rm -rf "${tmp_dir}"' RETURN
+
+	echo "cloning and building ${APP}..."
+	git clone "${REPO}" "${tmp_dir}/distrobuilder"
+	(cd "${tmp_dir}/distrobuilder" && make)
+
+	if [ "$(id -u)" = 0 ]; then
+			BDIR="/usr/local/bin"
+			sudo install -m 0755 "${tmp_dir}/distrobuilder/distrobuilder" "${BDIR}/distrobuilder"
+	else
+			BDIR="${HOME}/.local/bin"
+			mkdir -p "${BDIR}"
+			install -m 0755 "${tmp_dir}/distrobuilder/distrobuilder" "${BDIR}/distrobuilder"
+	fi
+	echo "installed ${APP} to ${BDIR}/distrobuilder"
 
 }
 
@@ -3910,10 +4000,14 @@ gup_install_mkcert_command() {
 	# src/install_mkcert_command.sh
 	APP="mkcert"
 
-	sudo apt update -y && \
-	sudo apt install -y libnss3-tools && \
-	sudo wget -O "/usr/local/bin/${APP}" "https://dl.filippo.io/mkcert/latest?for=linux/amd64" && \
-	sudo chmod +x "/usr/local/bin/${APP}"
+	echo "installing ${APP}"
+
+	tmp_dir=$(gup_mktemp_dir)
+	trap 'rm -rf "${tmp_dir}"' RETURN
+
+	gup_download "https://dl.filippo.io/mkcert/latest?for=linux/amd64" "${tmp_dir}/${APP}"
+	chmod +x "${tmp_dir}/${APP}"
+	_gup_install_binary "${tmp_dir}/${APP}"
 
 }
 
@@ -3947,6 +4041,7 @@ gup_install_nerdfonts_command() {
 					trap 'rm -rf "${tmp_dir}"' RETURN
 
 					gup_download "${font}" "${tmp_dir}/font.tar.xz"
+					mkdir -p "${FONTDIR}"
 					tar -xf "${tmp_dir}/font.tar.xz" -C "${FONTDIR}" --wildcards "*ttf"
 			done
 	}
@@ -3963,7 +4058,8 @@ gup_install_nerdfonts_command() {
 gup_remove_neovim_command() {
 
 	# src/remove_neovim_command.sh
-	rm -rf ${HOME}/.local/nvim ${HOME}/.local/share/nvim ${HOME}/.local/state/nvim ${HOME}/.cache/nvim ${HOME}/.config/nvim ${HOME}/.local/bin/nvim
+	rm -rf "${HOME}/.local/nvim" "${HOME}/.local/share/nvim" "${HOME}/.local/state/nvim" "${HOME}/.cache/nvim" "${HOME}/.config/nvim" "${HOME}/.local/bin/nvim"
+
 }
 
 # :command.function

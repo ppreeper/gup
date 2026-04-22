@@ -1,5 +1,12 @@
-local_tmp_dir=$(gup_mktemp_dir)
-trap 'rm -rf "${local_tmp_dir}"' RETURN
+APP="kubectl"
+STABLE_URL="https://storage.googleapis.com/kubernetes-release/release/stable.txt"
+BASE_URL="https://storage.googleapis.com/kubernetes-release/release"
 
-curl -Lo "${local_tmp_dir}/kubectl" "https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl"
-sudo install "${local_tmp_dir}/kubectl" /usr/local/bin
+tmp_dir=$(gup_mktemp_dir)
+trap 'rm -rf "${tmp_dir}"' RETURN
+
+gup_download "${STABLE_URL}" "${tmp_dir}/stable.txt"
+stable=$(cat "${tmp_dir}/stable.txt")
+gup_download "${BASE_URL}/${stable}/bin/linux/amd64/kubectl" "${tmp_dir}/${APP}"
+chmod +x "${tmp_dir}/${APP}"
+_gup_install_binary "${tmp_dir}/${APP}"

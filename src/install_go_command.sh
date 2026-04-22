@@ -16,7 +16,6 @@ download() {
 
     FN="${vers}.linux-amd64.tar.gz"
     gup_download "${DLREPO}/${FN}" "${tmp_dir}/${FN}"
-    find "${IDIR}/go/bin" -type f -exec rm -f {} + 2>/dev/null
     sudo rm -rf "${IDIR}/go"
     sudo tar axf "${tmp_dir}/${FN}" -C "${IDIR}"
     find "${IDIR}/go/bin" -type f -exec sh -c 'sudo ln -sf "$1" "${BDIR}/$(basename "$1")"' _ {} +

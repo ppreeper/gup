@@ -42,7 +42,7 @@ download() {
 if [ -z "$(command -v "${APP}")" ]; then
     download new
 else
-    APPVER=$($(command -v "${APP}") --version | grep "^btop version:" | awk -F':' '{print $2}' | sed -E 's/\x1B\[[0-9;]*[a-zA-Z]//g' | awk '{$1=$1; print}')
+    APPVER=$($(command -v "${APP}") --version 2>&1 | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')
     if [ "${APPVER}" = "${GUP_REL_VERSION}" ]; then
         echo "${APP} version is current"
     else

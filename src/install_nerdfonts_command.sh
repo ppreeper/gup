@@ -11,6 +11,7 @@ download() {
         trap 'rm -rf "${tmp_dir}"' RETURN
 
         gup_download "${font}" "${tmp_dir}/font.tar.xz"
+        mkdir -p "${FONTDIR}"
         tar -xf "${tmp_dir}/font.tar.xz" -C "${FONTDIR}" --wildcards "*ttf"
     done
 }

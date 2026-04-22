@@ -7,7 +7,7 @@ gup_ensure_go() {
     done
 
     if [ ${#missing_deps[@]} -ne 0 ]; then
-        echo "Missing go: please install Go \`gup install go\`" >&2
+        echo "Missing go: please install Go (run 'gup install go')" >&2
         exit 1
     fi
 }

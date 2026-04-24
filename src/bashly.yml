@@ -33,6 +33,10 @@ commands:
       - name: bun
         help: bun js engine
         group: Language Development
+      # Language Development - Lua
+      - name: stylua
+        help: extremely fast Lua formatter
+        group: Language Development
       # Language Development - Python
       - name: uv
         help: extremely fast Python package installer and resolver

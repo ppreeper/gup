@@ -67,6 +67,7 @@ gup_install_usage() {
 	printf "  %s   Node Version Manager\n" "nvm              "
 	printf "  %s   deno js engine\n" "deno             "
 	printf "  %s   bun js engine\n" "bun              "
+	printf "  %s   extremely fast Lua formatter\n" "stylua           "
 	printf "  %s   extremely fast Python package installer and resolver\n" "uv               "
 	printf "  %s   rust programming language\n" "rust             "
 	printf "  %s   zig programming language\n" "zig              "
@@ -343,6 +344,28 @@ gup_install_bun_usage() {
 	printf "%s\n" "Usage:"
 	printf "  gup install bun\n"
 	printf "  gup install bun --help | -h\n"
+	echo
+
+	# :command.long_usage
+	if [[ -n "$long_usage" ]]; then
+		# :command.usage_options
+		printf "%s\n" "Options:"
+
+		# :command.usage_fixed_flags
+		printf "  %s\n" "--help, -h"
+		printf "    Show this help\n"
+		echo
+
+	fi
+}
+
+# :command.usage
+gup_install_stylua_usage() {
+	printf "gup install stylua - extremely fast Lua formatter\n\n"
+
+	printf "%s\n" "Usage:"
+	printf "  gup install stylua\n"
+	printf "  gup install stylua --help | -h\n"
 	echo
 
 	# :command.long_usage
@@ -2497,6 +2520,43 @@ gup_install_bun_command() {
 }
 
 # :command.function
+gup_install_stylua_command() {
+
+	# src/install_stylua_command.sh
+	set -euo pipefail
+
+	APP="stylua"
+	REPO="JohnnyMorganz/StyLua"
+	BDIR="${HOME}/.local/bin"
+	gup_fetch_release "${REPO}" 'contains("linux-x86_64.zip")'
+
+	download() {
+			echo "download $1 version"
+			echo "installing ${GUP_REL_VERSION}"
+
+			local tmp_dir
+			tmp_dir=$(gup_mktemp_dir)
+			trap 'rm -rf "${tmp_dir}"' RETURN
+
+			gup_download "${GUP_REL_DL}" "${tmp_dir}/${GUP_REL_FN}"
+			unzip -o "${tmp_dir}/${GUP_REL_FN}" -d "${tmp_dir}"
+			mv "${tmp_dir}/stylua" "${BDIR}/stylua"
+			chmod +x "${BDIR}/stylua"
+	}
+
+	if [ -z "$(command -v "${APP}")" ]; then
+			download new
+	else
+			APPVER=$($(command -v "${APP}") -V 2>&1 | grep -e "^stylua" | awk '{print $2}')
+			if [ "${APPVER}" = "${GUP_REL_VERSION}" ]; then
+					echo "${APP} version is current"
+			else
+					download "${GUP_REL_VERSION}"
+			fi
+	fi
+}
+
+# :command.function
 gup_install_uv_command() {
 
 	# src/install_uv_command.sh
@@ -2728,10 +2788,9 @@ gup_install_goimports_command() {
 
 	APP="goimports"
 	REPO="golang/tools"
-	vers=$(gup_get_latest_release "${REPO}")
 
 	gup_ensure_go
-	go install golang.org/x/tools/cmd/goimports@"${vers}"
+	go install golang.org/x/tools/cmd/goimports@latest
 }
 
 # :command.function
@@ -4539,6 +4598,13 @@ gup_install_parse_requirements() {
 			shift $#
 			;;
 
+		stylua)
+			action="stylua"
+			shift
+			gup_install_stylua_parse_requirements "$@"
+			shift $#
+			;;
+
 		uv)
 			action="uv"
 			shift
@@ -5396,6 +5462,53 @@ gup_install_bun_parse_requirements() {
 
 	# :command.command_filter
 	action="install bun"
+
+	# :command.parse_requirements_while
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+
+			-?*)
+				printf "invalid option: %s\n" "$key" >&2
+				exit 1
+				;;
+
+			*)
+				# :command.parse_requirements_case
+				# :command.parse_requirements_case_simple
+				printf "invalid argument: %s\n" "$key" >&2
+				exit 1
+
+				;;
+
+		esac
+	done
+
+}
+
+# :command.parse_requirements
+gup_install_stylua_parse_requirements() {
+	local key
+
+	# :command.fixed_flags_filter
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+			--help | -h)
+				long_usage=yes
+				gup_install_stylua_usage
+				exit
+				;;
+
+			*)
+				break
+				;;
+
+		esac
+	done
+
+	# :command.command_filter
+	action="install stylua"
 
 	# :command.parse_requirements_while
 	while [[ $# -gt 0 ]]; do
@@ -8931,6 +9044,7 @@ run() {
 		"install nvm") gup_install_nvm_command ;;
 		"install deno") gup_install_deno_command ;;
 		"install bun") gup_install_bun_command ;;
+		"install stylua") gup_install_stylua_command ;;
 		"install uv") gup_install_uv_command ;;
 		"install rust") gup_install_rust_command ;;
 		"install zig") gup_install_zig_command ;;

@@ -9,7 +9,7 @@ deno_uri="https://dl.deno.land/release/${deno_version}/deno-${target}.zip"
 echo "installing ${deno_version}"
 
 tmp_dir=$(gup_mktemp_dir)
-trap 'rm -rf "${tmp_dir}"' RETURN
+trap '[ -z "${tmp_dir:-}" ] || rm -rf "${tmp_dir}"' RETURN
 
 gup_download "${deno_uri}" "${tmp_dir}/deno.zip"
 unzip -d "${tmp_dir}" -o "${tmp_dir}/deno.zip"

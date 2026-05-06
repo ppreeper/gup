@@ -9,7 +9,7 @@ if ! command -v make >/dev/null 2>&1; then
 fi
 
 tmp_dir=$(gup_mktemp_dir)
-trap 'rm -rf "${tmp_dir}"' RETURN
+trap '[ -z "${tmp_dir:-}" ] || rm -rf "${tmp_dir}"' RETURN
 
 echo "cloning and building ${APP}..."
 git clone "${REPO}" "${tmp_dir}/distrobuilder"

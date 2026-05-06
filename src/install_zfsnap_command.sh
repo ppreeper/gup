@@ -8,7 +8,7 @@ vers=$(git ls-remote --tags "${REPO}" | grep "refs/tags/v2.*[0-9]$" | grep -v -e
 echo "installing ${vers}"
 
 tmp_dir=$(gup_mktemp_dir)
-trap 'rm -rf "${tmp_dir}"' RETURN
+trap '[ -z "${tmp_dir:-}" ] || rm -rf "${tmp_dir}"' RETURN
 
 if [ "$(id -u)" = 0 ]; then
     SHARE_DIR="/usr/share/zfsnap"

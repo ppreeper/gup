@@ -11,7 +11,7 @@ download() {
         [ -z "${font}" ] && continue
         local tmp_dir
         tmp_dir=$(gup_mktemp_dir)
-        trap 'rm -rf "${tmp_dir}"' RETURN
+        trap '[ -z "${tmp_dir:-}" ] || rm -rf "${tmp_dir}"' RETURN
 
         gup_download "${font}" "${tmp_dir}/font.tar.xz"
         mkdir -p "${FONTDIR}"

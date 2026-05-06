@@ -5,7 +5,7 @@ STABLE_URL="https://storage.googleapis.com/kubernetes-release/release/stable.txt
 BASE_URL="https://storage.googleapis.com/kubernetes-release/release"
 
 tmp_dir=$(gup_mktemp_dir)
-trap 'rm -rf "${tmp_dir}"' RETURN
+trap '[ -z "${tmp_dir:-}" ] || rm -rf "${tmp_dir}"' RETURN
 
 gup_download "${STABLE_URL}" "${tmp_dir}/stable.txt"
 stable=$(cat "${tmp_dir}/stable.txt")

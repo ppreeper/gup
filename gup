@@ -2287,7 +2287,7 @@ gup_install_go_command() {
 
 			local tmp_dir
 			tmp_dir=$(gup_mktemp_dir)
-			trap 'rm -rf "${tmp_dir}"' RETURN
+			trap '[ -z "${tmp_dir:-}" ] || rm -rf "${tmp_dir}"' RETURN
 
 			FN="${vers}.linux-amd64.tar.gz"
 			gup_download "${DLREPO}/${FN}" "${tmp_dir}/${FN}"
@@ -2327,7 +2327,7 @@ gup_install_tinygo_command() {
 
 			local tmp_dir
 			tmp_dir=$(gup_mktemp_dir)
-			trap 'rm -rf "${tmp_dir}"' RETURN
+			trap '[ -z "${tmp_dir:-}" ] || rm -rf "${tmp_dir}"' RETURN
 
 			gup_download "${GUP_REL_DL}" "${tmp_dir}/${GUP_REL_FN}"
 			if [ "$(id -u)" = 0 ]; then
@@ -2376,7 +2376,7 @@ gup_install_nodejs_command() {
 	target="linux-x64.tar.xz"
 
 	tmp_dir=$(gup_mktemp_dir)
-	trap 'rm -rf "${tmp_dir}"' RETURN
+	trap '[ -z "${tmp_dir:-}" ] || rm -rf "${tmp_dir}"' RETURN
 
 	if command -v curl >/dev/null 2>&1; then
 			node_version="$(curl -fsSL https://nodejs.org/download/release/index.tab | awk '{print $10,$1}' | grep -v "^-" | awk '{print $2}' | grep -v "^version" | sort -V | tail -1)"
@@ -2434,7 +2434,7 @@ gup_install_nvm_command() {
 	DLREPO="https://raw.githubusercontent.com/nvm-sh/nvm"
 
 	tmp_dir=$(gup_mktemp_dir)
-	trap 'rm -rf "${tmp_dir}"' RETURN
+	trap '[ -z "${tmp_dir:-}" ] || rm -rf "${tmp_dir}"' RETURN
 
 	gup_download "${DLREPO}/${vers}/install.sh" "${tmp_dir}/install.sh"
 	bash "${tmp_dir}/install.sh"
@@ -2456,7 +2456,7 @@ gup_install_deno_command() {
 	echo "installing ${deno_version}"
 
 	tmp_dir=$(gup_mktemp_dir)
-	trap 'rm -rf "${tmp_dir}"' RETURN
+	trap '[ -z "${tmp_dir:-}" ] || rm -rf "${tmp_dir}"' RETURN
 
 	gup_download "${deno_uri}" "${tmp_dir}/deno.zip"
 	unzip -d "${tmp_dir}" -o "${tmp_dir}/deno.zip"
@@ -2481,7 +2481,7 @@ gup_install_bun_command() {
 
 			local tmp_dir
 			tmp_dir=$(gup_mktemp_dir)
-			trap 'rm -rf "${tmp_dir}"' RETURN
+			trap '[ -z "${tmp_dir:-}" ] || rm -rf "${tmp_dir}"' RETURN
 
 			if [ "$(id -u)" = 0 ]; then
 					BDIR="/usr/local"
@@ -2536,7 +2536,7 @@ gup_install_stylua_command() {
 
 			local tmp_dir
 			tmp_dir=$(gup_mktemp_dir)
-			trap 'rm -rf "${tmp_dir}"' RETURN
+			trap '[ -z "${tmp_dir:-}" ] || rm -rf "${tmp_dir}"' RETURN
 
 			gup_download "${GUP_REL_DL}" "${tmp_dir}/${GUP_REL_FN}"
 			unzip -o "${tmp_dir}/${GUP_REL_FN}" -d "${tmp_dir}"
@@ -2572,7 +2572,7 @@ gup_install_uv_command() {
 
 			local tmp_dir
 			tmp_dir=$(gup_mktemp_dir)
-			trap 'rm -rf "${tmp_dir}"' RETURN
+			trap '[ -z "${tmp_dir:-}" ] || rm -rf "${tmp_dir}"' RETURN
 
 			gup_download "${GUP_REL_DL}" "${tmp_dir}/${GUP_REL_FN}"
 			_gup_extract_tarball "${tmp_dir}/${GUP_REL_FN}" "${tmp_dir}/${APP}"
@@ -2604,7 +2604,7 @@ gup_install_rust_command() {
 			echo "Installing Rust"
 
 			tmp_dir=$(gup_mktemp_dir)
-			trap 'rm -rf "${tmp_dir}"' RETURN
+			trap '[ -z "${tmp_dir:-}" ] || rm -rf "${tmp_dir}"' RETURN
 
 			gup_download "https://sh.rustup.rs" "${tmp_dir}/rustup-init.sh"
 			sh "${tmp_dir}/rustup-init.sh" -y
@@ -2640,7 +2640,7 @@ gup_install_zig_command() {
 
 			local tmp_dir
 			tmp_dir=$(gup_mktemp_dir)
-			trap 'rm -rf "${tmp_dir}"' RETURN
+			trap '[ -z "${tmp_dir:-}" ] || rm -rf "${tmp_dir}"' RETURN
 
 			gup_download "${DL}" "${tmp_dir}/${FN}"
 			rm -f "${BDIR}/zig"
@@ -2881,7 +2881,7 @@ gup_install_ruff_command() {
 
 			local tmp_dir
 			tmp_dir=$(gup_mktemp_dir)
-			trap 'rm -rf "${tmp_dir}"' RETURN
+			trap '[ -z "${tmp_dir:-}" ] || rm -rf "${tmp_dir}"' RETURN
 
 			gup_download "${GUP_REL_DL}" "${tmp_dir}/${GUP_REL_FN}"
 			_gup_extract_tarball "${tmp_dir}/${GUP_REL_FN}" "${tmp_dir}/${APP}"
@@ -2973,7 +2973,7 @@ gup_install_zls_command() {
 
 			local tmp_dir
 			tmp_dir=$(gup_mktemp_dir)
-			trap 'rm -rf "${tmp_dir}"' RETURN
+			trap '[ -z "${tmp_dir:-}" ] || rm -rf "${tmp_dir}"' RETURN
 
 			gup_download "${GUP_REL_DL}" "${tmp_dir}/${GUP_REL_FN}"
 			_gup_extract_tarball "${tmp_dir}/${GUP_REL_FN}" "${tmp_dir}/${APP}"
@@ -3011,7 +3011,7 @@ gup_install_neovim_command() {
 
 			local tmp_dir
 			tmp_dir=$(gup_mktemp_dir)
-			trap 'rm -rf "${tmp_dir}"' RETURN
+			trap '[ -z "${tmp_dir:-}" ] || rm -rf "${tmp_dir}"' RETURN
 
 			gup_download "${GUP_REL_DL}" "${tmp_dir}/${GUP_REL_FN}"
 			rm -rf "${IDIR:?}"
@@ -3051,7 +3051,7 @@ gup_install_helix_command() {
 
 			local tmp_dir
 			tmp_dir=$(gup_mktemp_dir)
-			trap 'rm -rf "${tmp_dir}"' RETURN
+			trap '[ -z "${tmp_dir:-}" ] || rm -rf "${tmp_dir}"' RETURN
 
 			mkdir -p "${IDIR}"
 			touch "${IDIR}/config.toml"
@@ -3091,7 +3091,7 @@ gup_install_prometheus_command() {
 
 			local tmp_dir
 			tmp_dir=$(gup_mktemp_dir)
-			trap 'rm -rf "${tmp_dir}"' RETURN
+			trap '[ -z "${tmp_dir:-}" ] || rm -rf "${tmp_dir}"' RETURN
 
 			gup_download "${GUP_REL_DL}" "${tmp_dir}/${GUP_REL_FN}"
 			_gup_extract_tarball "${tmp_dir}/${GUP_REL_FN}" "${tmp_dir}/${APP}"
@@ -3144,7 +3144,7 @@ gup_install_loki_command() {
 
 			local tmp_dir
 			tmp_dir=$(gup_mktemp_dir)
-			trap 'rm -rf "${tmp_dir}"' RETURN
+			trap '[ -z "${tmp_dir:-}" ] || rm -rf "${tmp_dir}"' RETURN
 
 			gup_download "${GUP_REL_DL}" "${tmp_dir}/${GUP_REL_FN}"
 			_gup_extract_zip "${tmp_dir}/${GUP_REL_FN}" "${tmp_dir}/${APP}"
@@ -3180,7 +3180,7 @@ gup_install_node_exporter_command() {
 
 			local tmp_dir
 			tmp_dir=$(gup_mktemp_dir)
-			trap 'rm -rf "${tmp_dir}"' RETURN
+			trap '[ -z "${tmp_dir:-}" ] || rm -rf "${tmp_dir}"' RETURN
 
 			gup_download "${GUP_REL_DL}" "${tmp_dir}/${GUP_REL_FN}"
 			_gup_extract_tarball "${tmp_dir}/${GUP_REL_FN}" "${tmp_dir}/${APP}"
@@ -3216,7 +3216,7 @@ gup_install_postgres_exporter_command() {
 
 			local tmp_dir
 			tmp_dir=$(gup_mktemp_dir)
-			trap 'rm -rf "${tmp_dir}"' RETURN
+			trap '[ -z "${tmp_dir:-}" ] || rm -rf "${tmp_dir}"' RETURN
 
 			gup_download "${GUP_REL_DL}" "${tmp_dir}/${GUP_REL_FN}"
 			_gup_extract_tarball "${tmp_dir}/${GUP_REL_FN}" "${tmp_dir}/${APP}"
@@ -3252,7 +3252,7 @@ gup_install_blackbox_exporter_command() {
 
 			local tmp_dir
 			tmp_dir=$(gup_mktemp_dir)
-			trap 'rm -rf "${tmp_dir}"' RETURN
+			trap '[ -z "${tmp_dir:-}" ] || rm -rf "${tmp_dir}"' RETURN
 
 			gup_download "${GUP_REL_DL}" "${tmp_dir}/${GUP_REL_FN}"
 			_gup_extract_tarball "${tmp_dir}/${GUP_REL_FN}" "${tmp_dir}/${APP}"
@@ -3288,7 +3288,7 @@ gup_install_snmp_exporter_command() {
 
 			local tmp_dir
 			tmp_dir=$(gup_mktemp_dir)
-			trap 'rm -rf "${tmp_dir}"' RETURN
+			trap '[ -z "${tmp_dir:-}" ] || rm -rf "${tmp_dir}"' RETURN
 
 			gup_download "${GUP_REL_DL}" "${tmp_dir}/${GUP_REL_FN}"
 			_gup_extract_tarball "${tmp_dir}/${GUP_REL_FN}" "${tmp_dir}/${APP}"
@@ -3324,7 +3324,7 @@ gup_install_btop_command() {
 
 			local tmp_dir
 			tmp_dir=$(gup_mktemp_dir)
-			trap 'rm -rf "${tmp_dir}"' RETURN
+			trap '[ -z "${tmp_dir:-}" ] || rm -rf "${tmp_dir}"' RETURN
 
 			gup_download "${GUP_REL_DL}" "${tmp_dir}/${GUP_REL_FN}"
 			_gup_extract_tarball "${tmp_dir}/${GUP_REL_FN}" "${tmp_dir}/${APP}"
@@ -3389,7 +3389,7 @@ gup_install_gotop_command() {
 
 			local tmp_dir
 			tmp_dir=$(gup_mktemp_dir)
-			trap 'rm -rf "${tmp_dir}"' RETURN
+			trap '[ -z "${tmp_dir:-}" ] || rm -rf "${tmp_dir}"' RETURN
 
 			gup_download "${GUP_REL_DL}" "${tmp_dir}/${GUP_REL_FN}"
 			tar axf "${tmp_dir}/${GUP_REL_FN}" -C "${tmp_dir}" "${APP}"
@@ -3425,7 +3425,7 @@ gup_install_lazydocker_command() {
 
 			local tmp_dir
 			tmp_dir=$(gup_mktemp_dir)
-			trap 'rm -rf "${tmp_dir}"' RETURN
+			trap '[ -z "${tmp_dir:-}" ] || rm -rf "${tmp_dir}"' RETURN
 
 			gup_download "${GUP_REL_DL}" "${tmp_dir}/${GUP_REL_FN}"
 			tar axf "${tmp_dir}/${GUP_REL_FN}" -C "${tmp_dir}" "${APP}"
@@ -3457,7 +3457,7 @@ gup_install_minikube_command() {
 	echo "installing latest ${APP}"
 
 	tmp_dir=$(gup_mktemp_dir)
-	trap 'rm -rf "${tmp_dir}"' RETURN
+	trap '[ -z "${tmp_dir:-}" ] || rm -rf "${tmp_dir}"' RETURN
 
 	gup_download "${DL}" "${tmp_dir}/${APP}"
 	_gup_install_binary "${tmp_dir}/${APP}"
@@ -3475,7 +3475,7 @@ gup_install_kubectl_command() {
 	BASE_URL="https://storage.googleapis.com/kubernetes-release/release"
 
 	tmp_dir=$(gup_mktemp_dir)
-	trap 'rm -rf "${tmp_dir}"' RETURN
+	trap '[ -z "${tmp_dir:-}" ] || rm -rf "${tmp_dir}"' RETURN
 
 	gup_download "${STABLE_URL}" "${tmp_dir}/stable.txt"
 	stable=$(cat "${tmp_dir}/stable.txt")
@@ -3500,7 +3500,7 @@ gup_install_k9s_command() {
 
 			local tmp_dir
 			tmp_dir=$(gup_mktemp_dir)
-			trap 'rm -rf "${tmp_dir}"' RETURN
+			trap '[ -z "${tmp_dir:-}" ] || rm -rf "${tmp_dir}"' RETURN
 
 			gup_download "${GUP_REL_DL}" "${tmp_dir}/${GUP_REL_FN}"
 			tar axf "${tmp_dir}/${GUP_REL_FN}" -C "${tmp_dir}" "${APP}"
@@ -3536,7 +3536,7 @@ gup_install_etcd_command() {
 
 			local tmp_dir
 			tmp_dir=$(gup_mktemp_dir)
-			trap 'rm -rf "${tmp_dir}"' RETURN
+			trap '[ -z "${tmp_dir:-}" ] || rm -rf "${tmp_dir}"' RETURN
 
 			gup_download "${GUP_REL_DL}" "${tmp_dir}/${GUP_REL_FN}"
 			_gup_extract_tarball "${tmp_dir}/${GUP_REL_FN}" "${tmp_dir}/etcd"
@@ -3600,7 +3600,7 @@ gup_install_doctl_command() {
 
 			local tmp_dir
 			tmp_dir=$(gup_mktemp_dir)
-			trap 'rm -rf "${tmp_dir}"' RETURN
+			trap '[ -z "${tmp_dir:-}" ] || rm -rf "${tmp_dir}"' RETURN
 
 			gup_download "${GUP_REL_DL}" "${tmp_dir}/${GUP_REL_FN}"
 			if [ "$(id -u)" = 0 ]; then
@@ -3639,7 +3639,7 @@ gup_install_b2_command() {
 
 			local tmp_dir
 			tmp_dir=$(gup_mktemp_dir)
-			trap 'rm -rf "${tmp_dir}"' RETURN
+			trap '[ -z "${tmp_dir:-}" ] || rm -rf "${tmp_dir}"' RETURN
 
 			gup_download "${DL}" "${tmp_dir}/${APP}"
 			_gup_install_binary "${tmp_dir}/${APP}"
@@ -3665,7 +3665,7 @@ gup_install_githubcli_command() {
 
 			local tmp_dir
 			tmp_dir=$(gup_mktemp_dir)
-			trap 'rm -rf "${tmp_dir}"' RETURN
+			trap '[ -z "${tmp_dir:-}" ] || rm -rf "${tmp_dir}"' RETURN
 
 			gup_download "${GUP_REL_DL}" "${tmp_dir}/${GUP_REL_FN}"
 
@@ -3714,7 +3714,7 @@ gup_install_forgejocli_command() {
 
 			local tmp_dir
 			tmp_dir=$(gup_mktemp_dir)
-			trap 'rm -rf "${tmp_dir}"' RETURN
+			trap '[ -z "${tmp_dir:-}" ] || rm -rf "${tmp_dir}"' RETURN
 
 			gup_download "${DL}" "${tmp_dir}/${FN}"
 			tar -axf "${tmp_dir}/${FN}" -C "${tmp_dir}"
@@ -3749,7 +3749,7 @@ gup_install_caddy2_command() {
 
 			local tmp_dir
 			tmp_dir=$(gup_mktemp_dir)
-			trap 'rm -rf "${tmp_dir}"' RETURN
+			trap '[ -z "${tmp_dir:-}" ] || rm -rf "${tmp_dir}"' RETURN
 
 			gup_download "${GUP_REL_DL}" "${tmp_dir}/${GUP_REL_FN}"
 			_gup_extract_tarball "${tmp_dir}/${GUP_REL_FN}" "${tmp_dir}/${APP}"
@@ -3785,7 +3785,7 @@ gup_install_traefik_command() {
 
 			local tmp_dir
 			tmp_dir=$(gup_mktemp_dir)
-			trap 'rm -rf "${tmp_dir}"' RETURN
+			trap '[ -z "${tmp_dir:-}" ] || rm -rf "${tmp_dir}"' RETURN
 
 			gup_download "${GUP_REL_DL}" "${tmp_dir}/${GUP_REL_FN}"
 			_gup_extract_tarball "${tmp_dir}/${GUP_REL_FN}" "${tmp_dir}/${APP}"
@@ -3821,7 +3821,7 @@ gup_install_hugo_command() {
 
 			local tmp_dir
 			tmp_dir=$(gup_mktemp_dir)
-			trap 'rm -rf "${tmp_dir}"' RETURN
+			trap '[ -z "${tmp_dir:-}" ] || rm -rf "${tmp_dir}"' RETURN
 
 			gup_download "${GUP_REL_DL}" "${tmp_dir}/${GUP_REL_FN}"
 			if [ "$(id -u)" = 0 ]; then
@@ -3862,7 +3862,7 @@ gup_install_tailwindcss_command() {
 
 			local tmp_dir
 			tmp_dir=$(gup_mktemp_dir)
-			trap 'rm -rf "${tmp_dir}"' RETURN
+			trap '[ -z "${tmp_dir:-}" ] || rm -rf "${tmp_dir}"' RETURN
 
 			gup_download "${GUP_REL_DL}" "${tmp_dir}/${GUP_REL_FN}"
 			_gup_install_binary "${tmp_dir}/${GUP_REL_FN}"
@@ -3897,7 +3897,7 @@ gup_install_marp_command() {
 
 			local tmp_dir
 			tmp_dir=$(gup_mktemp_dir)
-			trap 'rm -rf "${tmp_dir}"' RETURN
+			trap '[ -z "${tmp_dir:-}" ] || rm -rf "${tmp_dir}"' RETURN
 
 			gup_download "${GUP_REL_DL}" "${tmp_dir}/${GUP_REL_FN}"
 			tar axf "${tmp_dir}/${GUP_REL_FN}" -C "${tmp_dir}" "${APP}"
@@ -3975,7 +3975,7 @@ gup_install_lazygit_command() {
 
 			local tmp_dir
 			tmp_dir=$(gup_mktemp_dir)
-			trap 'rm -rf "${tmp_dir}"' RETURN
+			trap '[ -z "${tmp_dir:-}" ] || rm -rf "${tmp_dir}"' RETURN
 
 			gup_download "${GUP_REL_DL}" "${tmp_dir}/${GUP_REL_FN}"
 			tar axf "${tmp_dir}/${GUP_REL_FN}" -C "${tmp_dir}" "${APP}"
@@ -4055,7 +4055,7 @@ gup_install_task_command() {
 
 			local tmp_dir
 			tmp_dir=$(gup_mktemp_dir)
-			trap 'rm -rf "${tmp_dir}"' RETURN
+			trap '[ -z "${tmp_dir:-}" ] || rm -rf "${tmp_dir}"' RETURN
 
 			gup_download "${GUP_REL_DL}" "${tmp_dir}/${GUP_REL_FN}"
 			_gup_extract_tarball "${tmp_dir}/${GUP_REL_FN}" "${tmp_dir}/${APP}"
@@ -4105,7 +4105,7 @@ gup_install_ytdlp_command() {
 
 			local tmp_dir
 			tmp_dir=$(gup_mktemp_dir)
-			trap 'rm -rf "${tmp_dir}"' RETURN
+			trap '[ -z "${tmp_dir:-}" ] || rm -rf "${tmp_dir}"' RETURN
 
 			gup_download "${GUP_REL_DL}" "${tmp_dir}/${GUP_REL_FN}"
 			_gup_install_binary "${tmp_dir}/${GUP_REL_FN}"
@@ -4138,7 +4138,7 @@ gup_install_zfsnap_command() {
 	echo "installing ${vers}"
 
 	tmp_dir=$(gup_mktemp_dir)
-	trap 'rm -rf "${tmp_dir}"' RETURN
+	trap '[ -z "${tmp_dir:-}" ] || rm -rf "${tmp_dir}"' RETURN
 
 	if [ "$(id -u)" = 0 ]; then
 			SHARE_DIR="/usr/share/zfsnap"
@@ -4182,7 +4182,7 @@ gup_install_terraform_command() {
 
 			local tmp_dir
 			tmp_dir=$(gup_mktemp_dir)
-			trap 'rm -rf "${tmp_dir}"' RETURN
+			trap '[ -z "${tmp_dir:-}" ] || rm -rf "${tmp_dir}"' RETURN
 
 			gup_download "${GUP_REL_DL}" "${tmp_dir}/${GUP_REL_FN}"
 			_gup_extract_zip "${tmp_dir}/${GUP_REL_FN}" "${tmp_dir}/${APP}"
@@ -4217,7 +4217,7 @@ gup_install_distrobuilder_command() {
 	fi
 
 	tmp_dir=$(gup_mktemp_dir)
-	trap 'rm -rf "${tmp_dir}"' RETURN
+	trap '[ -z "${tmp_dir:-}" ] || rm -rf "${tmp_dir}"' RETURN
 
 	echo "cloning and building ${APP}..."
 	git clone "${REPO}" "${tmp_dir}/distrobuilder"
@@ -4251,7 +4251,7 @@ gup_install_upx_command() {
 
 			local tmp_dir
 			tmp_dir=$(gup_mktemp_dir)
-			trap 'rm -rf "${tmp_dir}"' RETURN
+			trap '[ -z "${tmp_dir:-}" ] || rm -rf "${tmp_dir}"' RETURN
 
 			gup_download "${GUP_REL_DL}" "${tmp_dir}/${GUP_REL_FN}"
 			_gup_extract_tarball "${tmp_dir}/${GUP_REL_FN}" "${tmp_dir}/${APP}"
@@ -4296,7 +4296,7 @@ gup_install_mkcert_command() {
 	echo "installing ${APP}"
 
 	tmp_dir=$(gup_mktemp_dir)
-	trap 'rm -rf "${tmp_dir}"' RETURN
+	trap '[ -z "${tmp_dir:-}" ] || rm -rf "${tmp_dir}"' RETURN
 
 	gup_download "https://dl.filippo.io/mkcert/latest?for=linux/amd64" "${tmp_dir}/${APP}"
 	_gup_install_binary "${tmp_dir}/${APP}"
@@ -4335,7 +4335,7 @@ gup_install_nerdfonts_command() {
 					[ -z "${font}" ] && continue
 					local tmp_dir
 					tmp_dir=$(gup_mktemp_dir)
-					trap 'rm -rf "${tmp_dir}"' RETURN
+					trap '[ -z "${tmp_dir:-}" ] || rm -rf "${tmp_dir}"' RETURN
 
 					gup_download "${font}" "${tmp_dir}/font.tar.xz"
 					mkdir -p "${FONTDIR}"

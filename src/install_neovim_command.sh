@@ -12,7 +12,7 @@ download() {
 
     local tmp_dir
     tmp_dir=$(gup_mktemp_dir)
-    trap 'rm -rf "${tmp_dir}"' RETURN
+    trap '[ -z "${tmp_dir:-}" ] || rm -rf "${tmp_dir}"' RETURN
 
     gup_download "${GUP_REL_DL}" "${tmp_dir}/${GUP_REL_FN}"
     rm -rf "${IDIR:?}"

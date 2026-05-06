@@ -3,7 +3,7 @@ set -euo pipefail
 target="linux-x64.tar.xz"
 
 tmp_dir=$(gup_mktemp_dir)
-trap 'rm -rf "${tmp_dir}"' RETURN
+trap '[ -z "${tmp_dir:-}" ] || rm -rf "${tmp_dir}"' RETURN
 
 if command -v curl >/dev/null 2>&1; then
     node_version="$(curl -fsSL https://nodejs.org/download/release/index.tab | awk '{print $10,$1}' | grep -v "^-" | awk '{print $2}' | grep -v "^version" | sort -V | tail -1)"

@@ -18,7 +18,7 @@ download() {
 
     local tmp_dir
     tmp_dir=$(gup_mktemp_dir)
-    trap 'rm -rf "${tmp_dir}"' RETURN
+    trap '[ -z "${tmp_dir:-}" ] || rm -rf "${tmp_dir}"' RETURN
 
     gup_download "${DL}" "${tmp_dir}/${FN}"
     rm -f "${BDIR}/zig"

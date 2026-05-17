@@ -241,6 +241,9 @@ commands:
         help: Ultimate Packer for eXecutables
         group: Packaging / Binary Tools
       # Database & Code Generation
+      - name: goose
+        help: Database migration tool for Go
+        group: Database & Code Generation
       - name: sqlc
         help: Generate type-safe code from SQL
         group: Database & Code Generation

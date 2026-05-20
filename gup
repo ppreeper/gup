@@ -3729,11 +3729,22 @@ gup_install_forgejocli_command() {
 	set -euo pipefail
 
 	APP="fj"
-	DL="https://codeberg.org/forgejo-contrib/forgejo-cli/releases/download/latest/forgejo-cli-linux.tar.gz"
-	FN="forgejo-cli-linux.tar.gz"
+	REPO="forgejo-contrib/forgejo-cli"
+	API_URL="https://codeberg.org/api/v1/repos/${REPO}/releases/latest"
+
+	get_latest_version() {
+			local version
+			version=$(wget -qO- "${API_URL}" | grep -o '"tag_name":"[^"]*"' | head -1 | cut -d'"' -f4)
+			echo "${version}"
+	}
 
 	download() {
-			echo "download $1 version"
+			local version
+			version=$(get_latest_version)
+			echo "download ${APP} ${version}"
+
+			local DL="https://codeberg.org/${REPO}/releases/download/${version}/forgejo-cli-x86_64-linux.tar.gz"
+			local FN="forgejo-cli-x86_64-linux.tar.gz"
 
 			local tmp_dir
 			tmp_dir=$(gup_mktemp_dir)

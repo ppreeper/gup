@@ -161,6 +161,7 @@ gup_install_usage() {
 	printf "%s\n" "Security & Vulnerability Scanning Commands:"
 	printf "  %s   mkcert is a simple tool for making locally-trusted development certificates\n" "mkcert           "
 	printf "  %s   Go vulnerability checker\n" "govulncheck      "
+	printf "  %s   Comprehensive and versatile security scanner\n" "trivy            "
 	echo
 	printf "%s\n" "Fonts & Assets Commands:"
 	printf "  %s   nerdfonts installer\n" "nerdfonts        "
@@ -1841,6 +1842,28 @@ gup_install_govulncheck_usage() {
 	printf "%s\n" "Usage:"
 	printf "  gup install govulncheck\n"
 	printf "  gup install govulncheck --help | -h\n"
+	echo
+
+	# :command.long_usage
+	if [[ -n "$long_usage" ]]; then
+		# :command.usage_options
+		printf "%s\n" "Options:"
+
+		# :command.usage_fixed_flags
+		printf "  %s\n" "--help, -h"
+		printf "    Show this help\n"
+		echo
+
+	fi
+}
+
+# :command.usage
+gup_install_trivy_usage() {
+	printf "gup install trivy - Comprehensive and versatile security scanner\n\n"
+
+	printf "%s\n" "Usage:"
+	printf "  gup install trivy\n"
+	printf "  gup install trivy --help | -h\n"
 	echo
 
 	# :command.long_usage
@@ -4367,6 +4390,42 @@ gup_install_govulncheck_command() {
 }
 
 # :command.function
+gup_install_trivy_command() {
+
+	# src/install_trivy_command.sh
+	set -euo pipefail
+
+	APP="trivy"
+	REPO="aquasecurity/trivy"
+	gup_fetch_release "${REPO}" 'contains("Linux-64bit.tar.gz")'
+
+	download() {
+		echo "download $1 version"
+		echo "installing ${GUP_REL_VERSION}"
+
+		local tmp_dir
+		tmp_dir=$(gup_mktemp_dir)
+		trap '[ -z "${tmp_dir:-}" ] || rm -rf "${tmp_dir}"' RETURN
+
+		gup_download "${GUP_REL_DL}" "${tmp_dir}/${GUP_REL_FN}"
+		tar axf "${tmp_dir}/${GUP_REL_FN}" -C "${tmp_dir}" "${APP}"
+		_gup_install_binary "${tmp_dir}/${APP}"
+	}
+
+	if [ -z "$(command -v "${APP}")" ]; then
+		download new
+	else
+		APPVER=$($(command -v "${APP}") --version 2>&1 | grep -oP 'Version:\s*\K[0-9.]+' | head -1)
+		if [ "${APPVER}" = "${GUP_REL_VERSION#v}" ]; then
+			echo "${APP} version is current"
+		else
+			download "${GUP_REL_VERSION}"
+		fi
+	fi
+
+}
+
+# :command.function
 gup_install_nerdfonts_command() {
 
 	# src/install_nerdfonts_command.sh
@@ -5119,6 +5178,13 @@ gup_install_parse_requirements() {
 			action="govulncheck"
 			shift
 			gup_install_govulncheck_parse_requirements "$@"
+			shift $#
+			;;
+
+		trivy)
+			action="trivy"
+			shift
+			gup_install_trivy_parse_requirements "$@"
 			shift $#
 			;;
 
@@ -8738,6 +8804,53 @@ gup_install_govulncheck_parse_requirements() {
 }
 
 # :command.parse_requirements
+gup_install_trivy_parse_requirements() {
+	local key
+
+	# :command.fixed_flags_filter
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+			--help | -h)
+				long_usage=yes
+				gup_install_trivy_usage
+				exit
+				;;
+
+			*)
+				break
+				;;
+
+		esac
+	done
+
+	# :command.command_filter
+	action="install trivy"
+
+	# :command.parse_requirements_while
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+
+			-?*)
+				printf "invalid option: %s\n" "$key" >&2
+				exit 1
+				;;
+
+			*)
+				# :command.parse_requirements_case
+				# :command.parse_requirements_case_simple
+				printf "invalid argument: %s\n" "$key" >&2
+				exit 1
+
+				;;
+
+		esac
+	done
+
+}
+
+# :command.parse_requirements
 gup_install_nerdfonts_parse_requirements() {
 	local key
 
@@ -9214,6 +9327,7 @@ run() {
 		"install sqlc") gup_install_sqlc_command ;;
 		"install mkcert") gup_install_mkcert_command ;;
 		"install govulncheck") gup_install_govulncheck_command ;;
+		"install trivy") gup_install_trivy_command ;;
 		"install nerdfonts") gup_install_nerdfonts_command ;;
 		"remove") gup_remove_command ;;
 		"remove neovim") gup_remove_neovim_command ;;

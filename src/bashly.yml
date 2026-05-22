@@ -254,6 +254,9 @@ commands:
       - name: govulncheck
         help: Go vulnerability checker
         group: Security & Vulnerability Scanning
+      - name: trivy
+        help: Comprehensive and versatile security scanner
+        group: Security & Vulnerability Scanning
       # Fonts & Assets
       - name: nerdfonts
         help: nerdfonts installer

@@ -24,7 +24,10 @@ download() {
     rm -rf "${IDIR}/go"
     mkdir -p "${IDIR}"
     mv "${tmp_dir}/go" "${IDIR}/go"
-    find "${IDIR}/go/bin" -type f -exec sh -c 'ln -sf "$1" "${BDIR}/$(basename "$1")"' _ {} +
+    find "${IDIR}/go/bin" -type f -print0 |
+    while IFS= read -r -d '' file; do
+        ln -sf "$file" "${BDIR}/$(basename "$file")"
+    done
 }
 
 if [ -z "$(command -v "${APP}")" ]; then

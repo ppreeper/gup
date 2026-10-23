@@ -1,19 +1,19 @@
-set -euo pipefail
+set -eu
 
 APP="btop"
 REPO="aristocratos/btop"
-gup_fetch_release "${REPO}" 'contains("x86_64") and contains(".tbz")'
+gup_fetch_release "${REPO}" 'test("x86_64-unknown-linux-musl\\.tar\\.gz$")'
 
 download() {
     echo "download $1 version"
     echo "installing ${GUP_REL_VERSION}"
 
-    local tmp_dir
     tmp_dir=$(gup_mktemp_dir)
-    trap '[ -z "${tmp_dir:-}" ] || rm -rf "${tmp_dir}"' RETURN
+    trap '[ -z "${tmp_dir:-}" ] || rm -rf "${tmp_dir}"' EXIT
 
     gup_download "${GUP_REL_DL}" "${tmp_dir}/${GUP_REL_FN}"
-    _gup_extract_tarball "${tmp_dir}/${GUP_REL_FN}" "${tmp_dir}/${APP}"
+    # The archive contains its own top-level btop/ directory (with ./ entry prefix), so do not strip components.
+    _gup_extract_tarball "${tmp_dir}/${GUP_REL_FN}" "${tmp_dir}" 0
 
     if [ "$(id -u)" = 0 ]; then
         PREFIX="/usr/local"

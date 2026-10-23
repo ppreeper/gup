@@ -1,0 +1,2 @@
+install_nodejs_command
+install_tsc_command

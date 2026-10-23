@@ -1,4 +1,4 @@
-set -euo pipefail
+set -eu
 
 APP="nilaway"
 REPO="uber-go/nilaway"

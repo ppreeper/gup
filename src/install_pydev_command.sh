@@ -1,0 +1,4 @@
+install_uv_command
+install_ruff_command
+install_ruxx_command
+install_rusq_command

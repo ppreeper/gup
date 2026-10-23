@@ -11,44 +11,79 @@ commands:
       # Commands
       - name: gup
         help: install gup command
+
       - name: update
         help: update script for apt update
+
+      # Common setups
+      - name: devsetup
+        help: common dev tool setup
+
       # Language Development - Go
       - name: go
         help: go programming language
-        group: Language Development
+        group: Language Development - Go
       - name: tinygo
         help: tinygo is a Go compiler for small places
-        group: Language Development
+        group: Language Development - Go
+      - name: gopls
+        help: Go language server
+        group: Language Development - Go
+      - name: dlv
+        help: Delve is a source level debugger for Go programs
+        group: Language Development - Go
+
+      - name: godev
+        help: Go dev setup
+        group: Language Development - Go
+
+
       # Language Development - JavaScript
       - name: nodejs
-        help: nodejs js engine
-        group: Language Development
+        help: node js engine
+        group: Language Development - JS TS
       - name: nvm
         help: Node Version Manager
-        group: Language Development
-      - name: deno
-        help: deno js engine
-        group: Language Development
-      - name: bun
-        help: bun js engine
-        group: Language Development
+        group: Language Development - JS TS
+      - name: tsc
+        help: Typescript compiler
+        group: Language Development - JS TS
+      - name: jsdev
+        help: JS TS dev setup
+        group: Language Development - JS TS
+
       # Language Development - Lua
       - name: stylua
         help: extremely fast Lua formatter
-        group: Language Development
+        group: Language Development - Lua
+
       # Language Development - Python
       - name: uv
         help: extremely fast Python package installer and resolver
-        group: Language Development
+        group: Language Development - Python
+      - name: ruff
+        help: an extremely fast Python linter and code formatter
+        group: Language Development - Python
+      - name: pydev
+        help: Python dev setup
+        group: Language Development - Python
+
       # Language Development - Rust
       - name: rust
         help: rust programming language
-        group: Language Development
+        group: Language Development - Rust
+
       # Language Development - Zig
       - name: zig
         help: zig programming language
-        group: Language Development
+        group: Language Development - Zig
+      - name: zls
+        help: zig language server
+        group: Language Development - Zig
+      - name: zigdev
+        help: zig language setup
+        group: Language Development - Zig
+
       # Go Development Tools
       - name: go-blueprint
         help: Go-blueprint allows users to spin up a quick Go project using a popular framework
@@ -77,82 +112,44 @@ commands:
       - name: goimports
         help: Go tool to format Go source code and manage imports
         group: Go Development Tools
-      - name: golangci-lint
-        help: golangci-lint is a linters aggregator for Go
-        group: Go Development Tools
-      - name: staticcheck
-        help: The advanced Go linter
-        group: Go Development Tools
-      - name: nilaway
-        help: nilaway is a tool to detect nil pointer dereferences in Go code
-        group: Go Development Tools
       - name: swag
         help: Automatically generate RESTful API documentation with Swagger 2.0 for Go
         group: Go Development Tools
       - name: templ
         help: An HTML templating language for Go that has great developer tooling
         group: Go Development Tools
+
       # Linter / Formatter / Code Quality
-      - name: ruff
-        help: an extremely fast Python linter and code formatter
-        group: Linter / Formatter / Code Quality
       - name: scc
         help: Sloc Cloc and Code (scc)
         group: Linter / Formatter / Code Quality
       - name: yamlfmt
         help: an extensible command line tool or library to format yaml files.
         group: Linter / Formatter / Code Quality
+      - name: ruxx
+        help: ruxx xml linter formatter
+        group: Linter / Formatter / Code Quality
+      - name: rusq
+        help: rusq sql linter formatter
+        group: Linter / Formatter / Code Quality
+
       # Language Servers & Debuggers
-      - name: gopls
-        help: Go language server
-        group: Language Servers & Debuggers
-      - name: dlv
-        help: Delve is a source level debugger for Go programs
-        group: Language Servers & Debuggers
-      - name: zls
-        help: zig language server
-        group: Language Servers & Debuggers
       # Editors & IDEs
       - name: neovim
         help: NeoVIM
         group: Editors & IDEs
-      - name: helix
-        help: helix text editor
-        group: Editors & IDEs
+
       # Observability & Monitoring
-      - name: prometheus
-        help: prometheus
-        group: Observability & Monitoring
-      - name: grafana
-        help: grafana
-        group: Observability & Monitoring
-      - name: loki
-        help: loki
-        group: Observability & Monitoring
-      - name: node_exporter
-        help: node_exporter
-        group: Observability & Monitoring
-      - name: postgres_exporter
-        help: postgres_exporter
-        group: Observability & Monitoring
-      - name: blackbox_exporter
-        help: blackbox_exporter
-        group: Observability & Monitoring
-      - name: snmp_exporter
-        help: snmp_exporter
-        group: Observability & Monitoring
       - name: btop
         help: btop
         group: Observability & Monitoring
       - name: gotop
         help: gotop terminal based graphical activity monitor
         group: Observability & Monitoring
+
       # Containers & Orchestration
       - name: lazydocker
         help: A simple terminal UI for docker and docker-compose
-        group: Containers & Orchestration
-      - name: minikube
-        help: minikube
         group: Containers & Orchestration
       - name: kubectl
         help: kubectl
@@ -160,31 +157,21 @@ commands:
       - name: k9s
         help: Kubernetes CLI
         group: Containers & Orchestration
-      - name: etcd
-        help: etcd
-        group: Containers & Orchestration
-      - name: vagrant
-        help: HashiCorp Vagrant
-        group: Containers & Orchestration
+
       # Cloud / Hosting CLI Tools
-      - name: doctl
-        help: DigitalOcean cli tool
-        group: Cloud / Hosting CLI Tools
       - name: b2
         help: Backblaze B2 cli tool
         group: Cloud / Hosting CLI Tools
       - name: githubcli
-        help: github cli
+        help: github cli - gh
         group: Cloud / Hosting CLI Tools
       - name: forgejocli
-        help: forgejo cli
+        help: forgejo cli - fj
         group: Cloud / Hosting CLI Tools
+
       # Web / Frontend / Site / Proxies
-      - name: caddy2
-        help: caddy2 web server
-        group: Web / Frontend / Site / Proxies
-      - name: traefik
-        help: traefik
+      - name: xcaddy
+        help: xcaddy builds custom Caddy binaries with plugins
         group: Web / Frontend / Site / Proxies
       - name: hugo
         help: hugo website generator
@@ -192,9 +179,7 @@ commands:
       - name: tailwindcss
         help: tailwindcss cli
         group: Web / Frontend / Site / Proxies
-      - name: marp
-        help: Marp CLI is a Markdown presentation tool
-        group: Web / Frontend / Site / Proxies
+
       # Utilities & CLI Helpers
       - name: duf
         help: Disk Usage/Free Utility
@@ -226,37 +211,57 @@ commands:
       - name: ytdlp
         help: A command-line program to download videos from YouTube and other sites
         group: Utilities & CLI Helpers
-      - name: zfsnap
-        help: A portable, performant script to make rolling ZFS snapshots easy
+      - name: marp
+        help: Marp CLI is a Markdown presentation tool
         group: Utilities & CLI Helpers
+      - name: present
+        help: presentation tool
+        group: Utilities & CLI Helpers
+
       # Infrastructure & DevOps
-      - name: terraform
-        help: Terraform is an open-source infrastructure as code software tool
-        group: Infrastructure & DevOps
       - name: distrobuilder
         help: Distrobuilder is a tool to build Linux distributions and images
         group: Infrastructure & DevOps
+
       # Packaging / Binary Tools
       - name: upx
         help: Ultimate Packer for eXecutables
         group: Packaging / Binary Tools
+
       # Database & Code Generation
       - name: goose
         help: Database migration tool for Go
-        group: Database & Code Generation
+        group: Database Code Generation
       - name: sqlc
         help: Generate type-safe code from SQL
-        group: Database & Code Generation
+        group: Database Code Generation
+
       # Security & Vulnerability Scanning
       - name: mkcert
         help: mkcert is a simple tool for making locally-trusted development certificates
         group: Security & Vulnerability Scanning
+      - name: gitleaks
+        help: checks for accidental secrets leaks
+        group: Security & Vulnerability Scanning
+      - name: golangci-lint
+        help: golangci-lint is a linters aggregator for Go
+        group: Security & Vulnerability Scanning
+      - name: nilaway
+        help: nilaway is a tool to detect nil pointer dereferences in Go code
+        group: Security & Vulnerability Scanning
       - name: govulncheck
         help: Go vulnerability checker
+        group: Security & Vulnerability Scanning
+      - name: staticcheck
+        help: The advanced Go linter
         group: Security & Vulnerability Scanning
       - name: trivy
         help: Comprehensive and versatile security scanner
         group: Security & Vulnerability Scanning
+      - name: sectools
+        help: security tools
+        group: Security & Vulnerability Scanning
+
       # Fonts & Assets
       - name: nerdfonts
         help: nerdfonts installer
@@ -274,12 +279,3 @@ commands:
     commands:
       - name: neovim
         help: NeoVIM
-  - name: systemd
-    help: install systemd service
-    examples:
-      - gup install neovim
-    commands:
-      - name: loki
-        help: loki
-      - name: promtail
-        help: promtail

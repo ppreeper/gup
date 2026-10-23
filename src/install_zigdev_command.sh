@@ -1,0 +1,2 @@
+install_zig_command
+install_zls_command

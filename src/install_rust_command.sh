@@ -1,4 +1,4 @@
-set -euo pipefail
+set -eu
 
 APPBIN=$(command -v rustup 2>/dev/null || echo "")
 
@@ -6,7 +6,7 @@ if [ -z "${APPBIN}" ]; then
     echo "Installing Rust"
 
     tmp_dir=$(gup_mktemp_dir)
-    trap '[ -z "${tmp_dir:-}" ] || rm -rf "${tmp_dir}"' RETURN
+    trap '[ -z "${tmp_dir:-}" ] || rm -rf "${tmp_dir}"' EXIT
 
     gup_download "https://sh.rustup.rs" "${tmp_dir}/rustup-init.sh"
     sh "${tmp_dir}/rustup-init.sh" -y

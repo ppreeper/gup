@@ -4,22 +4,23 @@
 
 ```
 gup
-├── Makefile              # Build: `make` (runs bashly via Docker)
-├── gup                   # Generated CLI script (DO NOT EDIT)
+├── Makefile              # Build: `make` (runs shelly)
+├── gup                   # Generated POSIX sh CLI script (DO NOT EDIT)
 ├── src/
-│   ├── initialize.sh     # Entry point, sets GUP_PREFIX
 │   ├── lib/
 │   │   └── helpers.sh    # Shared helper functions
 │   ├── install_*.sh      # Install command source files
+│   ├── shelly.yml        # Shelly configuration
 │   └── ...
-└── .bashly.yml           # Bashly configuration
 ```
 
 ## Build
 
-```bash
-make          # regenerate gup from src/ + fix permissions
+```sh
+make          # regenerate gup from src/ using shelly
 ```
+
+Shelly reads `src/shelly.yml` for commands, arguments, and global structure, and embeds the matching `src/*_command.sh` files into the generated `gup` script.
 
 ## Adding a New Install Command
 
@@ -63,6 +64,22 @@ gup_fetch_release "astral-sh/ruff" '(contains("sha256") | not) and contains("x86
 gup_fetch_release "zigtools/zls" '(contains("minisig") | not) and contains("x86_64-linux")'
 ```
 
+The filter must match **exactly one** asset (the multi-asset `nerdfonts` command is the exception): zero matches fails with "no matching asset found", and two or more produce a multi-line URL that `curl` rejects with `URL rejected: Malformed input to a URL function`. Pitfalls seen in practice:
+
+- `contains` is case-sensitive — sibling repos can differ (`lazygit` ships lowercase `linux_x86_64`, `lazydocker` ships capitalized `Linux_x86_64`). Prefer an anchored case-insensitive regex: `test("linux_x86_64\\.tar\\.gz$"; "i")`.
+- Signature siblings like `.sigstore.json` or `.sha256` can ride along on a loose `contains`; exclude them or anchor with `endswith` (see `trivy`, `ruff`, `upx`).
+- Asset names change between releases (`btop` dropped `.tbz` for `btop-x86_64-unknown-linux-musl.tar.gz`); if an install starts failing, dump the assets with `gh api repos/<owner>/<repo>/releases/latest --jq '.assets[].name'`.
+
+Both `gup_fetch_release` and `gup_get_latest_release` fetch through `gup_github_api` (below). If the API returns `403` because the anonymous rate limit is exhausted, run `gh auth login` or set `GITHUB_TOKEN`/`GH_TOKEN`.
+
+### `gup_github_api` — GitHub API JSON
+
+Fetches JSON for a REST API path. It prefers an authenticated `gh` CLI (5000 requests/hour) and falls back to `curl`/`wget`, sending an `Authorization: Bearer` header when `GITHUB_TOKEN` or `GH_TOKEN` is set.
+
+```bash
+json=$(gup_github_api "repos/owner/repo/releases/latest")
+```
+
 ### `gup_download` — Download (curl or wget)
 
 Uses curl if available, falls back to wget.
@@ -79,7 +96,7 @@ gup_download "${GUP_REL_DL}" "${tmp_dir}/${GUP_REL_FN}"
 
 ### `gup_mktemp_dir` — Secure Temp Directory
 
-Creates a random temp directory. Always pair with `trap` for cleanup.
+Creates a random temp directory. Always pair with an `EXIT` trap for cleanup.
 
 ```bash
 gup_mktemp_dir
@@ -87,10 +104,9 @@ gup_mktemp_dir
 
 **Example:**
 
-```bash
-local tmp_dir
+```sh
 tmp_dir=$(gup_mktemp_dir)
-trap 'rm -rf "${tmp_dir}"' RETURN
+trap '[ -z "${tmp_dir:-}" ] || rm -rf "${tmp_dir}"' EXIT
 ```
 
 ### `_gup_install_binary` — Install Single Binary
@@ -156,9 +172,11 @@ _gup_extract_tarball <archive> <dest_dir> [strip_components]
 # Standard: strip top-level directory
 _gup_extract_tarball "${tmp_dir}/${GUP_REL_FN}" "${tmp_dir}/${APP}"
 
-# No stripping (flat archive)
+# No stripping (flat archive, or archive with its own top-level dir)
 _gup_extract_tarball "${tmp_dir}/${GUP_REL_FN}" "${tmp_dir}/${APP}" 0
 ```
+
+Gotcha: archives whose entries are prefixed with `./` (e.g. `./btop/bin/btop`) count `.` as the stripped component, so `strip=1` leaves an extra directory level. `btop` 1.4.7 archives are `./`-prefixed *and* contain their own top-level `btop/` dir, so they are extracted with `strip=0` directly into `tmp_dir`.
 
 ### `_gup_extract_zip` — Extract Zip
 
@@ -184,6 +202,8 @@ gup_ensure_go
 
 Returns only the tag name (with leading `v`). Use `gup_fetch_release` instead for full info.
 
+If the GitHub releases API request fails — for example when a repository only publishes tags and has no releases (404) — it returns the string `latest` so the caller can use `@latest`.
+
 ```bash
 vers=$(gup_get_latest_release "owner/repo")
 ```
@@ -203,9 +223,8 @@ download() {
     echo "download $1 version"
     echo "installing ${GUP_REL_VERSION}"
 
-    local tmp_dir
     tmp_dir=$(gup_mktemp_dir)
-    trap 'rm -rf "${tmp_dir}"' RETURN
+    trap '[ -z "${tmp_dir:-}" ] || rm -rf "${tmp_dir}"' EXIT
 
     gup_download "${GUP_REL_DL}" "${tmp_dir}/${GUP_REL_FN}"
     _gup_extract_tarball "${tmp_dir}/${GUP_REL_FN}" "${tmp_dir}/${APP}"
@@ -235,9 +254,8 @@ download() {
     echo "download $1 version"
     echo "installing ${GUP_REL_VERSION}"
 
-    local tmp_dir
     tmp_dir=$(gup_mktemp_dir)
-    trap 'rm -rf "${tmp_dir}"' RETURN
+    trap '[ -z "${tmp_dir:-}" ] || rm -rf "${tmp_dir}"' EXIT
 
     gup_download "${GUP_REL_DL}" "${tmp_dir}/${GUP_REL_FN}"
     _gup_extract_tarball "${tmp_dir}/${GUP_REL_FN}" "${tmp_dir}/${APP}"
@@ -258,9 +276,8 @@ download() {
     echo "download $1 version"
     echo "installing ${GUP_REL_VERSION}"
 
-    local tmp_dir
     tmp_dir=$(gup_mktemp_dir)
-    trap 'rm -rf "${tmp_dir}"' RETURN
+    trap '[ -z "${tmp_dir:-}" ] || rm -rf "${tmp_dir}"' EXIT
 
     gup_download "${GUP_REL_DL}" "${tmp_dir}/${GUP_REL_FN}"
     _gup_extract_zip "${tmp_dir}/${GUP_REL_FN}" "${tmp_dir}/${APP}"
@@ -281,9 +298,8 @@ download() {
     echo "download $1 version"
     echo "installing ${GUP_REL_VERSION}"
 
-    local tmp_dir
     tmp_dir=$(gup_mktemp_dir)
-    trap 'rm -rf "${tmp_dir}"' RETURN
+    trap '[ -z "${tmp_dir:-}" ] || rm -rf "${tmp_dir}"' EXIT
 
     gup_download "${GUP_REL_DL}" "${tmp_dir}/${GUP_REL_FN}"
     _gup_install_binary "${tmp_dir}/${GUP_REL_FN}"
@@ -309,9 +325,8 @@ download() {
     echo "download $1 version"
     echo "installing $vers"
 
-    local tmp_dir
     tmp_dir=$(gup_mktemp_dir)
-    trap 'rm -rf "${tmp_dir}"' RETURN
+    trap '[ -z "${tmp_dir:-}" ] || rm -rf "${tmp_dir}"' EXIT
 
     FN="${vers}.linux-amd64.tar.gz"
     gup_download "${DLREPO}/${FN}" "${tmp_dir}/${FN}"
@@ -341,9 +356,11 @@ The `gup_fetch_release` jq filter is passed to `select(.name | ...)`. Common pat
 
 ## Conventions
 
+- Write POSIX `sh`, not bash — shelly emits `#!/bin/sh`
 - Use `==` → use `=` in `[ ]` tests (POSIX-compliant)
 - Always quote variables: `"${APP}"` not `${APP}`
-- Use `local` for function-scoped variables
-- Always pair `gup_mktemp_dir` with `trap 'rm -rf "${tmp_dir}"' RETURN`
+- Do not use `local` (not POSIX); command scripts run in their own invocation
+- Wrap JSON in `printf '%s\n'`, not `echo` (backslash handling is implementation-defined)
+- Always pair `gup_mktemp_dir` with `trap '[ -z "${tmp_dir:-}" ] || rm -rf "${tmp_dir}"' EXIT`
 - Do NOT use predictable `/tmp/` paths — symlink attack vector
-- The `download()` function name is conventional; it becomes global when embedded by bashly
+- The `download()` function name is conventional; it becomes global when embedded by shelly

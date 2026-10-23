@@ -1,16 +1,15 @@
-set -euo pipefail
+set -eu
 
 APP="trivy"
 REPO="aquasecurity/trivy"
-gup_fetch_release "${REPO}" 'contains("Linux-64bit.tar.gz")'
+gup_fetch_release "${REPO}" 'endswith("Linux-64bit.tar.gz")'
 
 download() {
 	echo "download $1 version"
 	echo "installing ${GUP_REL_VERSION}"
 
-	local tmp_dir
 	tmp_dir=$(gup_mktemp_dir)
-	trap '[ -z "${tmp_dir:-}" ] || rm -rf "${tmp_dir}"' RETURN
+	trap '[ -z "${tmp_dir:-}" ] || rm -rf "${tmp_dir}"' EXIT
 
 	gup_download "${GUP_REL_DL}" "${tmp_dir}/${GUP_REL_FN}"
 	tar axf "${tmp_dir}/${GUP_REL_FN}" -C "${tmp_dir}" "${APP}"

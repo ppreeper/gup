@@ -157,6 +157,9 @@ commands:
       - name: k9s
         help: Kubernetes CLI
         group: Containers & Orchestration
+      - name: act
+        help: Run your GitHub Actions locally
+        group: Containers & Orchestration
 
       # Cloud / Hosting CLI Tools
       - name: b2

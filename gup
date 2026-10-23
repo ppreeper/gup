@@ -105,6 +105,7 @@ gup_install_usage() {
   echo "  lazydocker      A simple terminal UI for docker and docker-compose"
   echo "  kubectl         kubectl"
   echo "  k9s             Kubernetes CLI"
+  echo "  act             Run your GitHub Actions locally"
   echo ""
   echo "Cloud / Hosting CLI Tools Commands:"
   echo "  b2              Backblaze B2 cli tool"
@@ -852,6 +853,23 @@ gup_install_k9s_usage() {
   echo "Usage:"
   echo "  gup install k9s"
   echo "  gup install k9s --help | -h"
+  echo ""
+  if [ -n "$long_usage" ]; then
+    echo "Options:"
+    echo "  --help, -h"
+    echo "    Show this help"
+    echo ""
+  fi
+}
+
+
+# :command.usage.install_act
+gup_install_act_usage() {
+  echo "gup install act - Run your GitHub Actions locally"
+  echo ""
+  echo "Usage:"
+  echo "  gup install act"
+  echo "  gup install act --help | -h"
   echo ""
   if [ -n "$long_usage" ]; then
     echo "Options:"
@@ -1665,6 +1683,10 @@ _inspect_collect_install_k9s() {
   :
 }
 
+_inspect_collect_install_act() {
+  :
+}
+
 _inspect_collect_install_b2() {
   :
 }
@@ -1924,6 +1946,9 @@ inspect_args() {
       ;;
     install_k9s)
       _inspect_collect_install_k9s | _inspect_sort | _inspect_args_section
+      ;;
+    install_act)
+      _inspect_collect_install_act | _inspect_sort | _inspect_args_section
       ;;
     install_b2)
       _inspect_collect_install_b2 | _inspect_sort | _inspect_args_section
@@ -2302,6 +2327,7 @@ install_usage() {
   echo "  lazydocker      A simple terminal UI for docker and docker-compose"
   echo "  kubectl         kubectl"
   echo "  k9s             Kubernetes CLI"
+  echo "  act             Run your GitHub Actions locally"
   echo ""
   echo "Cloud / Hosting CLI Tools Commands:"
   echo "  b2              Backblaze B2 cli tool"
@@ -4634,6 +4660,73 @@ install_k9s_command() {
   fi
 }
 
+# :command.function install_act
+install_act_parse() {
+  _options_ended=false
+  _pos=0
+  if [ "${1:-}" = "-h" ] || [ "${1:-}" = "--help" ]; then
+    long_usage=yes
+    gup_install_act_usage
+    exit 0
+  fi
+  while [ $# -gt 0 ]; do
+    _parse_key="$1"
+    if [ "$_options_ended" = true ]; then
+      _parse_key=""
+    fi
+    case "$_parse_key" in
+      -[a-zA-Z0-9][a-zA-Z0-9]*)
+        _cluster="${1#-}"
+        shift
+        while [ -n "$_cluster" ]; do
+          _c="${_cluster#"${_cluster%?}"}"
+          _cluster="${_cluster%?}"
+          set -- "-$_c" "$@"
+        done
+        continue ;;
+      --) shift; _options_ended=true ;;
+      -*) echo "invalid option: $1" >&2; exit 1 ;;
+      *) break ;;
+    esac
+  done
+}
+
+install_act_command() {
+  _inspect_cmd=install_act
+  install_act_parse "$@"
+  set -eu
+
+  APP="act"
+  REPO="nektos/act"
+  # Assets are named act_Linux_x86_64.tar.gz; anchor the match so armv6/armv7
+  # siblings (act_Linux_armv6.tar.gz) do not ride along.
+  gup_fetch_release "${REPO}" 'test("Linux_x86_64\\.tar\\.gz$"; "i")'
+
+  download() {
+    echo "download $1 version"
+    echo "installing ${GUP_REL_VERSION}"
+
+    tmp_dir=$(gup_mktemp_dir)
+    trap '[ -z "${tmp_dir:-}" ] || rm -rf "${tmp_dir}"' EXIT
+
+    gup_download "${GUP_REL_DL}" "${tmp_dir}/${GUP_REL_FN}"
+    # The archive is flat (act, LICENSE, README.md), so do not strip components.
+    _gup_extract_tarball "${tmp_dir}/${GUP_REL_FN}" "${tmp_dir}" 0
+    _gup_install_binary "${tmp_dir}/${APP}"
+  }
+
+  if [ -z "$(command -v "${APP}")" ]; then
+    download new
+  else
+    APPVER=$($(command -v "${APP}") --version 2>&1 | grep "^${APP}" | awk '{print $3}')
+    if [ "${APPVER}" = "${GUP_REL_VERSION}" ]; then
+        echo "${APP} version is current"
+    else
+        download "${GUP_REL_VERSION}"
+    fi
+  fi
+}
+
 # :command.function install_b2
 install_b2_parse() {
   _options_ended=false
@@ -6368,6 +6461,7 @@ install_command() {
     lazydocker) install_lazydocker_command "$@" ;;
     kubectl) install_kubectl_command "$@" ;;
     k9s) install_k9s_command "$@" ;;
+    act) install_act_command "$@" ;;
     b2) install_b2_command "$@" ;;
     githubcli) install_githubcli_command "$@" ;;
     forgejocli) install_forgejocli_command "$@" ;;

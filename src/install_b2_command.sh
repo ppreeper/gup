@@ -1,4 +1,4 @@
-set -euo pipefail
+set -eu
 
 APP="b2"
 DL="https://github.com/Backblaze/B2_Command_Line_Tool/releases/latest/download/b2-linux"
@@ -6,9 +6,8 @@ DL="https://github.com/Backblaze/B2_Command_Line_Tool/releases/latest/download/b
 download() {
     echo "download ${APP} ..."
 
-    local tmp_dir
     tmp_dir=$(gup_mktemp_dir)
-    trap '[ -z "${tmp_dir:-}" ] || rm -rf "${tmp_dir}"' RETURN
+    trap '[ -z "${tmp_dir:-}" ] || rm -rf "${tmp_dir}"' EXIT
 
     gup_download "${DL}" "${tmp_dir}/${APP}"
     _gup_install_binary "${tmp_dir}/${APP}"

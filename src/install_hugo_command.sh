@@ -1,4 +1,4 @@
-set -euo pipefail
+set -eu
 
 APP="hugo"
 REPO="gohugoio/hugo"
@@ -8,9 +8,8 @@ download() {
     echo "download $1 version"
     echo "installing ${GUP_REL_VERSION}"
 
-    local tmp_dir
     tmp_dir=$(gup_mktemp_dir)
-    trap '[ -z "${tmp_dir:-}" ] || rm -rf "${tmp_dir}"' RETURN
+    trap '[ -z "${tmp_dir:-}" ] || rm -rf "${tmp_dir}"' EXIT
 
     gup_download "${GUP_REL_DL}" "${tmp_dir}/${GUP_REL_FN}"
     if [ "$(id -u)" = 0 ]; then

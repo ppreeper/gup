@@ -1,4 +1,4 @@
-set -euo pipefail
+set -eu
 
 APP="task"
 REPO="go-task/task"
@@ -8,13 +8,13 @@ download() {
     echo "download $1 version"
     echo "installing ${GUP_REL_VERSION}"
 
-    local tmp_dir
     tmp_dir=$(gup_mktemp_dir)
-    trap '[ -z "${tmp_dir:-}" ] || rm -rf "${tmp_dir}"' RETURN
+    trap '[ -z "${tmp_dir:-}" ] || rm -rf "${tmp_dir}"' EXIT
 
     gup_download "${GUP_REL_DL}" "${tmp_dir}/${GUP_REL_FN}"
-    _gup_extract_tarball "${tmp_dir}/${GUP_REL_FN}" "${tmp_dir}/${APP}"
-    _gup_install_binary "${tmp_dir}/${APP}/${APP}"
+    # The archive is flat (task, LICENSE, README.md, completion/...), so do not strip components.
+    _gup_extract_tarball "${tmp_dir}/${GUP_REL_FN}" "${tmp_dir}" 0
+    _gup_install_binary "${tmp_dir}/${APP}"
 }
 
 if [ -z "$(command -v "${APP}")" ]; then

@@ -1,4 +1,4 @@
-set -euo pipefail
+set -eu
 
 APP="distrobuilder"
 REPO="https://github.com/lxc/distrobuilder"
@@ -9,7 +9,7 @@ if ! command -v make >/dev/null 2>&1; then
 fi
 
 tmp_dir=$(gup_mktemp_dir)
-trap '[ -z "${tmp_dir:-}" ] || rm -rf "${tmp_dir}"' RETURN
+trap '[ -z "${tmp_dir:-}" ] || rm -rf "${tmp_dir}"' EXIT
 
 echo "cloning and building ${APP}..."
 git clone "${REPO}" "${tmp_dir}/distrobuilder"

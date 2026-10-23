@@ -1,4 +1,4 @@
-set -euo pipefail
+set -eu
 
 APP="staticcheck"
 REPO="dominikh/go-tools"

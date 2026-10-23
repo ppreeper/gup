@@ -1,0 +1,7 @@
+install_mkcert_command
+install_gitleaks_command
+install_golangci_lint_command
+install_nilaway_command
+install_govulncheck_command
+install_staticcheck_command
+install_trivy_command

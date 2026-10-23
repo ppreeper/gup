@@ -1,4 +1,4 @@
-set -euo pipefail
+set -eu
 
 REPO="https://raw.githubusercontent.com/ppreeper/gup"
 

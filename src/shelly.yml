@@ -138,6 +138,9 @@ commands:
       - name: neovim
         help: NeoVIM
         group: Editors & IDEs
+      - name: crush
+        help: Glamourous agentic coding for all
+        group: Editors & IDEs
 
       # Observability & Monitoring
       - name: btop

@@ -5,4 +5,4 @@ REPO="xo/usql"
 vers=$(gup_get_latest_release "${REPO}")
 
 gup_ensure_go
-go install github.com/${REPO}/cmd/${APP}@"${vers}"
+go install github.com/${REPO}@"${vers}"

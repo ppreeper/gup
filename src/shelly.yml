@@ -211,6 +211,9 @@ commands:
       - name: timer
         help: A sleep command with a progress bar
         group: Utilities & CLI Helpers
+      - name: usql
+        help: Universal command-line interface for SQL databases
+        group: Utilities & CLI Helpers
       - name: ytdlp
         help: A command-line program to download videos from YouTube and other sites
         group: Utilities & CLI Helpers

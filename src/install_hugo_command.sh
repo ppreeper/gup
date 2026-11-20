@@ -2,32 +2,20 @@ set -eu
 
 APP="hugo"
 REPO="gohugoio/hugo"
-gup_fetch_release "${REPO}" 'contains("extended") and contains("linux-amd64.tar.gz") and (contains("withdeploy") | not)'
+GUP_REL_VERSION=$(gup_get_latest_release "${REPO}")
+major=$(printf '%s' "${GUP_REL_VERSION}" | sed 's/^v//' | cut -d. -f1)
 
-download() {
-    echo "download $1 version"
-    echo "installing ${GUP_REL_VERSION}"
+# Module path major suffix must match the release major (scc is currently v4).
+case "${major}" in
+    ''|*[!0-9]*) module="github.com/${REPO}/v4" ;;
+    0|1) module="github.com/${REPO}" ;;
+    *) module="github.com/${REPO}/v${major}" ;;
+esac
 
-    tmp_dir=$(gup_mktemp_dir)
-    trap '[ -z "${tmp_dir:-}" ] || rm -rf "${tmp_dir}"' EXIT
-
-    gup_download "${GUP_REL_DL}" "${tmp_dir}/${GUP_REL_FN}"
-    if [ "$(id -u)" = 0 ]; then
-        BDIR="/usr/local/bin"
-    else
-        BDIR="${HOME}/.local/bin"
-    fi
-    mkdir -p "${BDIR}"
-    tar -axf "${tmp_dir}/${GUP_REL_FN}" -C "${BDIR}" "${APP}"
-}
-
-if [ -z "$(command -v "${APP}")" ]; then
-    download new
+APPVER=$($(command -v "${APP}") version 2>&1 | awk '{print $2}' | awk -F'+' '{print $1}')
+if [ "${APPVER}" = "${GUP_REL_VERSION}" ]; then
+    echo "${APP} version is current"
 else
-    APPVER=$($(command -v "${APP}") version 2>&1 | awk '{print $2}' | awk -F'-' '{print $1}')
-    if [ "${APPVER}" = "${GUP_REL_VERSION}" ]; then
-        echo "${APP} version is current"
-    else
-        download "${GUP_REL_VERSION}"
-    fi
+    gup_ensure_go
+    CGO_ENABLED=0 go install -tags withdeploy "${module}@${GUP_REL_VERSION}"
 fi
